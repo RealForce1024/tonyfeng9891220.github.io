@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  
-  <title><![CDATA[夜阳's Blog]]></title>
+
+  <title><![CDATA[丘黎's Blog]]></title>
   <subtitle><![CDATA[记录点滴　|　仰望星空，脚踏实地]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://jakezy.com//"/>
   <updated>2015-10-12T10:12:56.493Z</updated>
   <id>http://jakezy.com//</id>
-  
+
   <author>
     <name><![CDATA[Jake Z]]></name>
     <email><![CDATA[zyseap@gmail.com]]></email>
   </author>
-  
+
   <generator uri="http://hexo.io/">Hexo</generator>
-  
+
   <entry>
     <title><![CDATA[从回调监听谈起]]></title>
     <link href="http://jakezy.com/2015/10/12/%E4%BB%8E%E5%9B%9E%E8%B0%83%E7%9B%91%E5%90%AC%E8%B0%88%E8%B5%B7/"/>
@@ -26,9 +26,9 @@
     <summary type="html">
     <![CDATA[<p>C++<br>    sort cmp<br>Java<br>    button listener<br>    lambda<br>    ::<br>JavaScript<br>    闭包<br>监听器-设计模式<br>    观察者模式<br>    装饰者模式<]]>
     </summary>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Ubuntu环境配置]]></title>
     <link href="http://jakezy.com/2015/09/05/Ubuntu%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/"/>
@@ -41,17 +41,17 @@
     <![CDATA[<p>待完成…（等校招季过去了再来补全）</p>
 ]]>
     </summary>
-    
+
       <category term="Linux" scheme="http://jakezy.com/tags/Linux/"/>
-    
+
       <category term="Ubuntu" scheme="http://jakezy.com/tags/Ubuntu/"/>
-    
+
       <category term="life" scheme="http://jakezy.com/tags/life/"/>
-    
+
       <category term="Ubuntu" scheme="http://jakezy.com/categories/Ubuntu/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[本周任务]]></title>
     <link href="http://jakezy.com/2015/08/30/30-%E6%9C%AC%E5%91%A8%E4%BB%BB%E5%8A%A1/"/>
@@ -74,15 +74,15 @@
     <![CDATA[<ul>
 <li>BAT面试班总结 <a href="http://www.nowcoder.com/ta/nine-chapter" target="_blank" rel="external">http://www.nowcoder.com/ta/nine-chapter</]]>
     </summary>
-    
+
       <category term="life" scheme="http://jakezy.com/tags/life/"/>
-    
+
       <category term="reading" scheme="http://jakezy.com/tags/reading/"/>
-    
+
       <category term="生活记录" scheme="http://jakezy.com/categories/%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[九章算法阶梯训练]]></title>
     <link href="http://jakezy.com/2015/08/26/%E4%B9%9D%E7%AB%A0%E7%AE%97%E6%B3%95%E9%98%B6%E6%A2%AF%E8%AE%AD%E7%BB%83/"/>
@@ -95,13 +95,13 @@
     <summary type="html">
     <![CDATA[<p>这几天按照<a href="http://www.lintcode.com/en/ladder/" target="_blank" rel="external">九章算法阶梯训练</a>开始刷题，建了个Gitbook，把相关的Leetcode代码都转移到Gitbook上了<]]>
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 16 Binary Search & Sorted Array]]></title>
     <link href="http://jakezy.com/2015/08/25/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-16/"/>
@@ -154,15 +154,15 @@
 <li><a href="https://leetcode.com/problems/search-in-rotated-sorted-array/">Search in Rotated Sorted Array</a></li>
 <li><a href="https://leetcode.com/problems/search-for-a-range/">Search for a Range</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 15 strStr & Coding Style]]></title>
     <link href="http://jakezy.com/2015/08/24/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-15/"/>
@@ -208,15 +208,15 @@
 <li><a href="https://leetcode.com/problems/permutations-ii/">Permutations II</a></li>
 <li><a href="https://leetcode.com/problems/permutation-sequence/">Permutation Sequence</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[近期阅读]]></title>
     <link href="http://jakezy.com/2015/08/24/%E8%BF%91%E6%9C%9F%E9%98%85%E8%AF%BB/"/>
@@ -233,17 +233,17 @@
 ]]></content>
     <summary type="html">
     <![CDATA[<p>近期阅读<br>]]>
-    
+
     </summary>
-    
+
       <category term="life" scheme="http://jakezy.com/tags/life/"/>
-    
+
       <category term="reading" scheme="http://jakezy.com/tags/reading/"/>
-    
+
       <category term="生活记录" scheme="http://jakezy.com/categories/%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 14]]></title>
     <link href="http://jakezy.com/2015/08/08/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-14/"/>
@@ -272,15 +272,15 @@
 <li><a href="https://leetcode.com/problems/excel-sheet-column-number/">Excel Sheet Column Number</a></li>
 <li><a href="https://leetcode.com/problems/basic-calculator-ii/">Basic Calculator II</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[AtomicInteger]]></title>
     <link href="http://jakezy.com/2015/08/08/AtomicInteger/"/>
@@ -303,15 +303,15 @@
 <h5 id="基于原子类的CAS操作自主实现无阻塞操作">基于原子类的CAS操作自主实现无阻塞操作</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * CAS操作判断当前方法是否已经初始化</span><br><span class="line"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomicBooleanTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> flag = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> AtomicBoolean inited = <span class="keyword">new</span> AtomicBoolean();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!inited.compareAndSet(<span class="keyword">false</span>, <span class="keyword">true</span>)) &#123;</span><br><span class="line">            System.out.println(<span class="string">"已初始化："</span> + flag);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 初始化操作</span></span><br><span class="line">        System.out.println(<span class="string">"未初始化："</span> + flag);</span><br><span class="line">        flag++;</span><br><span class="line">        System.out.println(<span class="string">"初始化完毕："</span> + flag);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        init();</span><br><span class="line">        System.out.println(<span class="string">"-----"</span>);</span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
     <summary type="html">
     <![CDATA[<h3 id="实现方式">实现方式</h3><p>AtomicInteger是一个支持原子操作的Integer类<br>]]>
-    
+
     </summary>
-    
+
       <category term="JDK" scheme="http://jakezy.com/tags/JDK/"/>
-    
+
       <category term="Java" scheme="http://jakezy.com/categories/Java/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 14]]></title>
     <link href="http://jakezy.com/2015/08/07/07-Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-14/"/>
@@ -344,15 +344,15 @@
 <li><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/">Best Time to Buy and Sell Stock III</a></li>
 <li><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/">Best Time to Buy and Sell Stock IV</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[java.util.ConcurrentModificationException出现原因及解决办法]]></title>
     <link href="http://jakezy.com/2015/08/06/java.util.ConcurrentModificationException%E5%87%BA%E7%8E%B0%E5%8E%9F%E5%9B%A0%E5%8F%8A%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95/"/>
@@ -365,13 +365,13 @@
     <![CDATA[<p>待补充</p>
 ]]>
     </summary>
-    
+
       <category term="问题记录" scheme="http://jakezy.com/tags/%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/"/>
-    
+
       <category term="Java" scheme="http://jakezy.com/categories/Java/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 13]]></title>
     <link href="http://jakezy.com/2015/08/06/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-13/"/>
@@ -412,15 +412,15 @@
 <li><a href="https://leetcode.com/problems/majority-element-ii/">Majority Element II</a></li>
 <li><a href="http://www.lintcode.com/en/problem/majority-number-iii/">Majority Number III</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 12]]></title>
     <link href="http://jakezy.com/2015/08/05/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-12/"/>
@@ -451,15 +451,15 @@
 <li><a href="https://leetcode.com/problems/single-number-ii/">Single Number II</a></li>
 <li><a href="http://www.lintcode.com/en/problem/single-number-iii/">Single Number III</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[JDK类库]]></title>
     <link href="http://jakezy.com/2015/08/04/JDK%E7%B1%BB%E5%BA%93/"/>
@@ -530,15 +530,15 @@ h3, h4 {
     <summary type="html">
     <![CDATA[<p>详见GitBook-<a href="http://jakezy.gitbooks.io/jdk/content/">JDK类库</a></p>
 <p><img src="http://ww1.sinaimg.cn/large/965a04dfgw1euqz5bkuvrj20ix0ga41f.jpg" alt="JDK类库"></p>]]>
-    
+
     </summary>
-    
+
       <category term="JDK" scheme="http://jakezy.com/tags/JDK/"/>
-    
+
       <category term="Java" scheme="http://jakezy.com/categories/Java/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 11]]></title>
     <link href="http://jakezy.com/2015/08/03/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-11/"/>
@@ -570,15 +570,15 @@ h3, h4 {
 <li><a href="https://leetcode.com/problems/reverse-nodes-in-k-group/">Reverse Nodes in k-Group</a></li>
 <li><a href="https://leetcode.com/problems/rotate-array/">Rotate Array</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 10]]></title>
     <link href="http://jakezy.com/2015/08/01/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-10/"/>
@@ -619,15 +619,15 @@ h3, h4 {
 <li><a href="https://leetcode.com/problems/convert-sorted-list-to-binary-search-tree/">Convert Sorted List to Binary Search Tree</a></li>
 <li><a href="https://leetcode.com/problems/insertion-sort-list/">Insertion Sort List</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 ]]></title>
     <link href="http://jakezy.com/2015/07/30/leetcode/"/>
@@ -655,15 +655,15 @@ h3, h4 {
 <li><a href=""></a></li>
 <li><a href=""></a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 9]]></title>
     <link href="http://jakezy.com/2015/07/30/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-9/"/>
@@ -701,15 +701,15 @@ h3, h4 {
 <li><a href="https://leetcode.com/problems/palindrome-linked-list/">Palindrome Linked List</a></li>
 <li><a href="https://leetcode.com/problems/intersection-of-two-linked-lists/">Intersection of Two Linked Lists</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 8]]></title>
     <link href="http://jakezy.com/2015/07/29/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-8/"/>
@@ -743,15 +743,15 @@ h3, h4 {
 <li><a href="https://leetcode.com/problems/reorder-list/">Reorder List</a></li>
 <li><a href="https://leetcode.com/problems/remove-linked-list-elements/">Remove Linked List Elements</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
   <entry>
     <title><![CDATA[Leetcode刷题记录 7]]></title>
     <link href="http://jakezy.com/2015/07/28/Leetcode%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95-7/"/>
@@ -783,13 +783,13 @@ h3, h4 {
 <li><a href="https://leetcode.com/problems/remove-duplicates-from-sorted-list/">Remove Duplicates from Sorted List</a></li>
 <li><a href="https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/">Remove Duplicates from Sorted List II</a></li>
 </ul>]]>
-    
+
     </summary>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/tags/Leetcode/"/>
-    
+
       <category term="Leetcode" scheme="http://jakezy.com/categories/Leetcode/"/>
-    
+
   </entry>
-  
+
 </feed>
