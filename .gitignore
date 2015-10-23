@@ -1,0 +1,16 @@
+# Mac OS
+.DS_Store
+
+# python
+*.pyc
+
+report_pictures/
+diet_pictures/
+doctor_image/
+#######
+.idea/*
+article_image/
+upload/
+logs_dir/
+
+
