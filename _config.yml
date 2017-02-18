@@ -1,0 +1,50 @@
+# Site settings
+title: 冯琪超-加菲cat的博客
+email: fanv2012@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  冯琪超的博客
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: http://jiafeicat.com # the base hostname & protocol for your site
+rss_url: /pages/feed.xml
+author: QiChao Feng
+
+# Sidebar filter
+# Choose 'tag' or 'category' as filter in sidebar.
+filter: 'category'
+recent_num: 20
+
+# Social account
+twitter: fengqichao
+weibo: fanv2011
+github: fqc
+instagram: fqc
+linkedin: fqc
+
+# avatar and Favicon
+avatar: http://7u2ho6.com1.z0.glb.clouddn.com/site-avatar.png
+favicon: http://7u2ho6.com1.z0.glb.clouddn.com/site-favicon.ico
+
+# disqus config
+disqus:
+  shortname: fqc-zh
+
+# google analytics config
+ga:
+  id: 
+  url: jiafeicat.org
+
+# Build settings
+permalink: /:year/:month/:day/:title.html
+markdown: kramdown
+highlighter: rouge
+mathjax: disabled
+sass:
+  style: compressed
+
+# Jekyll Plugin
+# https://help.github.com/articles/adding-jekyll-plugins-to-a-github-pages-site/
+gems:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-feed
+
