@@ -7,5 +7,7 @@ keywords: 算法,排序,Sort,Algorithm
 ---
 atom插件
 
+首先解决"墙"的问题
+[使用国内淘宝源](http://blog.csdn.net/qianghaohao/article/details/52331432)
 atom与golang
 [go-plus插件](https://segmentfault.com/a/1190000004933373)
