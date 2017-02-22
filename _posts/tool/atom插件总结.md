@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 基础工具总结
-category: 读书
+category: 工具
 tags: 算法
 keywords: 算法,排序,Sort,Algorithm
 ---
