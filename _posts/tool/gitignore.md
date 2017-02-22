@@ -7,6 +7,7 @@ keywords: git,工具
 ---
 git全局配置
 
+## 直接编辑 ~/.gitconfig文件
 ```
 [user] 
 name = fqc 
