@@ -11,13 +11,13 @@ docker基础知识
 docker出现后，以上问题有了很大程度上的解决。
 
 ## docker是什么?
-本身并不是虚拟化技术，而是容器管理工具。 
-
+本身并不是虚拟化技术，而是容器管理工具。
+软件工业上的集装箱技术。
 ## docker可以干什么
 - 快速创建环境(开发、测试、生产)
 
 - 整体交付(运行环境+代码)
-最大的特点 整体交付 开发运维测试 产品应用 
+最大的特点 整体交付 开发运维测试 产品应用
 环境一致性保障
 更好的完成devops
 
@@ -54,11 +54,6 @@ docker镜像在IT行业中也像集装箱之于码头的重要变革一样，非
 虽然说通过commit方式像是通过操作虚拟机一样的方式，但是容器毕竟是容器，它不是虚拟机
 希望大家能够适应使用dockerfile的方式生成镜像的习惯。
 
-
-
-
-
-
 ----
 
 ## Docker client
@@ -77,3 +72,74 @@ docker采用了分层技术，比如说构建一个docker镜像，需要基于�
 
 ## Docker Registry
 Registry是Docker镜像的中央仓库。(pull/push)
+
+
+## 克隆docker-training
+构建 [centos7\mysql\php-fpm\wordpress] docker镜像
+通过以克隆的代码制作成docker镜像，
+首先要构建Dockerfile文件
+Dockerfile 自动构建docker镜像的配置文件。命令类似shell
+通过docker build生成docker镜像。例如有更新的时候想要立即生成镜像，可以通过自动化的平台自动发现git的变化(有git才能谈自动化平台)
+写好Dockerfile和了解Dockerfile是非常关键的。(Dockerfile的编写至关重要)
+
+```
+
+#
+# DOCKER-VERSION    1.6.2
+#
+# Dockerizing CentOS7: Dockerfile for building CentOS images
+#
+
+FROM centos:centos7.1.1503 #基础镜像
+MAINTAINER JOHN,C.Q.Feng <feng-qichao@qq.com> #Dockerfile维护者
+
+ENV TZ "Asia/Shanghai" #环境变量(可有多个)
+# ENV TERM xterm
+#ENV（environment）设置环境变量，一个Dockerfile中可以写多个。以上例子是：设置docker容器的时区为Shanghai
+
+ADD aliyun-mirror.repo /etc/yum.repos.d/CentOS-Base.repo
+ADD aliyun-epel.repo /etc/yum.repos.d/epel.repo
+
+RUN yum install -y curl wget tar bzip2 unzip vim-enhanced passwd sudo yum-utils hostname net-tools rsync man && \
+    yum install -y gcc gcc-c++ git make automake cmake patch logrotate python-devel libpng-devel libjpeg-devel && \
+    yum install -y --enablerepo=epel pwgen python-pip && \
+    yum clean all
+
+RUN pip install supervisor
+ADD supervisord.conf /etc/supervisord.conf
+
+RUN mkdir -p /etc/supervisor.conf.d && \
+    mkdir -p /var/log/supervisor
+
+EXPOSE 22
+
+ENTRYPOINT ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
+```
+
+`FROM centos:centos7.1.1503`  
+衍生自基础镜像 基于父镜像构建其他docker镜像，父镜像：可以通过docker pull 命令获得，也可以自制
+
+`MAINTAINER JOHN,C.Q.Feng <feng-qichao@qq.com>`  
+ Dockerfile维护者
+
+`ENV TZ "Asia/Shanghai" #环境变量(可有多个)`
+`ENV TERM xterm`  
+ENV（environment）设置环境变量，一个Dockerfile中可以写多个。以上例子是：设置docker容器的时区为Shanghai
+
+Dockerfile有两条指令可以拷贝文件  
+`ADD aliyun-mirror.repo /etc/yum.repos.d/CentOS-Base.repo`  
+`ADD aliyun-epel.repo /etc/yum.repos.d/epel.repo`  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
