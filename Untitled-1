@@ -1,0 +1,21 @@
+docker run --detach \
+    --hostname 121.42.162.97 \
+    --publish 443:443 --publish 80:80 --publish 221:221 \
+    --name gitlab \
+    --restart always \
+    --volume /srv/gitlab/config:/etc/gitlab \
+    --volume /srv/gitlab/logs:/var/log/gitlab \
+    --volume /srv/gitlab/data:/var/opt/gitlab \
+    registry.cn-hangzhou.aliyuncs.com/lab99/gitlab-ce-zh 
+
+
+
+docker run --detach \
+    --hostname localhost \
+    --publish 443:443 --publish 80:80 --publish 22:22 \
+    --name gitlab \
+    --restart always \
+    --volume /srv/gitlab/config:/etc/gitlab \
+    --volume /srv/gitlab/logs:/var/log/gitlab \
+    --volume /srv/gitlab/data:/var/opt/gitlab \
+    lab99/gitlab-ce-zh
