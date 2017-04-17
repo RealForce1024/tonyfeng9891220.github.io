@@ -248,6 +248,12 @@ $ git commit -m "initial commit"
 ```
 最后就是关联远程仓库推送代码啦，读者可以自行完成。  
 
-参考   
-https://golang.org/doc/code.html
-https://github.com/golang/go/wiki/SettingGOPATH
+参考 
+[golang文档][1]  
+
+[1]:https://golang.org/doc/code.html  
+
+
+[SettingGOPATH][2]
+
+[2]:https://github.com/golang/go/wiki/SettingGOPATH
