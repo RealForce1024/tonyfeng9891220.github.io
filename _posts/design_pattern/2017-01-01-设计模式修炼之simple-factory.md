@@ -52,14 +52,14 @@ class ImplB implements IPrint {
 public class Client {
     public static void main(String[] args) {
         //通过工厂进行松耦合，实现与客户端分离
-        IPrint IPrint = IPrintFactory.getInstance(1);
+        IPrint IPrint = PrintFactory.getInstance(1);
         IPrint.print();
         //还是有不妥，客户端还是需要知道类型的区别，某种意义上还是没有真正的与服务端分离。
     }
 }
 ```
 ```java
-public class IPrintFactory {
+public class PrintFactory {
     public static IPrint getInstance(int type) {
         if (type == 1) {
             return new ImplA();
@@ -75,13 +75,13 @@ public class IPrintFactory {
 public class Client {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         //此时可以采用配置文件的方式，客户端不需要传递任何业务类型相关的内容
-        IPrint iPrint = IPrintFactory.getInstance();
+        IPrint iPrint = PrintFactory.getInstance();
         iPrint.print();
     }
 }
 ```
 ```java
-public class IPrintFactory {
+public class PrintFactory {
     public static IPrint getInstance() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         Properties properties = PropertiesUtil.propertiesLoad("config.properties");
         String impl = PropertiesUtil.getString(properties, "impl", "com.design.pattern.simple_factory.refactor02.ImplB");
@@ -103,14 +103,14 @@ public class Client {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         //运行时动态决定调用
         for (int i = 0; i < 10; i++) {
-            IPrint ip = IPrintFactory.getInstance();
+            IPrint ip = PrintFactory.getInstance();
             ip.print();
         }
     }
 }
 ```
 ```java
-public class IPrintFactory {
+public class PrintFactory {
     private static int count = 0;
 
     public static IPrint getInstance() {
