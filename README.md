@@ -1,6 +1,6 @@
 ### 我的博客
 
-地址：[http://jiafeicat.com](http://jiafeicat.com)
+地址：[http://gomaster.me](http://gomaster.me)
 
 ### 安装说明
 
