@@ -36,3 +36,28 @@ f, err := os.Create(outFile) // compile error : no new variables
 // 可以改为
 f, err = os.Create(outFile) // ok 
 ```
+
+注意:是同一域内
+```go
+_, err := os.Open("/usr/local/a.txt")
+fmt.Printf("%v\n", &err)
+if _, err := os.Create("/usr/localxx/b.txt"); err != nil {
+    fmt.Printf("%v", &err)
+}
+
+// 0xc42000e260
+// 0xc42000e280
+```
+
+```go
+_, err := os.Open("/usr/local/a.txt")
+fmt.Printf("%v\n", &err)
+
+_, err = os.Create("/usr/localxx/b.txt");
+if err != nil {
+    fmt.Printf("%v", &err)
+}
+
+// 0xc4200701b0
+// 0xc4200701b0
+```
