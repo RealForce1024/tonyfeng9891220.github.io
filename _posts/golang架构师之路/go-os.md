@@ -1,5 +1,5 @@
 ## bufio
-bufio库中含io含大量的读写操作。 
+bufio库中含io大量的读写操作。 
 
 ## 从标准输入读取数据
 ### Scanner
@@ -30,6 +30,25 @@ func main() {
 	for text, ln := range counts {
 		fmt.Printf("%s\t%d\n",text,ln)
 	}
+}
+```
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var s string
+	//fmt.Scanln(s)
+	//fmt.Scanln(&s)
+	fmt.Scanf("%s",&s) // 使用指针修改变量底层值
+	//fmt.Scanf("%s",s) // 与&s的区别在于vv "" 打印的零值 而通过&s则是修改底层值。  
+	//fmt.Scanf("%q",s)
+	fmt.Println(s)
+	fmt.Printf("%s %[1]q","hello")
 }
 ```
 
