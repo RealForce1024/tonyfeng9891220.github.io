@@ -1,3 +1,33 @@
+<!-- TOC -->
+
+- [go数据结构总览](#go数据结构总览)
+- [数组](#数组)
+    - [一. 数组声明创建](#一-数组声明创建)
+        - [1.声明类型，默认为零值](#1声明类型默认为零值)
+        - [2.数组字面值](#2数组字面值)
+        - [3. `...` 忽略数组长度定义](#3--忽略数组长度定义)
+        - [4. 指定索引方式初始化](#4-指定索引方式初始化)
+    - [5. 混合初始化指定值](#5-混合初始化指定值)
+    - [二. 相同类型数组的比较](#二-相同类型数组的比较)
+    - [低效的数组参数](#低效的数组参数)
+    - [更高效的数组指针](#更高效的数组指针)
+    - [反正slice和字符串](#反正slice和字符串)
+- [切片 slice](#切片-slice)
+    - [切片定义](#切片定义)
+    - [切片和数组的零值](#切片和数组的零值)
+    - [与多个切片共享底层数组](#与多个切片共享底层数组)
+    - [反转数组的应用](#反转数组的应用)
+    - [append函数](#append函数)
+    - [slice之间不能比较](#slice之间不能比较)
+    - [slice可以和nil比较(之一)](#slice可以和nil比较之一)
+    - [优先使用len(s)==0判断slice是否为空](#优先使用lens0判断slice是否为空)
+    - [模拟append函数，理解slice的扩容](#模拟append函数理解slice的扩容)
+        - [容量越界](#容量越界)
+        - [appendInt](#appendint)
+    - [slice的内存使用技巧](#slice的内存使用技巧)
+
+<!-- /TOC -->
+
 ## go数据结构总览
 - 基础类型
   - 数字
@@ -82,6 +112,21 @@ symbol := [...]string{USD:"$",EUR:"€",GBP:"£",RMB:"¥"}
 fmt.Printf("index: %d, symbol: %s",RMB,symbol[RMB])
 ```
 通过该案例的使用索引使用方式初始化数组，我们发现初始化的顺序无关紧要，索引值我们可以使用常量别名的方式，索引获取到我们需要的值。  
+
+### 5. 混合初始化指定值
+字面值和数组一样，可以顺序指定初始化值序列，也可以通过索引和元素值指定，或者两种风格的混合语法初始化
+
+```go
+func main() {
+	arr := [...]int{1, 2, 5:10}
+	info(arr)//1,2,0,0,0,10
+}
+
+func info(arr [6]int) {
+	fmt.Printf("s=%v", arr)
+}
+```
+注意:info()函数的参数类型[6]int这里是非常大的局限，今后我们可以使用切片slice替代
 
 ### 二. 相同类型数组的比较
 - 元素类型可以比较的数组之间是可以比较的，不同类型的数组无法比较(编译无法通过)。
@@ -224,6 +269,23 @@ func Reverse(s string) string {
 var months = []string{1:"January",2:"Febuary"/*....*/12:"December"}
 ```
 注:中间月份代码有所省略
+字面值和数组一样，可以顺序指定初始化值序列，也可以通过索引和元素值指定，或者两种风格的混合语法初始化
+```go
+sli := []int{1,2,5:10}
+info(sli) //1,2,0,0,10
+
+func info(s []int) {
+	fmt.Printf("len=%v,cap=%v,slice=%v\n", len(s), cap(s),s)
+}
+//len=6,cap=6,slice=[1 2 0 0 0 10]
+```
+- 使用内置函数make定义初始化底层数组，并返回视图slice
+`make(slice,len,[cap])`
+
+```go
+make([]T,len)
+make([]T,len,cap) //same as make([]T,cap)[:len]
+```
 
 ### 切片和数组的零值  
 非常重要的是，切片和数组都是**用花括弧包含一系列的初始化元素**，其他语言的使用者使用go时，可能会误以为只是声明了变量类型，但没有初始化，尤其是[]int{} 这种类型的切片值为`[]`，[...]int{}数组值为`[]`
@@ -240,6 +302,8 @@ fmt.Printf("%v,%v,%v,%v", arr, slice,abb,acc)
 var Q2 = months[4:7]
 var summer = months[6:9]
 ```
+months[6]被切片Q2和summer共同指向   
+
 ### 反转数组的应用
 可以用于任意长度的slice  
 > 一种将slice元素循环向左旋转n个元素的方法是三次调用reverse反转函数,第一次是反转开头 的n个元素,然后是反转剩下的元素,最后是反转整个slice的元素。(如果是向右循环旋转, 则将第三个函数调用移到第一个调用位置就可以了。)   
@@ -277,8 +341,392 @@ func Reverse(s []int) {
 }
 ```
 
+###  append函数
+```go
+func main() {
+	sli := []int{}
+	info(sli)
+	sli = append(sli,1,2,3,4)
+	info(sli)
 
-###  
+}
+
+func info(s []int) {
+	fmt.Printf("len=%v,cap=%v,slice=%v\n", len(s), cap(s),s)
+}
+```
+
+append函数的特殊使用，初始化nil值的slice
+
+```go
+//s := []rune //compile error , need . , or literal value ......
+var s []rune
+info(s)
+
+//s = append(s, "hello world") //can not use string as []rune
+//s = append(s, []rune("hello world")) //can not use []rune as type rune，追加元素必须是被追加slice的元素类型
+//s1 := append(s, rune("hello world")) // cannot convert "hello world" to type rune. 字符串类型无法转换为rune类型
+var runes []rune
+for _,r := range "hello 中国" {
+	//runes = append(runes, rune(r))
+	runes = append(runes,r)
+}
+fmt.Printf("%q", runes) // ['h' 'e' 'l' 'l' 'o' ' ' '中' '国']
+
+
+```
+
+当然上述是为了演示append函数的用法及注意事项，上述需求可以更加简便的使用下列转换方式完成。  
+```go
+fmt.Printf("%q", []rune("hello 中国")) // ['h' 'e' 'l' 'l' 'o' ' ' '中' '国']
+```
+
+为了理解rune，我们来看下以下代码
+
+```go
+var r rune // int32的别名
+//r = "hello" compile error
+r = 'h'  
+fmt.Printf("%q", r)
+
+var c rune
+c = 'h'
+fmt.Printf("%q,%T", c, c) // 'h',int32
+```
+
+### slice之间不能比较 
+与数组不同的是，slice之间不能比较
+比如数组比较是通过的
+```go
+a := [...]int{1, 2, 5:10}
+b := [...]int{1, 2, 5:10}
+fmt.Printf("%v", a == b)
+```
+
+而切片则编译无法通过
+```go
+a := []int{1, 2, 5: 10}
+b := []int{1, 2, 5: 10}
+fmt.Printf("%v", a == b) //operation == not defined on []int
+```
+
+除了标准库提供了bytes.Equal()方法比较之外，其他的切片都需要我们自己展开来比较。
+切片不支持`==`运算，是因为
+1. slice是引用类型，即slice的元素是间接引用的，一个slice甚至可以包含自身。	这种情况不适合我们直接比较元素值，虽然可以解决，但并不高效。  
+2. 由于slice是引用类型，一个固定的slice值其底层的数组元素值在不同的时间可能会被修改。  
+
+
+```go
+a := []byte{1, 2, 5: 10}
+b := []byte{1, 2, 5: 10}
+//fmt.Printf("%v", a == b) //operation == not defined on []int
+fmt.Printf("%t", bytes.Equal(a,b)) // true
+```
+
+手动比较，注意代码的正宗golang味道
+```go
+a := []int{1, 2, 5: 10}
+b := []int{1, 2, 5: 10}
+//fmt.Printf("%v", a == b) //operation == not defined on []int
+fmt.Printf("%t", compare(a, b))
+
+//func compare(a []int, b []int) bool { taste so so!
+func compare(x,y []int) bool { //taste good
+	if len(x) != len(y) {
+		return false
+	}
+
+	// 效率低
+	/*for _, va := range a {
+		for _, vb := range b {
+			if va != vb {
+				return false
+			}
+		}
+
+	}*/
+	
+	// 这个代码味道一般
+	for i := 0; i < len(x); i++ {
+		if x[i] != y[i] {
+			return false
+		}
+	}
+	// taste good
+	for i := range x {
+        if x[i] != y[i] {
+			return false	
+		}
+	}
+	return true
+}
+
+```
+
+### slice可以和nil比较(之一)
+slice是可以和nil进行比较的。  
+
+```go
+func main() {
+	var s []int
+	info(s)
+	s = nil
+	info(s)
+	//s = []int{nil}//compile error
+	s = []int(nil)// nil类型转换为[]int
+	info(s)
+	s = []int{} //{}初始化了！非nil值的slice
+	info(s)
+
+}
+
+func info(s []int) {
+	fmt.Printf("len=%v,cap=%v,slice=%v,%v==nil?=%t,%T\n", len(s), cap(s), s, s, s == nil,s)
+}
+
+// len=0,cap=0,slice=[],[]==nil?=true,[]int
+// len=0,cap=0,slice=[],[]==nil?=true,[]int
+// len=0,cap=0,slice=[],[]==nil?=true,[]int
+// len=0,cap=0,slice=[],[]==nil?=false,[]int
+```
+零值slice值为nil，类型[]int
+
+### 优先使用len(s)==0判断slice是否为空
+零值slice除了可以和nil进行比较外，其他的和长度为0的slice行为是一样的。除了有特殊说明之外，go语言将nil零值slice和长度为0的slice相等对待。reverse(nil)
+```go
+func main() {
+	var s []int
+	info(s)
+	reverse(s)
+
+	s0 := []int{}
+	info(s)
+	reverse(s0)
+	
+	s1 := []int{1, 2, 3, 4}
+	info(s1)
+	reverse(s1)
+}
+func info(s []int) {
+	fmt.Printf("len=%v,cap=%v,slice=%v,%v==nil?=%t,%T\n", len(s), cap(s), s, s, s == nil, s)
+}
+```
+
+### 模拟append函数，理解slice的扩容
+slice的扩容依赖于长度和容量的变化，长度要始终不大于容量，一旦长度超过了容量，slice将进行2倍扩容。
+我们先来理解下容量
+#### 容量越界
+举个超过容量越界的例子
+```go
+m := []int{1,2,3}
+n := m[:4] //panic: runtime error: slice bounds out of range
+fmt.Printf("%v", n)
+```
+#### appendInt
+这里通过容量不足时进行翻倍拓展slice来模拟内置append函数。  
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	a := []int{1, 2, 3, 4, 5}
+	b := 7
+	ret := appendInt(a, b)
+	fmt.Printf("ret: %v\n", ret)
+
+	b, c, d := 7, 8, 9
+	ret2 := appendInts(a, b, c, d)
+	fmt.Printf("ret2: %v\n", ret2)
+
+	ret3 := appendInts(a, b)
+	fmt.Printf("ret3: %v\n", ret3)
+
+	var m, n []int
+	//var m  []int
+	for i := 0; i < 10; i++ {
+		//n = appendInts(m, i)
+		n = appendInts(m, i)
+		fmt.Printf("%d cap=%d %v\n", i, cap(n), n)
+		m = n //重点！！！
+
+		/*m = appendInts(m, i)
+		fmt.Printf("%d cap=%d %v\n", i, cap(m),m )*/
+	}
+
+}
+func appendInt(x []int, y int) []int {
+	var z []int
+	zlen := len(x) + 1
+	fmt.Printf("%v,%v\n", zlen, cap(x))
+	if zlen <= cap(x) { //len(x)+1 一定不能超过cap，否则越界
+		//z = x[:] 这样容量只能是len(x),zlen自然就大于了cap(x)，越界
+		z = x[:zlen] //这里大胆的在基础上加+1 len(x)+1 加了一个元素
+	} else {
+		zcap := zlen
+		if zcap < 2*len(x) {
+			zcap = 2 * len(x)
+		}
+		z = make([]int, zlen, zcap)
+		copy(z, x)
+	}
+	z[len(x)] = y
+	return z
+}
+
+func appendInts(x []int, y ...int) []int {
+	var z []int
+	zlen := len(x) + len(y)
+	if zlen <= cap(x) {
+		z = x[:zlen]
+	} else {
+		zcap := zlen
+		if zcap < 2*len(x) {
+			zcap = 2 * len(x)
+		}
+		z = make([]int, zlen, zcap)
+		//copy(z[len(x):],y)
+		copy(z, x)
+	}
+	//z[:len(x)] = x
+	copy(z[len(x):], y)
+	return z
+}
+```
+
+如果长度不超过容量，则直接共享底层数组，进行赋值。否则查过容量，则翻倍拓展容量，并拷贝到新的数组，然后进行赋值。
+因此我们无法确定新的slice是否和原始的slice共享底层数组，同样的引申来看，如果共享底层数组的情况，我们也无法确定原先的slice操作是否影响新的slice。
+
+```go
+// runes := append(runes,r) //not update!!! 
+runes = append(runes,r) //对于变量进行更新
+```
+
+变量slice的更新实际应用需要特别注意
+
+```go
+var runes []rune
+//runes =append(runes,'h') // should use this!!!!!
+m := append(runes, 'h')
+fmt.Printf("runes: %q\n", runes)
+fmt.Printf("m: %q\n", m)
+
+// runes: []
+// m: ['h']
+```
+在go中，对长度，容量，或底层数组变化的操作而更新slice变量是非常有必要的。正确的使用slice，首先要明确尽管对底层数组的元素访问是间接的，但是对于slice对应结构体本身的指针，容量，长度是直接访问的。
+
+要更新上述信息，则需要如`runes = append(runes,r)`这样进行显示地赋值操作。 所以slice不仅仅是引用类型，更是类似struct的聚合类型。  
+
+模拟`[]int`的实际结构
+```go
+type IntSlice struct {
+	ptr *int
+	len,cap int
+}
+```
+
+###slice的内存使用技巧
+在原有slice内存空间上返回不包含空字符的字符串。
+展示如何避免另辟空间，输入和输出的slice共享底层数组。
+缺点，原先的数组将可能会被覆盖。
+
+- 第一版，错误
+```go
+s := []string{"hello", "", "world"}
+fmt.Printf("%q\n", s)
+fmt.Printf("%q\n", nonempty(s))
+
+func nonempty(s []string) []string {
+    i := 0 //当想在原有空间上操作，做好有个自控变量
+	for _,v := range s {
+		if s[i] != "" { //迭代过滤对象错误
+			s[i] = v
+			i++
+		}
+	}
+	return s
+}
+```
+
+- bug修复版
+```go
+s := []string{"hello", "", "world"}
+fmt.Printf("%q\n", s)
+fmt.Printf("%q\n", nonempty(s))
+
+func nonempty(s []string) []string {
+	i := 0
+	for _, v := range s {
+		//if s[i] != "" {
+		if v != "" {
+			s[i] = v
+			i++
+		}
+	}
+	//return s //如果返回s，那么i自控变量的意义就没有了
+	return s[:i]
+}
+
+// [hello  world]
+// [hello world]
+```
+
+我们看到nonempty函数操作切片s后返回的也是共享的底层数组，但是值已经修改了。所以在使用上不能只想着切片是引用类型，可以进行原值修改，但事实上是需要更新后重新赋值，否则引用的还是原始底层数组的值。
+原变量引用未变，如果不更新，则还是原始底层数组。
+```go
+s := []string{"hello", "", "world"}
+fmt.Printf("%q\n", s) // [hello  world] // 原始底层值
+fmt.Printf("%q\n", nonempty(s)) // [hello world] 结果值最好在实际应用中赋值保存
+fmt.Printf("%q\n", s) // [hello world world] //底层值被修改
+```
+所以正确的使用 `data = nonempty(s)`
+
+普通版
+```go
+func nonempty2(s []string) []string {
+	out := make([]string, len(s), len(s))
+	i := 0
+	for _, v := range s {
+		if v != "" {
+			out[i] = v
+			i++
+		}
+	}
+	return out
+}
+```
+
+小数据量味道好点的，但是大的还是前一版本带索引的访问较好。下面的重构版本还是在于slice的重构，以这种方式重用一个slice，一般都要求为最多为每个输入值产生一个输出值。  
+```go
+func nonempty3(s []string) []string {
+	out := s[:0]
+	for _,v := range s {
+		if v != "" {
+			append(out,v)
+		}
+	}
+	return out
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
