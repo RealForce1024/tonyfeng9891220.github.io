@@ -11,7 +11,7 @@
     - [二. 相同类型数组的比较](#二-相同类型数组的比较)
     - [低效的数组参数](#低效的数组参数)
     - [更高效的数组指针](#更高效的数组指针)
-    - [反正slice和字符串](#反正slice和字符串)
+    - [反转slice和字符串](#反转slice和字符串)
 - [切片 slice](#切片-slice)
     - [切片定义](#切片定义)
     - [切片和数组的零值](#切片和数组的零值)
@@ -25,6 +25,7 @@
         - [容量越界](#容量越界)
         - [appendInt](#appendint)
     - [slice的内存使用技巧](#slice的内存使用技巧)
+    - [使用slice模拟stack](#使用slice模拟stack)
 
 <!-- /TOC -->
 
@@ -76,7 +77,7 @@ arr := [...]int{3,4}
 fmt.Printf("%v", arr)
 ```
 
-注意:`[...]int{n}`是数组字面值的一中变形，字面值书属于定义范畴
+注意:`[...]int{n}`是数组字面值的一中变形，字面值书属于值范畴
 
 ```go
 func change(arr [...]int)  { // 虽然没有语法错误，但是运行时引发了异常，原因是在数组字面值以外使用了[...]
@@ -205,8 +206,9 @@ func change(arr *[5]int) {
 注：数组虽然高效，但是长度是固定的，没有任何添加或删除数组元素的方法。所以一般除了特殊的场景使用数组外，通常都首选slice切片。  
 
 
-### 反正slice和字符串
-- 反正字符串
+### 反转slice和字符串
+- 反正字符串  
+
 ```go
 func main() {
 	s := []string{"a", "b", "c"}
@@ -223,6 +225,7 @@ func myReverse(s []string) {
 ```
 
 不同的实现
+
 ```go
 func main() {
 	sli := []string{"hello","world","ok"}
@@ -237,7 +240,8 @@ func Reverse(str []string)  {
 }
 ```
 
-- 反正字符串
+- 反转字符串  
+
 ```go
 package main
 
@@ -414,7 +418,6 @@ fmt.Printf("%v", a == b) //operation == not defined on []int
 切片不支持`==`运算，是因为
 1. slice是引用类型，即slice的元素是间接引用的，一个slice甚至可以包含自身。	这种情况不适合我们直接比较元素值，虽然可以解决，但并不高效。  
 2. 由于slice是引用类型，一个固定的slice值其底层的数组元素值在不同的时间可能会被修改。  
-
 
 ```go
 a := []byte{1, 2, 5: 10}
@@ -632,7 +635,8 @@ type IntSlice struct {
 展示如何避免另辟空间，输入和输出的slice共享底层数组。
 缺点，原先的数组将可能会被覆盖。
 
-- 第一版，错误
+- 第一版，错误  
+
 ```go
 s := []string{"hello", "", "world"}
 fmt.Printf("%q\n", s)
@@ -650,7 +654,8 @@ func nonempty(s []string) []string {
 }
 ```
 
-- bug修复版
+- bug修复版  
+
 ```go
 s := []string{"hello", "", "world"}
 fmt.Printf("%q\n", s)
@@ -710,6 +715,41 @@ func nonempty3(s []string) []string {
 	return out
 }
 ```
+
+### 使用slice模拟stack
+- 压栈(使用append函数)
+```go
+var stack []int
+stack = append(stack,v) //push  v
+```
+
+- 栈顶
+```go
+top := stack[len(stack)-1]
+```
+
+- 弹栈(通过收缩slice)  
+```go
+stack = stack[:len(stack)-1] 
+```
+
+- 删除栈内元素   
+通过内置的函数copy将元素依次向前移动一位。  
+  
+```go
+var stack []int
+stack = append(stack,1,2,3,4,5) 
+fmt.Printf("%v",remove(stack,2)) // 1 2 4 5
+
+func remove(s []int, i int) []int {
+	copy(s[i:],s[i+1:])
+	return s[:len(s)-1]
+}
+```
+
+-------
+参考资料:  
+《The Go Programming Language》
 
 
 
