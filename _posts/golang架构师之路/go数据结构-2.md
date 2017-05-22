@@ -9,6 +9,7 @@
         - [通过下标索引访问map元素](#通过下标索引访问map元素)
         - [删除](#删除)
         - [key不存在map操作也是安全的](#key不存在map操作也是安全的)
+        - [key是否真的存在](#key是否真的存在)
         - [map元素的+= ++等操作](#map元素的-等操作)
         - [禁止对map元素取址操作](#禁止对map元素取址操作)
         - [迭代map](#迭代map)
@@ -150,6 +151,66 @@ fmt.Printf("%s\n", students)
 m := map[int]string{}
 fmt.Printf("%v\t%t\n", m, m == nil)//map[] false
 ```
+
+#### key是否真的存在
+map中如果存在key，返回对应的value，否则返回value值类型的零值。但是如果元素的值和零值相等，该如何知道key是否真正存在呢? 例如值为0的alue，""空字符串的value等边界值的key如何判断是否存在。  
+
+```go
+numbers := map[string]int{
+	"kobe":   23,
+	"james":  16,
+	"jordan": 34,
+	"allen":  25,
+	"arenas": 0,
+}
+
+nv, ok := numbers["arenas"]
+if !ok {
+	fmt.Printf("%d,%s,%t\n", nv, "not exist", ok)
+}
+fmt.Printf("%t exist value: %d\n", ok, nv)
+
+numbers["arenas"] = 999
+//nv, ok := numbers[""]
+nv, ok = numbers["arenas"]
+if !ok {
+	fmt.Printf("%d,%s,%t\n", nv, "not exist", ok)
+}
+fmt.Printf("%t,exist value: %d\n", ok, nv)
+
+none := numbers["sunyue"] //并不存在孙悦这个人
+fmt.Printf("sunyue's number is %d\n", none)
+
+```
+
+```go
+m := map[int]string{
+	1: "kobe",
+	2: "jordan",
+	3: "james",
+	//0: "arenas",
+	4:"",
+}
+
+arenas,ok := m[4]
+if !ok {
+	fmt.Printf("%t not exist\n", ok)
+}
+fmt.Printf("%t exist but value is zero \n", ok)
+
+m[4] = "arenas"
+arenas = m[4]
+fmt.Printf("%s\n", arenas)
+
+sunyue,ok := m[0]
+fmt.Printf("%q\t%t",sunyue,ok) // 并不存在，但是也可以打印出""
+```
+
+
+
+
+
+
 
 #### map元素的+= ++等操作
 ++ += 等操作同样适合map元素
@@ -353,6 +414,9 @@ for _, v := range ks {
 	fmt.Printf("%s:%v\n", v, ages[v])
 }
 ```
+
+
+
 
 -------
 
