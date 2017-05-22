@@ -11,6 +11,8 @@
         - [key不存在map操作也是安全的](#key不存在map操作也是安全的)
         - [map元素的+= ++等操作](#map元素的-等操作)
         - [禁止对map元素取址操作](#禁止对map元素取址操作)
+        - [迭代map](#迭代map)
+        - [顺序遍历map](#顺序遍历map)
 
 <!-- /TOC -->
 
@@ -139,7 +141,7 @@ ages["kobe"] ++
 fmt.Printf("%v\n", ages["kobe"])
 ```
 #### 禁止对map元素取址操作
-之前我们讲到可以使用make(map,n)来预设map元素的数量以避免内存频繁动态的分配。这里引申点在于map元素的地址是可能会发生变化的，所以取址操作没什么意义，go也是不允许编译通过的。
+之前我们讲到可以使用make(map,n)来预设map元素的数量以避免内存频繁动态的分配(map会随着元素数量的增长而重新分配更大的内存空间，从而导致原先的地址无效)。这里引申点在于map元素的地址是可能会发生变化的，所以取址操作没什么意义，go也是不允许编译通过的。
 map元素也不是变量，所以&取址操作符也是无意义的。  
 
 ```go
@@ -150,8 +152,66 @@ _ := &ages["kobe"]
 ```
 除了不能取址操作，我们发现`:=`左边必须至少有一个新的变量声明。  
 
+#### 迭代map
+for range风格迭代map，每次循环设置k,v变量的值  
+```go
+ages := map[string]int{
+		"kobe":  23,
+		"james": 16,
+		"jordan":34,
+		"allen",25,
+}
 
+for k, v := range ages {
+	fmt.Printf("%s:%v\n", k, v)
+}
 
+// james:16
+// jordan:34
+// allen:25
+// kobe:23
+```
+map迭代是无序的，这是故意设计的，每次遍历基本都是不同的哈希实现即强制其遍历不依赖具体的哈希函数，使得遍历是随机的。
+#### 顺序遍历map
+无序是因为key的遍历是随机的，所以要想顺序遍历map，必须先对key进行排序。  
+
+```go
+ages := map[string]int{
+	"kobe":   23,
+	"james":  16,
+	"jordan": 34,
+	"allen":  25,
+}
+
+fmt.Println("随机排列--->")
+for k, v := range ages {
+	fmt.Printf("%s:%v\n", k, v)
+}
+
+fmt.Println("顺序排列--->")
+keys := []string{}
+for k := range ages {
+	//append(keys, k)//Append returns the updated slice.
+	// It is therefore necessary to store the result of append,
+	// often in the variable holding the slice itself:
+	keys = append(keys, k)
+}
+sort.Strings(keys)
+for _, k := range keys {
+	fmt.Printf("%s:%d\n", k, ages[k])
+}
+
+// 随机排列--->
+// james:16
+// jordan:34
+// allen:25
+// kobe:23
+// 顺序排列--->
+// allen:25
+// james:16
+// jordan:34
+// kobe:23
+```
 
 
 
