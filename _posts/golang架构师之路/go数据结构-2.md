@@ -10,6 +10,8 @@
         - [删除](#删除)
         - [key不存在map操作也是安全的](#key不存在map操作也是安全的)
         - [key是否真的存在](#key是否真的存在)
+        - [map的相等性 注意一定要考虑到key不存在时的零值](#map的相等性-注意一定要考虑到key不存在时的零值)
+        - [go中的set集合- map[key]bool](#go中的set集合--mapkeybool)
         - [map元素的+= ++等操作](#map元素的-等操作)
         - [禁止对map元素取址操作](#禁止对map元素取址操作)
         - [迭代map](#迭代map)
@@ -206,8 +208,99 @@ sunyue,ok := m[0]
 fmt.Printf("%q\t%t",sunyue,ok) // 并不存在，但是也可以打印出""
 ```
 
+#### map的相等性 注意一定要考虑到key不存在时的零值
+与slice一样，不支持map之间的比较，但是支持map和nil的判断比较。要比较map，必须通过循环来实现:
 
+```go
+func equal(x, y map[string]int) bool {
+	if len(x) != len(y) {
+		return false
+	}
 
+	for k, xv := range x {
+		//if yv := y[k]; yv != xv {//true 这里的判断是不正确的，没有排除key不存在的时候的零值
+		if yv, ok := y[k]; !ok || yv != xv { //false
+			return false
+		}
+	}
+
+	return true
+}
+
+func main() {
+	a := map[string]int{
+		"a":0, //零值的考虑
+	}
+	b := map[string]int{
+		"b":2,
+	}
+	equal(a,b)
+}
+```
+
+#### go中的set集合- map[key]bool
+- 繁琐版  
+```go
+package main
+
+import (
+	"fmt"
+	"bufio"
+	"os"
+)
+
+func main() {
+	content := readOnceLine()
+	fmt.Printf("%v\n", content)
+}
+
+func readOnceLine() []string {
+	m := map[string]bool{}
+	content := []string{}
+	input := bufio.NewScanner(os.Stdin)
+
+	for input.Scan() {
+		line := input.Text()
+		if filter(m, line) { //not exist
+			content = append(content, line)
+			m[line] = true
+		}
+	}
+	return content
+}
+
+func filter(m map[string]bool, s string) bool {
+	fmt.Printf("%v\n", m)
+	if _, ok := m[s]; !ok {
+		return true
+	}
+	return false
+}
+
+```
+
+- 简化版
+```go
+package main
+
+import(
+	"fmt"
+	"bufio"
+	"os"
+)
+func main() {
+	seen := map[string]bool{}
+
+	input := bufio.NewScanner(os.Stdin)	
+	for input.Scan() {
+		line := input.Text()
+		if !seen[line] {
+			seen[line] = true
+		}
+	}
+	fmt.Printf("%v\n",seen)
+}
+```
 
 
 
