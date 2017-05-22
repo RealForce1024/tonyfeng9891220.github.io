@@ -32,8 +32,6 @@
   - channel
 - 接口类型
 
-本文将不包括基础类型
-
 ## map
 map是key/value键值对的无序集合。key是唯一的，不会重复，且是可以比较的类型。通过特定的key对value的检索，增加，删除都是常数时间复杂度内完成。
 
@@ -132,6 +130,27 @@ fmt.Printf("%v\n", ages)
 fmt.Prinft("%s",ages["jordan"])
 delete(ages,"jordan")
 ```
+
+len和range操作也是安全的，行为类似空的map，但是向nil值的map存入元素将导致一个panic异常:
+
+```go
+var students map[int]string
+fmt.Printf("%v\t%t\n", students, students == nil)
+
+for k, v := range students {
+	fmt.Printf("%d:%v\n", k, v)
+}
+
+students[0] = "kobe" // 运行时引发 panic: assignment to entry in nil map
+fmt.Printf("%s\n", students)
+```
+总结一句话就是:map存放数据之前需要先初始化，而不能只是声明(声明只是nil，并未分配内存空间，也就是没有引用任何哈希表。)
+注意:空的map不等于nil，因为其指向了哈希表。      
+```go
+m := map[int]string{}
+fmt.Printf("%v\t%t\n", m, m == nil)//map[] false
+```
+
 #### map元素的+= ++等操作
 ++ += 等操作同样适合map元素
 ```go
@@ -173,8 +192,8 @@ for k, v := range ages {
 ```
 map迭代是无序的，这是故意设计的，每次遍历基本都是不同的哈希实现即强制其遍历不依赖具体的哈希函数，使得遍历是随机的。
 #### 顺序遍历map
-无序是因为key的遍历是随机的，所以要想顺序遍历map，必须先对key进行排序。  
-
+无序是因为key的遍历是随机的，所以要想顺序遍历map，必须先对key进行排序。可以使用sort包的函数进行操作。    
+1. 版本一
 ```go
 ages := map[string]int{
 	"kobe":   23,
@@ -189,6 +208,7 @@ for k, v := range ages {
 }
 
 fmt.Println("顺序排列--->")
+// 获取keySet  
 keys := []string{}
 for k := range ages {
 	//append(keys, k)//Append returns the updated slice.
@@ -214,16 +234,132 @@ for _, k := range keys {
 ```
 
 
+案例中的使用是最容易想到的，go中没有直接获取keySet的，但是可以通过反射来获取，不过通过反射获取的key元素类型是Value类型，需要转换下。
 
+```go
+keys := reflect.valueOf(ages).MapKeys()
+```
+2. 版本2
 
+```go
+fmt.Println("使用反射获取keySet进行排序--->")
+keySet := reflect.ValueOf(ages).MapKeys()
+fmt.Printf("keySet:=>%v\n", keySet)
 
+s := []string{}
+for _, v := range keySet {
+	s = append(s, v.String())
+}
+sort.Strings(s)
 
+for _, k := range s {
+	fmt.Printf("%s:%v\n", k, ages[k])
+}
+```
+3. 性能提高版
+对已知map排序有两个优化点
+1. 知道了map的长度，无需使用append(一般情况下，使用append最为简洁，但数据量大的时候使用知道长度后使用索引性能更为高效)
+2. 预设slice的容量
 
+以下是两种版本的对比
+```go
+//一般场景下
+keySet := []int{} //因为一开始就知道keySet的最终大小，所以最好写为
+//keySet := make([]int,0,len(map))
+//keySet := make([]int,len(map)) //更进一步
 
+for k := range map {
+	keySet = append(keySet,k)
+}
+
+//高性能场景
+keys := make([]int, len(mymap))
+i := 0
+for k := range mymap {
+    keys[i] = k
+    i++
+}
+```
+
+```go
+fmt.Println("高效版顺序排序--->")
+ks := make([]string, len(ages))
+i := 0
+for k := range ages {
+	ks[i] = k
+	i++
+}
+
+sort.Strings(ks)
+for _, v := range ks {
+	fmt.Printf("%s:%v\n", v, ages[v])
+}
+```
+
+优化点
+1. 不使用append函数，而使用下标索引(在知道slice的长度的情况)。  
+2. make(slice,len,cap)中的len和cap属性如果知道最终长度，优先使用最终长度。  
+
+map排序三个版本完整代码
+```go
+ages := map[string]int{
+	"kobe":   23,
+	"james":  16,
+	"jordan": 34,
+	"allen":  25,
+}
+
+fmt.Println("随机排列--->")
+for k, v := range ages {
+	fmt.Printf("%s:%v\n", k, v)
+}
+
+fmt.Println("顺序排列--->")
+keys := []string{}
+for k := range ages {
+	//append(keys, k)//Append returns the updated slice.
+	// It is therefore necessary to store the result of append,
+	// often in the variable holding the slice itself:
+	keys = append(keys, k)
+}
+
+sort.Strings(keys)
+for _, k := range keys {
+	fmt.Printf("%s:%d\n", k, ages[k])
+}
+
+fmt.Println("使用反射获取keySet进行排序--->")
+keySet := reflect.ValueOf(ages).MapKeys()
+fmt.Printf("keySet:=>%v\n", keySet)
+s := []string{}
+for _, v := range keySet {
+	s = append(s, v.String())
+}
+sort.Strings(s)
+for _, k := range s {
+	fmt.Printf("%s:%v\n", k, ages[k])
+}
+
+fmt.Println("高效版顺序排序--->")
+ks := make([]string, len(ages))
+i := 0
+for k := range ages {
+	ks[i] = k
+	i++
+}
+
+sort.Strings(ks)
+for _, v := range ks {
+	fmt.Printf("%s:%v\n", v, ages[v])
+}
+```
 
 -------
+
 参考资料:  
 《The Go Programming Language》
+[获取map的key的集合的讨论](http://stackoverflow.com/questions/21362950/golang-getting-a-slice-of-keys-from-a-map)
+
 
 
 
