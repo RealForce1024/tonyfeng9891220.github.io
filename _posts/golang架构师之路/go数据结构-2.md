@@ -12,6 +12,8 @@
         - [key是否真的存在](#key是否真的存在)
         - [map的相等性 注意一定要考虑到key不存在时的零值](#map的相等性-注意一定要考虑到key不存在时的零值)
         - [go中的set集合- map[key]bool](#go中的set集合--mapkeybool)
+            - [案例一:](#案例一)
+            - [案例二](#案例二)
         - [map元素的+= ++等操作](#map元素的-等操作)
         - [禁止对map元素取址操作](#禁止对map元素取址操作)
         - [迭代map](#迭代map)
@@ -239,6 +241,12 @@ func main() {
 ```
 
 #### go中的set集合- map[key]bool
+
+##### 案例一:
+map并未提供set集合，而我们可以通过map实现类似set的功能。
+使用map模拟set，实现dedup程序，输入多行，但只打印第一次出现过的行。  
+可以这样理解:既然go没有提供set集合，那么作者应该是认为map足够完成set的功能，因为map的key就可以完成此项功能，set不重复元素的集合，而map的key正如此。 所以使用map实现set集合，只需要关注map的key集合就行，当然又很少时候也去关注下value。  
+
 - 繁琐版  
 ```go
 package main
@@ -279,7 +287,7 @@ func filter(m map[string]bool, s string) bool {
 
 ```
 
-- 简化版
+- 简化版dedup
 ```go
 package main
 
@@ -288,8 +296,10 @@ import(
 	"bufio"
 	"os"
 )
+
 func main() {
-	seen := map[string]bool{}
+	//seen := map[string]bool{}
+	seen := make(map[string]bool) //a set of strings
 
 	input := bufio.NewScanner(os.Stdin)	
 	for input.Scan() {
@@ -298,12 +308,57 @@ func main() {
 			seen[line] = true
 		}
 	}
+
 	fmt.Printf("%v\n",seen)
+
+	if err := input.Err(); err != nil {
+		fmt.Fprintf(os.Stderr, "%v", err)
+	}
+	os.Exit(-1)
 }
 ```
 
+##### 案例二
+统计提交的字符串列表相同的次数 
+关键点在于列表无法作为map的key，需要将列表转换成字符串作为key。  
+这里有个技巧，使用辅助函数
+>该函数可以用来处理任何不可以比较的key类型，而不仅仅是slice。这种技术也可以用在自定义key比较函数的时候有用，例如忽略字母大小写。同时辅助函数k(x)也不一定是string类型，它可以返回任何可以比较的类型，例如整数、数组或结构
+```go
+func main() {
+	//m := make(map[string]int)
+	//如何将slice作为map的key?
+	strs := []string{"hello", "world", "中国"}
+	fmt.Printf("%q\t%[1]T\n", strs)
+	fmt.Printf("%q\t%[1]T\n", k(strs))
+	fmt.Printf("%v\n", k(strs))
+
+	a := []string{"hello", "world", "中国"}
+	b := []string{"hello", "world", "美国"}
+	add(a)
+	add(a)
+	add(a)
+	add(a)
+	add(b)
+	add(b)
+	fmt.Println(count(a))
+	fmt.Println(count(b))
+}
 
 
+var m = make(map[string]int)
+
+func k(s []string) string {
+	return fmt.Sprintf("%q", s)
+}
+
+func add(s []string) {
+	m[k(s)]++
+}
+
+func count(s []string) int {
+	return m[k(s)]
+}
+```
 
 #### map元素的+= ++等操作
 ++ += 等操作同样适合map元素
