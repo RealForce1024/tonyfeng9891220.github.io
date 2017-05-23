@@ -11,6 +11,8 @@
         - [go中的所有参数都是值拷贝](#go中的所有参数都是值拷贝)
         - [结构体的比较](#结构体的比较)
         - [结构体可比较，可以作为map类型的key](#结构体可比较可以作为map类型的key)
+        - [结构体嵌入和匿名成员](#结构体嵌入和匿名成员)
+        - [匿名成员解决访问繁琐问题](#匿名成员解决访问繁琐问题)
 
 <!-- /TOC -->
 
@@ -262,14 +264,104 @@ fmt.Println(p1==p2) //false
 ```
 ### 结构体可比较，可以作为map类型的key
 map类型的key必须是可比较的类型，而结构体满足此条件，因此可以作为map类型的key
+
 ```go
 type Address struct {
 	hostname string
 	port int
 }
 
-host := map[Address{"localhost",8888}]++
+var hits = make(map[Address]int)
+
+hits = map[Address]int{
+	Address{"gomaster.me",80}:1,
+}
+
+hits[Address{"gomaster.me",80}]++
 ```
+
+### 结构体嵌入和匿名成员
+go语言有种结构体嵌入机制，一个命名的结构体包含另一个结构体类型的匿名成员。可以简化x.d.e.f为x.f，大大便利了嵌套访问的问题。  
+
+```go
+type Circle struct {
+	x, y, Radius int
+}
+
+type Wheel struct {
+	x, y, Radius, Spokes int// x,y=>Point    x,y,Radius =>Circle
+}
+
+var w Wheel
+w.x = 8
+w.y = 8
+w.Radius = 5
+w.Spokes = 20
+fmt.Println(w)//{8 8 5 20}
+```
+
+我们发现x,y可以抽象为坐标点Point，重构之
+```go
+type Point struct {
+	x, y int
+}
+
+type Circle struct {
+	Center Point
+	Radius int
+}
+
+type Wheel struct {
+    Circle Circle
+	Spokes int
+}
+```
+
+改动后结构体类型变得更加清晰，但按照之前的访问方式变得繁琐起来。
+
+```go
+var w Wheel
+w.Circle.Center.x = 8
+w.Circle.Center.y = 8
+w.Circle.Radius =5
+w.Spokes = 20
+fmt.Println(w) //{{{8 8} 5} 20}
+```
+该如何简便的访问呢?
+
+### 匿名成员解决访问繁琐问题
+go的一个重要特性是匿名成员(只声明成员类型，并不指定名称)。
+>匿名类型的数据类型必须是命名的类型或指向一个命名的类型的指针。
+我们将上面繁琐的访问重构后，Circle和Wheel各有一个匿名成员，Point类型被嵌入到了Circle结构体，Circle类型被嵌入到了Wheel结构体。  
+```go
+type Point struct {
+	x, y int
+}
+
+type Circle struct {
+	Point	
+	Radius int
+}
+
+type Wheel struct {
+	Circle
+	Spokes int
+}
+
+var w Wheel
+w.x = 8
+w.y = 8
+w.Radius = 5 
+w.Spokes = 20
+fmt.Println(w) // {{{8 8} 5} 20}
+```
+
+
+
+
+
+
+
 
 
 
