@@ -8,6 +8,8 @@
         - [结构体字面值](#结构体字面值)
         - [禁止企图使用未导出的成员](#禁止企图使用未导出的成员)
         - [结构体作为函数参数或返回值](#结构体作为函数参数或返回值)
+        - [go中的所有参数都是值拷贝](#go中的所有参数都是值拷贝)
+        - [结构体的比较](#结构体的比较)
 
 <!-- /TOC -->
 
@@ -163,6 +165,7 @@ n := T{1,2}     //compiler error :cannot reference a,b
 ```
 
 ### 结构体作为函数参数或返回值
+传入结构和传入结构体的指针作为参数
 
 ```go
 package main
@@ -192,6 +195,70 @@ func scale2(p *Point, factor int) {
 	p.y = p.y * factor
 }
 ```
+
+
+将结构体指针作为参数，可以修改底层值。如果考虑效率的话，较大的结构体，通常优先考虑使用指针作为参数。  
+```go
+package main
+
+import (
+	"fmt"
+)
+
+type Point struct {
+	x, y int
+}
+
+func scale1(p Point, factor int)  {
+	p.x = p.x*factor
+	p.y = p.y*factor
+}
+
+func main() {
+	p := Point{1,2}
+	scale1(p,5)
+	fmt.Printf("%v\n", p) //{1,2}
+
+	pp := &Point{1, 2}
+	scale2(pp, 5) // 5,10
+	fmt.Printf("%v\n",pp ) //&{5,10}
+	fmt.Println(pp.x) //5
+}
+
+func scale2(p *Point, factor int) {
+	p.x = p.x * factor
+	p.y = p.y * factor
+}
+```
+
+### go中的所有参数都是值拷贝
+> 如果要在函数体内部修改结构体成员的话，使用指针是必须的。因为在go中，所有的函数参数都是值拷贝传入的，函数参数将不再是函数调用时的原始变量
+因此我们在上个案例中看到 `scale1(p,5)` 并没有将结构体的成员扩大5倍，原因是将结构体本身地址的副本传入。  
+通常通过指针处理结构体，可以通过以下两种方式创建并初始化结构体指针
+- 一  `pp := &{1,2}` 
+- 二
+ ```go
+ pp := new(Point)
+ *pp = Point{1,2} 
+ ```
+&{1,2}可以写在表达式中较为常用，比如函数调用中。
+
+### 结构体的比较
+如果结构体的全部成员是可以比较的，那么结构体也是可以比较的。  
+
+```go
+p1 := Point{1,2}
+p2 := Point{3,4}
+p3 := Point{1, 2}
+fmt.Printf("%t\t%t\n", p1 == p2, p1 == p3) //false true
+fmt.Printf("%t\t",p1 > p2) //compile error > not definied on Point
+```
+
+
+
+
+
+
 
 
 
