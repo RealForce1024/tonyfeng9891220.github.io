@@ -10,6 +10,7 @@
         - [结构体作为函数参数或返回值](#结构体作为函数参数或返回值)
         - [go中的所有参数都是值拷贝](#go中的所有参数都是值拷贝)
         - [结构体的比较](#结构体的比较)
+        - [结构体可比较，可以作为map类型的key](#结构体可比较可以作为map类型的key)
 
 <!-- /TOC -->
 
@@ -244,16 +245,31 @@ func scale2(p *Point, factor int) {
 &{1,2}可以写在表达式中较为常用，比如函数调用中。
 
 ### 结构体的比较
-如果结构体的全部成员是可以比较的，那么结构体也是可以比较的。  
+> 如果结构体的全部成员是可以比较的，那么结构体也是可以比较的，那么该两结构体是可以通过`==`或`!=`运算符进行比较的。
 
 ```go
 p1 := Point{1,2}
 p2 := Point{3,4}
-p3 := Point{1, 2}
+p3 := Point{1,2}
 fmt.Printf("%t\t%t\n", p1 == p2, p1 == p3) //false true
 fmt.Printf("%t\t",p1 > p2) //compile error > not definied on Point
 ```
+> 相等比较运算符==将比较两个结构体的每个成员，因此下面的两个比较的表达式是等价的:
 
+```go
+fmt.Println(p1.x==p2.x&&p1.y==p2.y) //false
+fmt.Println(p1==p2) //false
+```
+### 结构体可比较，可以作为map类型的key
+map类型的key必须是可比较的类型，而结构体满足此条件，因此可以作为map类型的key
+```go
+type Address struct {
+	hostname string
+	port int
+}
+
+host := map[Address{"localhost",8888}]++
+```
 
 
 
