@@ -10,6 +10,9 @@ Json是对js各类型的值--数字、字符串、数组、对象--的Unicode文
 Json数组<--->Go 数组和切片
 Json对象<--->Go map和struct 其中(map[string] key为string类型)
 
+## 案例go切片编码为json数组
+使用json.Marshal函数，该函数简单只需要传入一个切片，即可将其编码为json数组，但是不利于阅读，可以使用json.MarshalIdent函数，增加两个参数，指定每行的输出前缀和每个层级的缩进，这样生成的格式非常利于阅读。  
+
 ```go
 package main
 
@@ -47,10 +50,44 @@ func main() {
 	}
 	fmt.Printf("%s\n", data2)
 }
-
 ```
 
+输出结果:  
+```go
+"[{\"Title\":\"Casablanca\",\"released\":1942,\"Actors\":[\"Humphrey Bogart\",\"Ingrid Bergman\"]},{\"Title\":\"Cool and Luke\",\"released\":1967,\"color\":true,\"Actors\":[\"Paul Newman\"]},{\"Title\":\"Bullitt\",\"released\":1968,\"color\":true,\"Actors\":[\"Steve McQueen\",\"Jacqueline Bisset\"]}]"
 
+[{"Title":"Casablanca","released":1942,"Actors":["Humphrey Bogart","Ingrid Bergman"]},{"Title":"Cool and Luke","released":1967,"color":true,"Actors":["Paul Newman"]},{"Title":"Bullitt","released":1968,"color":true,"Actors":["Steve McQueen","Jacqueline Bisset"]}]
+
+[91 123 34 84 105..... 125 93]
+
+[
+	{
+		"Title": "Casablanca",
+		"released": 1942,
+		"Actors": [
+			"Humphrey Bogart",
+			"Ingrid Bergman"
+		]
+	},
+	{
+		"Title": "Cool and Luke",
+		"released": 1967,
+		"color": true,
+		"Actors": [
+			"Paul Newman"
+		]
+	},
+	{
+		"Title": "Bullitt",
+		"released": 1968,
+		"color": true,
+		"Actors": [
+			"Steve McQueen",
+			"Jacqueline Bisset"
+		]
+	}
+]
+```
 
 
 
