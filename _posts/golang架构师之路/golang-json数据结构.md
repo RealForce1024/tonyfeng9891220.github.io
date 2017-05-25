@@ -149,7 +149,77 @@ func main() {
 // struct{...} evalued but not used
 ```
 
+json案例 检索github issues
+```go
+package main
 
+import (
+	"net/url"
+	"strings"
+	"net/http"
+	"fmt"
+	"encoding/json"
+	"os"
+	"log"
+)
+
+type IssuesSearchResult struct {
+	TotalCount int `json:"total_count"`
+	Items      []*Item
+}
+
+type Item struct {
+	Title         string
+	HTMLUrl       string `json:"html_url"`
+	RepositoryUrl string
+	Number int
+	User          *User
+}
+
+type User struct {
+	Login   string `user_name`
+	Id      int
+	HTMLUrl string `json:html_url`
+}
+
+const IssuesURL string = "https://api.github.com/search/issues/"
+
+func main() {
+	result, err := SearchIssues(os.Args[1:])
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("%d issues\n", result.TotalCount)
+	for _, item := range result.Items {
+		fmt.Printf("#%-5d %9.9s %.55s\n",
+			item.Number, item.User.Login, item.Title)
+	}
+}
+
+func SearchIssues(items []string) (*IssuesSearchResult,error){
+	q := url.QueryEscape(strings.Join(items, " "))
+	resp, err := http.Get(IssuesURL + "?q=" + q)
+	if err != nil {
+		return nil,err
+	}
+
+	if resp.StatusCode!=http.StatusOK {
+		resp.Body.Close()
+		return nil,fmt.Errorf("search query faield :%s",resp.Status)
+	}
+
+	var result IssuesSearchResult
+	if err:= json.NewDecoder(resp.Body).Decode(&result);err!=nil{
+		resp.Body.Close()
+		return nil,err
+	}
+
+	resp.Body.Close()
+	return &result,nil
+}
+./run repo:golang/go is:open json decoder
+```
 
 
 
