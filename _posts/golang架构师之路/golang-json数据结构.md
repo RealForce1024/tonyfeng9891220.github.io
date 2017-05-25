@@ -107,12 +107,24 @@ Color bool `json:"color,omitempty"`
 ## json解码
 编码的逆操作为解码，是将json数据解码为Go语言的数据结构。
 通过**定义合适的数据结构**我们可以很轻松的**选择来解码我们感兴趣的数据字段**。  
+注意：结构体定义的成员名称一定是json数据中的字段名，并且必须定义为大写。
 ```go
-var titles []struct{Title string}
-if err := json.Unmarshal(data,&titles); err != nil {
-    log.Fatalf("json unmarshall faield : %s", err)
+fmt.Printf("%s\n", data)
+var MyFavorites []struct {
+    Title string
+    Year int //对照
+    released int//对照
+    Released int
 }
-fmt.Printf("%v\n",titles)//[{Casablanca} {Cool and Luke} {Bullitt}]
+
+if err := json.Unmarshal(data, &MyFavorites); err != nil {
+    log.Fatalf("json unmarshal failed:%s", err)
+}
+fmt.Println(MyFavorites)
+
+// [{"Title":"Casablanca","released":1942,"Actors":["Humphrey Bogart","Ingrid Bergman"]},{"Title":"Cool and Luke","released":1967,"color":true,"Actors":["Paul Newman"]},{"Title":"Bullitt","released":1968,"color":true,"Actors":["Steve McQueen","Jacqueline Bisset"]}]
+// [{Casablanca 0 0 1942} {Cool and Luke 0 0 1967} {Bullitt 0 0 1968}]
+
 ```
 
 
@@ -138,18 +150,8 @@ func main() {
 ```
 
 
-```go
-var MyFavorites []struct{
-    Title string
-    //Color int
-    released int
-}
 
-if err := json.Unmarshal(data, &MyFavorites); err!=nil{
-    log.Fatalf("json unmarshal failed:%s",err)
-}
-fmt.Println(MyFavorites)
-```
+
 
 
 
