@@ -10,6 +10,45 @@ Json是对js各类型的值--数字、字符串、数组、对象--的Unicode文
 Json数组<--->Go 数组和切片
 Json对象<--->Go map和struct 其中(map[string] key为string类型)
 
+```go
+package main
+
+import (
+	"encoding/json"
+	"log"
+	"fmt"
+)
+
+type Movie struct {
+	Title  string
+	Year   int `json:"released"`
+	Color  bool `json:"color,omitempty"`
+	Actors []string
+}
+
+func main() {
+
+	var movies = []Movie{
+		{Title: "Casablanca", Year: 1942, Color: false, Actors: []string{"Humphrey Bogart", "Ingrid Bergman"}},
+		{Title: "Cool and Luke", Year: 1967, Color: true, Actors: []string{"Paul Newman"}},
+		{Title: "Bullitt", Year: 1968, Color: true, Actors: []string{"Steve McQueen", "Jacqueline Bisset"}},
+	}
+
+	data, err := json.Marshal(movies)
+	if err != nil {
+		log.Fatalf("json marshal failed: %s", err)
+	}
+	fmt.Printf("%q\n", data)
+	fmt.Printf("%s\n", data)
+	fmt.Printf("%v\n", data)
+	data2, err := json.MarshalIndent(movies, "", "	")
+	if err != nil {
+		log.Fatalf("json marsharl indent failed: %s", err)
+	}
+	fmt.Printf("%s\n", data2)
+}
+
+```
 
 
 
