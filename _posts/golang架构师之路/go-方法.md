@@ -99,14 +99,149 @@ type P *int
 func (P) f() {/**/} //compile error:invalid receiver type  
 ```
 
+接收器为指针的方法调用有以下几种方式:
+```go
+r := &Point{1,2}
+r.ScaleBy(2)
+fmt.Println(*r)
+```
+
+```go
+p := Point{1,2}
+pptr := &p
+pptr.ScaleBy(2)
+fmt.Println(pptr) // &{2 4}
+```
+
+```go
+p := Point{1, 2}
+(&p).ScaleBy(2)
+fmt.Println(p) // "{2, 4}"
+```
+
+> 不过后面两种方法有些笨拙。幸运的是,go语言本身在这种地方会帮到我们。如果接收器p是 一个Point类型的变量,并且其方法需要一个Point指针作为接收器,我们可以用下面这种简短 的写法:
+
+```go
+p.ScaleBy(2)
+```
+
+>编译器会隐式地帮我们用&p去调用ScaleBy这个方法。这种简写方法只适用于“变量”,包括 struct里的字段比如p.X,以及array和slice内的元素比如perim[0]。我们不能通过一个无法取到 地址的接收器来调用指针方法,比如临时变量的内存地址就无法获取得到:
+
+```go
+Point{1, 2}.ScaleBy(2) // compile error: can't take address of Point literal
+```
+>我们可以用一个 `*Point` 这样的接收器来调用Point的方法,因为我们可以通过地址来找到 这个变量,只要用解引用符号 * 来取到该变量即可。编译器在这里也会给我们隐式地插入*这个操作符,所以下面这两种写法等价的:
+```go
+pptr.Distance(q)
+(*pptr).Distance(q)
+```
+总结:
+>1. 不管你的method的receiver是指针类型还是非指针类型,都是可以通过指针/非指针类型进行调用的,编译器会帮你做类型转换。 
+>2. 在声明一个method的receiver该是指针还是非指针类型时,你需要考虑两方面的内部,第一方面是这个对象本身是不是特别大,如果声明为非指针变量时,调用会产生一次拷 贝;第二方面是如果你用指针类型作为receiver,那么你一定要注意,这种指针类型指向 的始终是一块内存地址,就算你对其进行了拷贝。熟悉C或者C艹的人这里应该很快能明白。
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+type Point struct {
+	X, Y float64
+	s    []int  //看其变化
+}
+
+func (p Point) change() {
+	p.s = []int{1, 2, 3}
+}
+
+func main() {
+	p := Point{1, 2, []int{}}
+	p.change()
+	fmt.Println("after change() ", p)
+}
+
+// after change()  {1 2 []}
+// 传递指针时则  after change()  {1 2 [1,2,3]}
+```
 
 
+## 方法继承
+匿名成员可以使用简短的选择器，使得我们可以解决字段类型嵌套的繁琐访问问题，go圣经中解释的很到位了，但是更深一层的理解，匿名成员是成员的继承实现，当拥有了匿名成员，就相当于拥有了该类型内部的导出成员。
+而方法也是如此，匿名成员了方法，那么包含该匿名字段的类型也可以调用该方法。  
 
+```go
+package main
 
+import "fmt"
 
+type Human struct {
+	name  string
+	age   int
+	phone string
+}
 
+type student struct {
+	Human
+	school string
+}
+type employee struct {
+	Human
+	company string
+}
 
+func (h *Human) sayHi(msg string) {
+	fmt.Printf("hello,my name is %s, %s\n", h.name, msg)
+}
 
+func main() {
+	stu := student{Human{"kobe", 12, "1232323"}, "USC"}
+	emp := employee{Human{"zhansan", 12, "23232"}, "KFC"}
+	stu.sayHi("welcome")
+	emp.sayHi("welcome to our company")
+}
+// hello,my name is kobe, welcome
+// hello,my name is zhansan, welcome to our company
+```
+
+## 方法重写
+```go
+package main
+
+import "fmt"
+
+type Human struct {
+	name  string
+	age   int
+	phone string
+}
+
+type student struct {
+	Human
+	school string
+}
+type employee struct {
+	Human
+	company string
+}
+
+func (h *Human) sayHi(msg string) {
+	fmt.Printf("hello,my name is %s, %s\n", h.name, msg)
+}
+
+func (s *student) sayHi(msg string) {
+	fmt.Printf("hello,my name is %s ,this is student impl %s\n ", s.name, msg)
+
+}
+func main() {
+	stu := student{Human{"kobe", 12, "1232323"}, "USC"}
+	emp := employee{Human{"zhansan", 12, "23232"}, "KFC"}
+	stu.sayHi("welcome")
+	emp.sayHi("welcome to our company")
+}
+
+```
+go语言的面向对象的设计是如此精妙和简约。  
 
 
 
