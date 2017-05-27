@@ -65,6 +65,45 @@ func (p Path) Distance() float64 {
 在go中，除了指针和interface外，我们可以很方便的给数值，字符串，slice，map等添加行为方法很方便，这也和其他语言很大的不同之处。  
 编译器会根据方法的名字和接收器来决定调用哪一个函数。
 不同的类型可以拥有同样的方法名，但同一类型不可有方法名的冲突。  
+>方法比之函数的一些好处:方法名可以简短。当我们在包外调用的时候这种好处就会被放大,因为我们可以使用这个短名字,而可以省略掉包的名字,下面是例子:
+
+```go
+import "geometry"
+perim := geometry.Path{{1, 1}, {5, 1}, {5, 4}, {1, 1}}
+fmt.Println(geometry.PathDistance(perim)) // "12", standalone function
+fmt.Println(perim.Distance()) // "12", method of geometry.Path
+```
+在Go中调用包外的函数需要带上包名。
+
+## 基于指针对象的方法
+Go中调用一个函数时，会对每一个参数值进行拷贝，**如果一个函数需要更新一个变量，或者函数的其中的一个参数实在太大我们希望能够避免这种默认的拷贝，这种情况下就需要使用到指针了**。对应到更新接收器的对象的方法上来说，当这个接受者变量本身比较大时，我们就可以用其指针而不是对象来声明方法，如下:
+
+```go
+func (p *Point) ScaleBy(factor float64) {
+    //p.X = p.X * factor
+    p.X *= factor
+    p.Y *= factor
+}
+
+fmt.Printf("%T\n", (*Point).ScaleBy)
+// func(*main.Point, float64)
+```
+
+>在现实的程序里,一般会约定如果Point这个类有一个指针作为接收器的方法,那么所有Point 的方法都必须有一个指针接收器,即使是那些并不需要这个指针接收器的函数。
+
+只有类型Point和指向它的指针(*Point)才是可能出现在接收器声明里的两种接收器。
+不过为了避免歧义，在声明方法时，如果一个类型名本身是指针的话，是不允许出现在接收器中的。
+
+```go
+type P *int
+func (P) f() {/**/} //compile error:invalid receiver type  
+```
+
+
+
+
+
+
 
 
 
