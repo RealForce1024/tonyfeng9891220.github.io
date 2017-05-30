@@ -103,6 +103,18 @@ Color bool `json:"color,omitempty"`
 3. 值`"value"`是字符串字面值，含有`""`，所以结构体Tag的值一般是原生字符串面值的形式指定
 4. Tag值中的第一个成员对应的是json字段的名称，比如将Year对应到json对象的released字段，
 5. Tag值中的第二个成员则是可选的`omitempty`，其含义为Go语言结构体的成员值为空或零值的时候不生成json字段(Color为bool型，false零值则不会输出)，所以我们看到1942年的Casablanca为`Color`为`false`，果然是黑白电影，没有输出`Color`字段。  
+6. tag中为`json:"-"`该字段将不输出
+7. 二次编码json
+ServerName2字段，json的修饰`string`说明
+
+```json
+// ServerName2 的值会进行二次JSON编码
+		ServerName  string `json:"serverName"`
+		ServerName2 string `json:"serverName2,string"`
+		
+		{"serverName":"Go \"1.0\" ","serverName2":"\"Go \\\"1.0\\\" \""}
+```
+8. 第三方simplejson库也非常便利(推荐,由bitly公司(url短链接平台)贡献)
 
 ## json解码
 编码的逆操作为解码，是将json数据解码为Go语言的数据结构。
@@ -222,16 +234,22 @@ func SearchIssues(items []string) (*IssuesSearchResult,error){
 ```
 
 
+go echo vue https://scotch.io/tutorials/create-a-single-page-app-with-go-echo-and-vue
+https://scotch.io/bar-talk/build-a-realtime-chat-server-with-go-and-websockets
+https://medium.com/@kyawmyintthein
 
 
+https://github.com/wangyibin/echoswg 
 
 
+github.com/julienschmidt/httprouter 第三方router 路由，go需要自己实现rest
 
+密码安全
+md5+salt  方案
+scrypt 专家方案
 
-
-
-
-
+1）如果你是普通用户，那么我们建议使用LastPass进行密码存储和生成，对不同的网站使用不同的密码；
+2）如果你是开发人员， 那么我们强烈建议你采用专家方案(scrypt)进行密码存储。
 
 
 
