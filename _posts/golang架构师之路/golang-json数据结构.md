@@ -250,16 +250,74 @@ scrypt 专家方案
 
 1）如果你是普通用户，那么我们建议使用LastPass进行密码存储和生成，对不同的网站使用不同的密码；
 2）如果你是开发人员， 那么我们强烈建议你采用专家方案(scrypt)进行密码存储。
+```go
+package main
+
+import (
+	"fmt"
+	"golang.org/x/crypto/scrypt"
+)
+
+func main() {
+	dk, _ := scrypt.Key([]byte("hello"), []byte("fqc"), 16384, 8, 1, 32)
+	fmt.Printf("%x\n", dk)
+}
+
+//7d47dbaeb72c2201c19e86c397c3158d5784b09254fe8a28c1dfca4ed6acd28c
+```
 
 
+自动生成测试代码
+gotests
+
+```go
+package my
+
+import (
+	"errors"
+)
+
+func Division(a, b float64) (float64, error) {
+	if b == 0 {
+		return 0, errors.New("除数不能为0啊")
+	}
+	return a / b, nil
+}
+```
+
+```go
+package my
+
+import "testing"
+
+func TestDivision(t *testing.T) {
+	if r, err := Division(9, 0); r!=3||err!=nil{
+		t.Error("测试未通过",err)
+	}else {
+		t.Log("测试通过")
+	}
+}
+
+func TestDivision2(t *testing.T) {
+	t.Error("就是测试不通过")
+}
+```
 
 
+日志 
+logrus
+uber/zap
+seelog
+
+文件同步
+rsync
+mysql、redis  备份 热备冷备
 
 
-
-
-
-
+go内置性能监控工具
+net/http/pprof
+runtime/pprof
+其实net/http/pprof中只是使用runtime/pprof包来进行封装了一下，并在http端口上暴露出来
 
 
 
