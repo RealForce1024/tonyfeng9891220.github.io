@@ -369,7 +369,94 @@ Process finished with exit code 0
 */
 ```
 
+```go
+package main
 
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
+
+func makeCakeAndSend(favor string, cs chan string, count int) {
+	cakeName := ""
+	for i := 1; i <= count; i++ {
+		cakeName = favor + strconv.Itoa(i)
+		//fmt.Printf("make %s and sending...\n", cakeName)
+		cs <- cakeName
+		fmt.Println(<-cs) //接收消息回执 需要对称
+	}
+
+	//卡克2
+	//close(cs)
+}
+
+func receiveCakeAndPack(straw_cs chan string, choco_cs chan string) {
+	straw_cs_closed, choco_cs_closed := false, false
+	for {
+		if straw_cs_closed && choco_cs_closed { //卡克3
+			return
+		}
+		fmt.Println("waiting a new cake...")
+		select {
+		case cakeName, straw_ok := <-straw_cs:
+			if !straw_ok {
+				straw_cs_closed = true
+				fmt.Println("Strawberry channel closed")
+			} else {
+				fmt.Println("received from straw channel,Now packing", cakeName)
+				straw_cs <- cakeName+"您的消息已经被处理喽~~~~~~"
+			}
+		case cakeName, choco_ok := <-choco_cs:
+			if !choco_ok {
+				choco_cs_closed = true
+				fmt.Println("ChocoCake chanel closed")
+			} else {
+				fmt.Println("received from choco chanel,Now packing", cakeName)
+				choco_cs <- cakeName+"您的消息已经被处理喽~~~~~~"
+			}
+		//default:
+		//	fmt.Println("default")
+		}
+	}
+}
+
+func main() {
+	straw_cs := make(chan string)
+	choco_cs := make(chan string)
+
+	go makeCakeAndSend("straw_cake", straw_cs, 3)
+	go makeCakeAndSend("choco_cake", choco_cs, 3)
+
+	//go receiveCakeAndPack() //卡克1
+	go receiveCakeAndPack(straw_cs, choco_cs)
+
+	//time.Sleep(2*1e9)
+	time.Sleep(2 * time.Second)
+}
+
+/**
+waiting a new cake...
+received from choco chanel,Now packing choco_cake1
+choco_cake1您的消息已经被处理喽~~~~~~
+waiting a new cake...
+received from straw channel,Now packing straw_cake1
+straw_cake1您的消息已经被处理喽~~~~~~
+waiting a new cake...
+received from choco chanel,Now packing choco_cake2
+choco_cake2您的消息已经被处理喽~~~~~~
+waiting a new cake...
+received from choco chanel,Now packing choco_cake3
+choco_cake3您的消息已经被处理喽~~~~~~
+waiting a new cake...
+received from straw channel,Now packing straw_cake2
+straw_cake2您的消息已经被处理喽~~~~~~
+waiting a new cake...
+received from straw channel,Now packing straw_cake3
+straw_cake3您的消息已经被处理喽~~~~~~
+waiting a new cake...
+*/
+```
 
 
 
