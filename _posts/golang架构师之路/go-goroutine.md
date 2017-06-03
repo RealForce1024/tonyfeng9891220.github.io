@@ -180,6 +180,7 @@ receive 3
 所以在使用打印日志来分析 goroutine 和 channel 代码的时候一定要注意。
 
 数据接收者在**判断什么时候停止接收数据**上有问题。 是否还有更多数据会到来还是所有数据已经完了？ 是该等呢还是继续前进呢？ 一种方法是不断地测试数据源检查 channel 是否关闭，但是这样可能效率不高。 **Go 语言提供了 range 关键字，当用在 channel 上时，将会一直等待直到 channel 关闭。**
+**通道服务于通信的两个目的：值的交换，同步的，保证了两个计算（协程）任何时候都是可知状态。**
 
 注意错误用法
 ```go
@@ -233,9 +234,140 @@ func receiveCakeAndPack(ch chan string) {
 
 ```
 
+## select和channel
+在多个 channel 上使用 select 关键字是一种在不同 channel 之间的 「你准备好了吗」探测机制。 case 可以是发送或者接收数据 —— 当一个发送者或者接收者使用 <- 开始，那么这个 channel 就是准备好了。 也可以包含一个 default 块，意味着总是准备好的。 select 关键字的工作方式大约是这样的
 
+先看下之前方式的例子,代码比较冗余，下一版本进行重构
+```go
+package main
 
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
 
+func main() {
+	ch := make(chan string)
+	go makeStrawCakeAndSend(ch,2)
+	go makeChocoCakeAndSend(ch,2)
+
+	go receiveCakeAndPack(ch)
+
+	time.Sleep(3*time.Second)
+}
+
+func makeStrawCakeAndSend(ch chan string, count int) {
+	cakeName := ""
+	for i := 1; i <= count; i++ {
+		cakeName = "strawCake-"+strconv.Itoa(i)
+		fmt.Println("make strawberry cake and sending...", cakeName)
+		ch <- cakeName
+	}
+}
+
+func makeChocoCakeAndSend(ch chan string, count int) {
+	cakeName := ""
+	for i := 1; i <= count; i++ {
+		cakeName = "chocoCake-"+strconv.Itoa(i)
+		fmt.Println("make chocolate cake and sending...", cakeName)
+		ch <- cakeName
+	}
+}
+
+func receiveCakeAndPack(ch chan string) {
+	for s := range ch {
+		fmt.Println("receiving cake and packing...", s)
+	}
+}
+
+```
+
+使用select case的方式进行重构
+```go
+package main
+
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
+
+func makeCakeAndSend(favor string, cs chan string, count int) {
+	cakeName := ""
+	for i := 1; i <= count; i++ {
+		cakeName = favor + strconv.Itoa(i)
+		//fmt.Printf("make %s and sending...\n", cakeName)
+		cs <- cakeName
+	}
+
+	//卡克2
+	//close(cs)
+}
+
+func receiveCakeAndPack(straw_cs chan string, choco_cs chan string) {
+	straw_cs_closed, choco_cs_closed := false, false
+	for {
+		if straw_cs_closed && choco_cs_closed { //卡克3
+			return
+		}
+		fmt.Println("waiting a new cake...")
+		select {
+		case cakeName, straw_ok := <-straw_cs:
+			if !straw_ok {
+				straw_cs_closed = true
+				fmt.Println("Strawberry channel closed")
+			} else {
+				fmt.Println("received from straw channel,Now packing", cakeName)
+			}
+		case cakeName, choco_ok := <-choco_cs:
+			if !choco_ok {
+				choco_cs_closed = true
+				fmt.Println("ChocoCake chanel closed")
+			} else {
+				fmt.Println("received from choco chanel,Now packing", cakeName)
+			}
+			//default:
+				//fmt.Println("default")
+		}
+	}
+}
+
+func main() {
+	straw_cs := make(chan string)
+	choco_cs := make(chan string)
+
+	go makeCakeAndSend("straw_cake", straw_cs, 3)
+	go makeCakeAndSend("choco_cake", choco_cs, 3)
+
+	//go receiveCakeAndPack() //卡克1
+	go receiveCakeAndPack(straw_cs, choco_cs)
+
+	time.Sleep(2*1e9)
+	//time.Sleep(3 * time.Second)
+}
+
+/**
+waiting a new cake...
+received from choco chanel,Now packing choco_cake1
+waiting a new cake...
+received from straw channel,Now packing straw_cake1
+waiting a new cake...
+received from straw channel,Now packing straw_cake2
+waiting a new cake...
+received from straw channel,Now packing straw_cake3
+waiting a new cake...
+received from choco chanel,Now packing choco_cake2
+waiting a new cake...
+received from choco chanel,Now packing choco_cake3
+waiting a new cake...
+ChocoCake chanel closed
+waiting a new cake...
+Strawberry channel closed
+
+Process finished with exit code 0
+*/
+```
 
 
 
