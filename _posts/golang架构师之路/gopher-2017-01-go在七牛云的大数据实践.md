@@ -25,7 +25,7 @@ https://github.com/gopherchina/conference/tree/master/2017
 martini\gin\
 grpc \ gokit
 
-
+spring 各种语法糖 annotation 注解  新人上手成本很大  go才是方向啊
 既然都走到微服务了，我们就需要devops的
 
 pprof vet cover

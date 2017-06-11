@@ -458,17 +458,357 @@ waiting a new cake...
 */
 ```
 
+通道实际上是类型化消息的队列：使数据得以传输。它是先进先出（FIFO）的结构所以可以保证发送给他们的元素的顺序（有些人知道，通道可以比作 Unix shells 中的双向管道（tow-way pipe））。通道也是引用类型，所以我们使用 make() 函数来给它分配内存。这里先声明了一个字符串通道 ch1，然后创建了它（实例化）：
+```go
+var ch1 chan string
+ch1 = make(chan string)
+```
+当然可以更短： ch1 := make(chan string)。
+这里我们构建一个int通道的通道： chanOfChans := make(chan int)。
+或者**函数通道**：`funcChan := chan func()`
+
+所以通道是对象的第一类型：可以存储在变量中，作为函数的参数传递，从函数返回以及通过通道发送它们自身。另外它们是类型化的，允许类型检查，比如尝试使用整数通道发送一个指针。
+
+<- ch 可以单独调用获取通道的（下一个）值，当前值会被丢弃，但是可以用来验证，所以以下代码是合法的：
+```go
+if <- ch != 1000{
+	...
+}
+```
+通道的发送和接收操作都是自动的：它们通常一气呵成。
+
+我们发现协程之间的同步非常重要：
+
+main() 等待了 1 秒让两个协程完成，如果不这样，sendData() 就没有机会输出。
+getData() 使用了无限循环：它随着 sendData() 的发送完成和 ch 变空也结束了。
+如果我们移除一个或所有 go 关键字，程序无法运行，Go 运行时会抛出 panic：
+---- Error run E:/Go/Goboek/code examples/chapter 14/goroutine2.exe with code Crashed ---- Program exited with code -2147483645: panic: all goroutines are asleep-deadlock!
+为什么会这样？运行时会检查所有的协程（也许只有一个是这种情况）是否在等待（可以读取或者写入某个通道），意味着程序无法处理。这是死锁（deadlock）形式，运行时可以检测到这种情况。
+
+注意：**不要使用打印状态来表明通道的发送和接收顺序：由于打印状态和通道实际发生读写的时间延迟会导致和真实发生的顺序不同。**
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	out := make(chan int) // 无缓冲的协程是同步的，会阻塞，直到有其他的协程来消费
+	//out := make(chan int,1) // 带缓冲的协程是异步执行的，知道缓冲满，变为阻塞
+	out <- 2
+
+	fmt.Println(<-out)
+}
+```
+
+```go
+golang死锁问题（fatal error: all goroutines are asleep - deadlock!）
+由 songleo 在 2016-11-18 18:19 发布 602 次点击
+这段代码运行没有问题，循环输出：call f1...
+
+package main
+import (
+    "fmt"
+)
+func f1() {
+    for {
+        fmt.Println("call f1...")
+    }
+}
+func f2() {
+    fmt.Println("call f2...")
+}
+func main() {
+    go f1()
+    go f2()
+    ch := make(chan int)
+    <-ch
+}
+若注释掉go f1(),代码运行时提示死锁：
+
+fatal error: all goroutines are asleep - deadlock!
+
+代码如下：
+
+package main
+import (
+    "fmt"
+)
+func f1() {
+    for {
+        fmt.Println("call f1...")
+    }
+}
+func f2() {
+    fmt.Println("call f2...")
+}
+func main() {
+    // go f1()
+    go f2()
+    ch := make(chan int)
+    <-ch
+}
+为什么同是调用协程，调用f1不会产生死锁，而调用f2会产生死锁。是因为f1有死循环么？按说没有协程往通道ch写，在main中读取ch应该都会产生死锁，是不是我理解错了，求解答。谢谢！
+
+#2pathletboy • 2016-11-19 11:26
+就如报错提示
+all goroutines are asleep
+当所有存活的协程处于asleep状态时候，就发生了死锁，因为这个时候没有任何内部或者外部的信号使之继续运行。
+
+#3racoon • 2016-11-19 13:00
+f2 是吃瓜群众，啥都不影响
+
+如果程序所有 goroutine 都退出了，<-ch 这里就绝望了，不可能等到任何东西
+
+joeonly
+#4joeonly • 2016-11-19 23:21
+f1是死循环。
+这个示例的chan相关处理不完整，只有消费者，没有生产者。
+
+
+已经提示很明确了，all goroutines are asleep，所有协程都在睡觉！
+所以go就认为是死锁了。如果有f1的话，至少有一个协程是在干活的。
+
+对于死锁的检测非常麻烦，或许go就采用了这种比较简单粗暴的方法。算是一个小bug吧，但是关系不大。
+2016年11月18日回答 · 2016年11月18日更新  1 评论 编辑
+
+flybywind
+947 声望
+答案对人有帮助，有参考价值0 答案没帮助，是错误的答案，答非所问
+f1是死循环阻塞主线程，调用f1的时候还没执行ch := make(chan int) <-ch ，但是调用f2的时候 一次执行完毕，等待<-ch输出,没有载体接数据，所以就死锁了我的理解
+```
+
+
+```go
+go语言中chan的死锁问题。
+
+多线程 golang  qc1iu 2015年07月27日提问
+关注  5 关注
+收藏  0 收藏，1.9k 浏览
+问题对人有帮助，内容完整，我也想知道答案0 问题没有实际价值，缺少关键内容，没有改进余地
+package main
+
+import "fmt"
+
+func main() {
+    out := make(chan int)
+    out <- 2
+
+    fmt.Println(<-out)
+}
+上面的代码一运行就有错
+fatal error：all goroutines are asleep-deadlock
+
+如果将chan的初始化改为
+
+out:=make(chan int, 1)就可以。
+
+为什么？
+2015年07月27日提问 评论 邀请回答  编辑  更多
+
+已采纳
+因为默认无缓冲的channel是阻塞的，在
+out <- 2
+这一句会阻塞等待其它goroutine从out读取
+然而并没有其他goroutine
+2015年07月27日回答  3 评论 编辑
+
+武可
+993 声望
+答案对人有帮助，有参考价值2 答案没帮助，是错误的答案，答非所问
+无缓冲的channel，如题主的代码。
+当在向一个无缓冲的channel发送数据时，代码会阻塞直到有另一个goroutine接收这个channel。
+楼上的解释很形象，就像你打电话，你拨过去就等着人接，那边没人接你就一直等，所以阻塞了。
+所以改进方法就是，先开启一个goroutine去电话那头等着接电话，然后你再拨号，这样两边就通了，然后故事继续
+
+func haha(ch chan int) {
+    num := <-ch
+    fmt.Println(num)
+}
+
+func main() {
+    ch := make(chan int)
+    ch <- 2
+    //.....
+}
+2015年10月05日回答  1 评论 编辑
+
+Deen
+914 声望
+答案对人有帮助，有参考价值1 答案没帮助，是错误的答案，答非所问
+我的理解是，chan不同于变量
+变量是你可以先放进去，再取出来。
+但是chan在是一个通信工具，如果没人取，你就放不进去。
+比如电话，没人接你就打不通。但是比如微信你就可以先录进去对方以后再听。
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	ch := make(chan string)
+	//没有go关键字，同步执行方法，进入到独立的(独立的啊)方法体中，都是同步执行的，没有其他的协程接收，也会阻塞，所以必然死锁
+	//sendData(ch)
+	//getData(ch)
+
+	//1. 只有发送数据的函数有go修饰，而数据通过go的协程以及channel发送出去了，receive端是个无限循环来接收
+	// 而异常恰恰出现在receive端，说明阻塞了，原因是没有其他协程发送数据，而其又在等数据接收
+	//2. 试想如果将getData内部改为5次循环呢? 经过实验，果然是可以的!
+	//3. 那么此时能从侧面证明  "[go] getData" 没有和有的区别是什么? 有go则明，底层会告知什么时候可以没有数据了，不用傻等了。
+	//4. 协程中接收端只需要保证发送端有数据来就好说。
+	//5. go关键字就像两边的生产者和消费者的对象，是可以看到有没有数据需要发送和接收的。有了go，就不需要说明循环固定的5次，go关键字知道对面的数据已经没有了。
+	//go sendData(ch)
+	//getData(ch)
+
+	//那这种情况上来就没有go，没有go的协程，怎么通过channel发送数据，肯定也一样发数据的时候同步阻塞，注意发送的时候一定要有人来接(无缓冲的时候)，而这个时候channel也没有架设呢
+	//sendData(ch)
+	//go getData(ch)
+
+	go sendData(ch)
+	go getData(ch)
+
+	time.Sleep(1e9)
+}
+
+func sendData(ch chan string) {
+	ch <- "Washington"
+	ch <- "Tripoli"
+	ch <- "London"
+	ch <- "Beijing"
+	ch <- "Tokio"
+}
+
+func getData(ch chan string) {
+	var input string
+	// time.Sleep(2e9)
+	for {
+		input = <-ch
+		fmt.Printf("%s ", input)
+	}
+
+	//果然是可以的
+	/*for i := 0; i < 5; i++ {
+		input = <-ch
+		fmt.Printf("%s ", input)
+	}*/
+}
+
+```
+
+## go协程和channel的搭配使用理解
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	ch := make(chan string)
+	//没有go关键字，同步执行方法，进入到独立的(独立的啊)方法体中，都是同步执行的，没有其他的协程接收，也会阻塞，所以必然死锁
+	//sendData(ch)
+	//getData(ch)
+
+	//1. 只有发送数据的函数有go修饰，而数据通过go的协程以及channel发送出去了，receive端是个无限循环来接收
+	// 而异常恰恰出现在receive端，说明阻塞了，原因是没有其他协程发送数据，而其又在等数据接收
+	//2. 试想如果将getData内部改为5次循环呢? 经过实验，果然是可以的!
+	//3. 那么此时能从侧面证明  "[go] getData" 没有和有的区别是什么? 有go则明，底层会告知什么时候可以没有数据了，不用傻等了。
+	//4. 协程中接收端只需要保证发送端有数据来就好说。
+	//5. go关键字就像两边的生产者和消费者的对象，是可以看到有没有数据需要发送和接收的。有了go，就不需要说明循环固定的5次，go关键字知道对面的数据已经没有了。
+	//go sendData(ch)
+	//getData(ch)
+
+	//那这种情况上来就没有go，没有go的协程，怎么通过channel发送数据，肯定也一样发数据的时候同步阻塞，注意发送的时候一定要有人来接(无缓冲的时候)，而这个时候channel的发送端也没有架设呢，最起码保证发送端go协程 channel嫁接起来，至于接收端使用channel嫁接，有go则更智能，没go就傻点不过可以完成任务。
+	//sendData(ch)
+	//go getData(ch)
+
+	go sendData(ch)
+	go getData(ch)
+
+	time.Sleep(1e9)
+}
+
+func sendData(ch chan string) {
+	ch <- "Washington"
+	ch <- "Tripoli"
+	ch <- "London"
+	ch <- "Beijing"
+	ch <- "Tokio"
+}
+
+func getData(ch chan string) {
+	var input string
+	// time.Sleep(2e9)
+	for {
+		input = <-ch
+		fmt.Printf("%s ", input)
+	}
+
+	//果然是可以的
+	/*for i := 0; i < 5; i++ {
+		input = <-ch
+		fmt.Printf("%s ", input)
+	}*/
+}
+
+```
 
 
 
+以下这段代码，循环次数10 几乎不会死循环
+但是次数多了100，1000 就很容易造成死循环。 原因是c永远达不到100 只能是99，因为并发执行
+```go
+package main
+
+import (
+	"sync" 
+	"fmt"
+	"runtime"
+    "strconv"
+)
+
+var count int = 0
+func counter(lock *sync.Mutex) {
+       //lock.Lock()      
+       count++
+       fmt.Println("count==" + strconv.Itoa(count))
+       //lock.Unlock()
+}
+
+func main() {
+       lock := &sync.Mutex{}
+       for i := 0; i < 100; i++ {
+              go counter(lock)
+       }
+
+       for {
+              //lock.Lock() //为了安全            
+              c:=count
+              fmt.Println("c=="+strconv.Itoa(c))
+              //lock.Unlock()            
+              runtime.Gosched()
+              if c >= 100 {
+                     break           
+               }
+       }
+
+}
+
+```
+使用了锁变量（属于一种共享内存）来同步协程，事实上Go语言主要使用消息机制（channel）来作为通信模型。
 
 
 
-
-
-
-
-
+> 默认情况下，通信是同步且无缓冲的：在有接受者接收数据之前，发送不会结束。可以想象一个无缓冲的通道在没有空间来保存数据的时候：必须要一个接收者准备好接收通道的数据然后发送者可以直接把数据发送给接收者。所以通道的发送/接收操作在对方准备好之前是阻塞的：
+>1）对于同一个通道，发送操作（协程或者函数中的），在接收者准备好之前是阻塞的：如果ch中的数据无人接收，就无法再给通道传入其他数据：新的输入无法在通道非空的情况下传入。所以发送操作会等待 ch 再次变为可用状态：就是通道值被接收时（可以传入变量）。
+>2）对于同一个通道，接收操作是阻塞的（协程或函数中的），直到发送者可用：如果通道中没有数据，接收者就阻塞了。
+>尽管这看上去是非常严格的约束，实际在大部分情况下工作的很不错。
 
 
 >goroutine是Go并行设计的核心。goroutine说到底其实就是协程,但是它比线程更小,十几个goroutine可能体现在底层就是五六个线程,Go语言内部帮你实现了这些goroutine之间的内存共享。执行goroutine只需极少的栈内存(大概是4~5KB),当然会根据相应的数据伸缩。也正因为如此,可同时运行成千上万个并发任务。goroutine比thread更易用、更高效、更轻便。
