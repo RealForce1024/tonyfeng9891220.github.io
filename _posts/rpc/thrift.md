@@ -69,10 +69,13 @@ Thrift version 0.9.3
 [Golang 1.3 sync.Mutex 源码解析](http://dev.cmcm.com/archives/22)  
 
 ## hello world
-[thrift with go and java](https://my.oschina.net/qinerg/blog/165285)  
+按照顺序来  
+1. [Golang RPC 之 Thrift](http://www.jianshu.com/p/a58665a38022)   
+2. [thrift with go and java](https://my.oschina.net/qinerg/blog/165285)  
+
 [apache官网go thrift](https://thrift.apache.org/tutorial/go)  
 [hello thrift with java](http://blog.zhengdong.me/2012/05/10/hello-world-by-thrift-using-java/)  
-[Golang RPC 之 Thrift](http://www.jianshu.com/p/a58665a38022)  
+ 
 [服务架构的一些理解以及TTL](http://kaimingwan.com/post/wei-fu-wu/fu-wu-kuang-jia-de-ji-chong-fu-wu-diao-yong-xing-shi)  
 [Golang通过Thrift框架完美实现跨语言调用](http://www.cnblogs.com/shihao/p/3347537.html?utm_source=debugrun&utm_medium=referral)  
 [go和python测试thrift](http://www.codexiu.cn/python/blog/1026/)  
@@ -103,4 +106,26 @@ Thrift version 0.9.3
 
 
 [tim yang 微博架构师](https://timyang.net/)  
-[Thrift and Protocol Buffers performance in Java[09年]](https://timyang.net/programming/thrift-protocol-buffers-performance-java/)  
+[Thrift and Protocol Buffers performance in Java[09年]](https://timyang.net/programming/thrift-protocol-buffers-performance-java/)   
+
+## 较为体系的指南
+[thrift tutorial](http://thrift-tutorial.readthedocs.io/en/latest/index.html)  
+## 总结归纳:  
+### 关于thrift目录的生成  
+- 正常情况  thrift -gen go xx.thrift 会默认在当前目录生成指定 {gen-{language->go}}的目录以及生成相应的的协议代码。  
+
+- 指定输出目录  thrift -out .. -gen go xx.thrift 会在指定的路径生成thirft名称的目录/xx 以及相应的协议代码。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
