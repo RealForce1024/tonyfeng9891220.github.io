@@ -59,14 +59,15 @@ Thrift version 0.9.3
 
 
 ## 二、Thrift Guide
-[董西成 thrift介绍](http://dongxicheng.org/search-engine/thrift-guide/)   
 [Apache Thrift - 可伸缩的跨语言服务开发框架](https://www.ibm.com/developerworks/cn/java/j-lo-apachethrift/)    
+[董西成 thrift系列](http://dongxicheng.org/tag/thrift/)  
 [Thrift RPC 使用指南实战(附golang&PHP代码)](http://blog.csdn.net/liuxinmingcode/article/details/45696237)    
 [小探python-thrift通信框架的设计](http://xiaorui.cc/2016/07/24/%E5%B0%8F%E6%8E%A2python-thrift%E9%80%9A%E4%BF%A1%E6%A1%86%E6%9E%B6%E7%9A%84%E8%AE%BE%E8%AE%A1/)  
 [Golang开发Thrift接口](http://blog.cyeam.com/golang/2014/07/22/go_thrift)  
 [golang:实现thrift的client端协程安全](http://dev.cmcm.com/archives/162)  
 [Golang 1.4 net/rpc server源码解析](http://dev.cmcm.com/archives/324)  
 [Golang 1.3 sync.Mutex 源码解析](http://dev.cmcm.com/archives/22)  
+
 ## hello world
 [thrift with go and java](https://my.oschina.net/qinerg/blog/165285)  
 [apache官网go thrift](https://thrift.apache.org/tutorial/go)  
