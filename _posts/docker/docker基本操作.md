@@ -1,12 +1,44 @@
-## 启动容器(一次性执行后销毁)
-格式: `docker run image [command] [arg]`   
-run在新容器中执行命令
+# docker基础操作
+## 1. 拉取镜像 docker pull
+`docker pull <Image>`
+如果没有仓库，则说明是从默认的dockerHub仓库下载，但国内网络环境你懂的。最佳的方式是使用云服务商的dockerHub加速器。阿里云和腾讯云的加速器都非常不错。
+
+## 2. 查看镜像
+
+`docker images`命令列出本地已经下载的镜像
+
 ```sh
-docker@fengqichao:~$ docker run ubuntu echo 'hello docker'
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+ubuntu              latest              14f60031763d        2 weeks ago         120MB
+ubuntu              14.04               54333f1de4ed        2 weeks ago         188MB
+```
+
+## 3. 命令行式启动容器 (Ad hoc方式执行容器命令)
+所谓ad hoc方式就是 一次性执行完成后即销毁。
+
+格式: `docker run image [command] [arg]`   
+
+```sh
+$ docker run ubuntu echo 'hello docker'
 hello docker
 ```
-该容器已经停止，以上命令只是执行一个命令，我们可以通过
-`docker ps -a`查看运行中的容器
+
+run在新容器中执行命令，如果镜像不存在则到dockerHub中下载。注意指定镜像的方式最好加指定的tag，否则会默认的添加image:latest，没有匹配的，则会远程拉取下载。另一种方式可以通过指定唯一的ImageId即可。
+
+```sh
+$ docker run ubuntu echo "hello world"
+hello world
+$ docker run ubuntu:14.04 echo "hello world"
+hello world
+```
+注意第一个其实默认为`ubuntu:latest`的方式
+
+
+当命令执行完毕后，该容器就会终止，以上命令只是执行一个命令(ad hoc)，我们可以通过
+
+`docker ps -a`查看所有的容器(运行中的和执行过的)
+
 ```sh
 docker@fengqichao:~$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND                 CREATED             STATUS                      PORTS               NAMES
@@ -14,10 +46,11 @@ CONTAINER ID        IMAGE               COMMAND                 CREATED         
 ```
 我们发现通过`docker run image command arg`命令是一次性启动容器执行命令执行完毕后销毁容器。
 
-## 交互式启动容器(始终运行)
+
+## 2. 交互式启动容器(始终运行直到退出)
 格式: `docker run -i -t image /bin/bash`
-* -i --interactive=true|false false是默认
-* -t --tty=true|false false是默认
+* -i --interactive=true|false false是默认  代表:交互式
+* -t --tty=true|false false是默认   代表:终端
 
 ```sh
 docker@fengqichao:~$  docker run -i -t ubuntu /bin/bash
@@ -31,19 +64,25 @@ root@eff926ba2186:/# exit
 exit
 ```
 
-## 查看容器
-1. $docker ps   
+## 3. 查看容器
+1、 `docker ps`   
 `docker ps [-a]|[-l]`  
-* 不加任何参数将返回正在运行的容器
+
+* 默认不加任何参数将返回正在运行的容器
 * -a 查看所有的容器(已销毁和正运行的)
 * -l 最新创建的容器 
-2. $docker inspect
+
+2、`docker inspect`
 `docker inspect [containter id] | [name]`    
 该命令会自省容器的配置信息  
 注意container id可以唯一的标识就行比如前4位唯一标识，只需使用4位即可。
 但是name需要全名，是全匹配。
+
+
+
 ### docker ps
 注意:docker ps命令返回的字段Containter id 和 Names字段均为docker为容器自动分配的。
+
 ```sh
 docker@fengqichao:~$ docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
@@ -55,7 +94,9 @@ CONTAINER ID        IMAGE               COMMAND                 CREATED         
 eff926ba2186        ubuntu              "/bin/bash"             5 minutes ago       Exited (0) 3 minutes ago                           laughing_kilby
 07df14a317da        ubuntu              "echo 'hello docker'"   19 minutes ago      Exited (0) 19 minutes ago                          unruffled_meninsky
 ```
+
 更详细docker ps --help
+
 ```sh
 docker@fengqichao:~$ docker ps --help
 
@@ -74,9 +115,13 @@ Options:
   -q, --quiet           Only display numeric IDs
   -s, --size            Display total file sizes
 ```
+
 ### docker inspect
+
 `docker inspect [containter id] | [name]`  
+
 该命令会自省容器的配置信息
+
 ```sh
 docker@iZbp1f7qdocvjqdy5yu701Z:~$ docker ps -l
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                       PORTS               NAMES
@@ -252,3 +297,5 @@ docker@iZbp1f7qdocvjqdy5yu701Z:~$ docker inspect bab10e1eb6fc
 ]
 docker@iZbp1f7qdocvjqdy5yu701Z:~$
 ```
+
+
