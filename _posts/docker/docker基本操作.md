@@ -1,4 +1,7 @@
 # docker基础操作
+命令用法很简单，记住一条即可。
+`docker command --help`
+
 ## 1. 拉取镜像 docker pull
 `docker pull <Image>`
 如果没有仓库，则说明是从默认的dockerHub仓库下载，但国内网络环境你懂的。最佳的方式是使用云服务商的dockerHub加速器。阿里云和腾讯云的加速器都非常不错。
@@ -12,6 +15,25 @@ $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 ubuntu              latest              14f60031763d        2 weeks ago         120MB
 ubuntu              14.04               54333f1de4ed        2 weeks ago         188MB
+```
+
+具体的用法及参数
+
+```sh
+$ docker images --help
+
+Usage:	docker images [OPTIONS] [REPOSITORY[:TAG]]
+
+List images
+
+Options:
+  -a, --all             Show all images (default hides intermediate images)
+      --digests         Show digests
+  -f, --filter filter   Filter output based on conditions provided
+      --format string   Pretty-print images using a Go template
+      --help            Print usage
+      --no-trunc        Don't truncate output
+  -q, --quiet           Only show numeric IDs
 ```
 
 ## 3. 命令行式启动容器 (Ad hoc方式执行容器命令)
@@ -52,7 +74,7 @@ CONTAINER ID        IMAGE               COMMAND                 CREATED         
 * `-i` --interactive=true|false false是默认  代表:交互式
 * `-t` --tty=true|false false是默认   代表:终端
 * `-i -t` 可以缩略为 `-it`效果等同
-* /bin/bash 指定运行的shell，可以省略默认
+* /bin/bash 指定运行的shell 可默认省略
 
 ```sh
 docker@fengqichao:~$  docker run -i -t ubuntu /bin/bash
@@ -297,7 +319,7 @@ $ docker inspect bab10e1eb6fc
 ]
 
 ```
-## 删除容器
+## 6. 删除容器
 ### 启动时指定删除参数
 通过`docker ps -a`我们看到容器终止了但并未从磁盘中删除，如果只是临时启动查看调试，最好是在容器使用完就立即删除。可以在容器启动时指定删除参数 --rm,
 `docker run -it --rm ubuntu`
@@ -347,7 +369,24 @@ ubuntu@VM-40-206-ubuntu:~$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
 
-## 指定名称、端口、后台运行容器
+## 删除镜像
+`docker rmi [options] Image [Image...]`
+
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker rmi --help
+
+Usage:	docker rmi [OPTIONS] IMAGE [IMAGE...]
+
+Remove one or more images
+
+Options:
+  -f, --force      Force removal of the image
+      --help       Print usage
+      --no-prune   Do not delete untagged parents
+```
+
+## 7. 指定名称、端口、后台运行容器
 
 ```sh
 ubuntu@VM-40-206-ubuntu:~$ docker run --name webserver -d -p 80:80 nginx
@@ -365,10 +404,10 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   53 seconds ago      Up 52 seconds       0.0.0.0:80->80/tcp   webserver
 ```
 
-## 停止后台运行的容器
+## 8. 停止后台运行的容器
 `docker stop <[id]|[name]>`
 
-## 进入容器执行操作
+## 9. 进入容器执行操作
 
 ```sh
 ubuntu@VM-40-206-ubuntu:~$ docker exec -it webserver bash
@@ -381,8 +420,10 @@ ubuntu@VM-40-206-ubuntu:~$ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
 c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   7 minutes ago       Up 7 minutes        0.0.0.0:80->80/tcp   webserver
 ```
+注意: exec后面的bash不能省略
+
 这种操作生产中一般不用，而是使用Dockerfile来定制镜像
-## 查看容器的修改
+## 10. 查看容器的修改
 我们进入到容器中修改了nginx的欢迎页，相当于修改了容器的存储层。
 
 ```sh
@@ -405,7 +446,7 @@ A /var/cache/nginx/proxy_temp
 A /var/cache/nginx/scgi_temp
 A /var/cache/nginx/uwsgi_temp
 ```
-## 提交容器修改
+## 11. 提交容器修改
 
 ```sh
 ubuntu@VM-40-206-ubuntu:~$ docker commit \
@@ -425,7 +466,7 @@ ubuntu              14.04               54333f1de4ed        2 weeks ago         
 
 dcoker commit可以提交保留镜像的修改，但是我们看到很多无关的内容也都被加了进来。这属于一种黑箱操作。生产中除非被入侵后作为证据保留提交，一般都使用Dockerfile来定制镜像
 
-## 查看镜像历史
+## 12. 查看镜像历史
 `docker history nginx:v2`
 
 
@@ -446,7 +487,7 @@ b8efb18f159b        13 days ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "da
 ubuntu@VM-40-206-ubuntu:~$
 ```
 
-## 使用定制镜像
+## 13. 使用定制镜像
 根据之前提交的镜像修改，我们可以指定运行定制过的镜像。
 
 ```sh
@@ -466,4 +507,108 @@ c0676feff795        nginx:v2            "nginx -g 'daemon ..."   About a minute 
 0f9d91cbf633        nginx:v2            "nginx -g 'daemon ..."   4 minutes ago        Up 4 minutes        0.0.0.0:81->80/tcp           web2
 c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   24 minutes ago       Up 24 minutes       0.0.0.0:80->80/tcp           webserver
 ```
+
+## 14. Dockerfile定制镜像
+### Dockerfile指令
+* FROM
+* MAINTAINER
+* RUN
+* EXPOSE
+
+### 编辑Dockerfile文件
+
+```sh
+~/mynginx$ cat Dockerfile
+FROM nginx
+RUN echo "Hello Docker!" > /usr/share/nginx/html/index.html
+```
+
+### docker build
+
+```sh
+~/mynginx$ docker build -t nginx:v3 .
+Sending build context to Docker daemon  2.048kB
+Step 1/2 : FROM nginx
+ ---> b8efb18f159b
+Step 2/2 : RUN echo "Hello Docker!" > /usr/share/nginx/html/index.html
+ ---> Running in f49677321de0
+ ---> 542a777224ae
+Removing intermediate container f49677321de0
+Successfully built 542a777224ae
+Successfully tagged nginx:v3
+
+$ docker run -it -d -p 85:80 --name web2.0 nginx:v3
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+10c1bb9d9329        nginx:v3            "nginx -g 'daemon ..."   3 minutes ago       Up 3 minutes        0.0.0.0:85->80/tcp   web2.0
+```
+
+注意 `.` 代表的不是指定路径，而是指定上下文路径(docker enginee是cs结构，而build命令是在server端执行的，如何让服务端获得本地文件呢？上下文路径就特别重要)，Dockerfile中命令指定的路径都是上下文路径，也是相对路径。
+所以一般将Dockerfile放到项目的根目录或空目录然后将所需文件复制过来，如果有不需要的文件，可以类似的使用如.gitignore的方式使用.dockerignore文件定义忽略的文件。
+
+下面的图片中有什么优点，有什么缺点呢?
+![](media/15022902251875.jpg)
+
+### 其他方式build镜像
+### git url
+`docker build https://github.com/twang2218/gitlab-ce-zh.git\#:gitlab-9.4.3`
+[1.8bug](https://github.com/moby/moby/issues/33686)
+gitlab尽量单独部署一台机器，4g以上内存，低配机器安装都是个问题呢。
+![-w500](media/15022664509003.jpg)
+
+## 查看unhealthy的容器状态
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker ps
+CONTAINER ID        IMAGE                          COMMAND                  CREATED             STATUS                   PORTS                                   NAMES
+ed235fa04001        twang2218/gitlab-ce-zh:9.4.3   "/assets/wrapper"        2 hours ago         Up 2 hours (unhealthy)   22/tcp, 443/tcp, 0.0.0.0:3000->80/tcp   inspiring_mcclintock
+5d3c556c20ee        nginx:v3                       "nginx -g 'daemon ..."   3 hours ago         Up 3 hours               0.0.0.0:8888->80/tcp                    web-nginxv3
+ubuntu@VM-40-206-ubuntu:~$ docker inspect --format '{{json .State.Health}}' inspiring_mcclintock | python -m json.tool
+{
+    "FailingStreak": 136,
+    "Log": [
+        {
+            "End": "2017-08-09T18:18:54.473248048+08:00",
+            "ExitCode": -1,
+            "Output": "rpc error: code = 2 desc = containerd: container not found",
+            "Start": "2017-08-09T18:18:54.467226404+08:00"
+        },
+        {
+            "End": "2017-08-09T18:19:54.478155603+08:00",
+            "ExitCode": -1,
+            "Output": "rpc error: code = 2 desc = containerd: container not found",
+            "Start": "2017-08-09T18:19:54.473353039+08:00"
+        },
+        {
+            "End": "2017-08-09T18:20:54.485160036+08:00",
+            "ExitCode": -1,
+            "Output": "rpc error: code = 2 desc = containerd: container not found",
+            "Start": "2017-08-09T18:20:54.478275134+08:00"
+        },
+        {
+            "End": "2017-08-09T18:21:54.490044376+08:00",
+            "ExitCode": -1,
+            "Output": "rpc error: code = 2 desc = containerd: container not found",
+            "Start": "2017-08-09T18:21:54.485308758+08:00"
+        },
+        {
+            "End": "2017-08-09T18:22:54.497147517+08:00",
+            "ExitCode": -1,
+            "Output": "rpc error: code = 2 desc = containerd: container not found",
+            "Start": "2017-08-09T18:22:54.490164636+08:00"
+        }
+    ],
+    "Status": "unhealthy"
+}
+```
+## gitlab中国社区镜像
+docker run -d -p 3000:80 twang2218/gitlab-ce-zh:9.4.3
+[一个很不错的gitlab社区版本](https://github.com/twang2218/gitlab-ce-zh)
+
+## 指定dockerhub加速器
+[腾讯云docker等加速服务](https://github.com/tencentyun/qcloud-documents/blob/master/product/%E8%AE%A1%E7%AE%97%E4%B8%8E%E7%BD%91%E7%BB%9C/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/Linux%E7%B3%BB%E7%BB%9F%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4%E6%89%8B%E5%86%8C/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91%E8%BD%AF%E4%BB%B6%E6%BA%90%E5%8A%A0%E9%80%9F%E8%BD%AF%E4%BB%B6%E5%8C%85%E4%B8%8B%E8%BD%BD%E5%92%8C%E6%9B%B4%E6%96%B0.md)
+[腾讯各镜像](https://market.qcloud.com/categories/67)
+[腾讯云dockerHub加速器](https://www.qcloud.com/document/product/457/7207)
+[docker普通用户不使用sudo的方法](http://www.cnblogs.com/ksir16/p/6530587.html)
+
 
