@@ -40,14 +40,14 @@ hello world
 `docker ps -a`查看所有的容器(运行中的和执行过的)
 
 ```sh
-docker@fengqichao:~$ docker ps -a
+$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND                 CREATED             STATUS                      PORTS               NAMES
 07df14a317da        ubuntu              "echo 'hello docker'"   2 minutes ago       Exited (0) 2 minutes ago
 ```
 我们发现通过`docker run image command arg`命令是一次性启动容器执行命令执行完毕后销毁容器。
 
 
-## 2. 交互式启动容器(始终运行直到退出)
+## 4. 交互式启动容器(始终运行直到退出)
 格式: `docker run -i -t image /bin/bash`
 * -i --interactive=true|false false是默认  代表:交互式
 * -t --tty=true|false false是默认   代表:终端
@@ -64,41 +64,37 @@ root@eff926ba2186:/# exit
 exit
 ```
 
-## 3. 查看容器
-1、 `docker ps`   
+## 5. 查看容器
+
+镜像可以理解为类/模板(静态)，而容器则为对象/实例(动态)。
+### docker ps
+
 `docker ps [-a]|[-l]`  
 
 * 默认不加任何参数将返回正在运行的容器
 * -a 查看所有的容器(已销毁和正运行的)
 * -l 最新创建的容器 
 
-2、`docker inspect`
-`docker inspect [containter id] | [name]`    
-该命令会自省容器的配置信息  
-注意container id可以唯一的标识就行比如前4位唯一标识，只需使用4位即可。
-但是name需要全名，是全匹配。
-
-
-
-### docker ps
-注意:docker ps命令返回的字段Containter id 和 Names字段均为docker为容器自动分配的。
+注意:`docker ps`命令返回的字段`Containter ID`和`Names`字段均为docker为容器自动分配的。
 
 ```sh
-docker@fengqichao:~$ docker ps
+$ docker ps
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-docker@fengqichao:~$  docker ps -l
+
+$  docker ps -l
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES
 eff926ba2186        ubuntu              "/bin/bash"         5 minutes ago       Exited (0) 3 minutes ago                       laughing_kilby
-docker@fengqichao:~$ docker ps -a
+
+$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND                 CREATED             STATUS                         PORTS               NAMES
 eff926ba2186        ubuntu              "/bin/bash"             5 minutes ago       Exited (0) 3 minutes ago                           laughing_kilby
 07df14a317da        ubuntu              "echo 'hello docker'"   19 minutes ago      Exited (0) 19 minutes ago                          unruffled_meninsky
 ```
 
-更详细docker ps --help
+更详细通过命令`docker ps --help`查看
 
 ```sh
-docker@fengqichao:~$ docker ps --help
+$ docker ps --help
 
 Usage:	docker ps [OPTIONS]
 
@@ -118,15 +114,17 @@ Options:
 
 ### docker inspect
 
-`docker inspect [containter id] | [name]`  
-
-该命令会自省容器的配置信息
+`docker inspect [containter id] | [name]`    
+该命令会自省容器的配置信息  
+注意container id可以唯一的标识就行比如前4位唯一标识，只需使用4位即可。
+但是name需要全名，是全匹配。
 
 ```sh
-docker@iZbp1f7qdocvjqdy5yu701Z:~$ docker ps -l
+$ docker ps -l
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                       PORTS               NAMES
 bab10e1eb6fc        ubuntu              "/bin/bash"         10 minutes ago      Exited (127) 7 minutes ago                       goofy_hamilton
-docker@iZbp1f7qdocvjqdy5yu701Z:~$ docker inspect bab10e1eb6fc
+
+$ docker inspect bab10e1eb6fc
 [
     {
         "Id": "bab10e1eb6fc6a3841c0dbc0bc65ac3f9bfe3074cc145261b38eed0b24f96445",
@@ -295,7 +293,7 @@ docker@iZbp1f7qdocvjqdy5yu701Z:~$ docker inspect bab10e1eb6fc
         }
     }
 ]
-docker@iZbp1f7qdocvjqdy5yu701Z:~$
+
 ```
 
 
