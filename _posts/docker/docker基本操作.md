@@ -49,8 +49,10 @@ CONTAINER ID        IMAGE               COMMAND                 CREATED         
 
 ## 4. 交互式启动容器(始终运行直到退出)
 格式: `docker run -i -t image /bin/bash`
-* -i --interactive=true|false false是默认  代表:交互式
-* -t --tty=true|false false是默认   代表:终端
+* `-i` --interactive=true|false false是默认  代表:交互式
+* `-t` --tty=true|false false是默认   代表:终端
+* `-i -t` 可以缩略为 `-it`效果等同
+* /bin/bash 指定运行的shell，可以省略默认
 
 ```sh
 docker@fengqichao:~$  docker run -i -t ubuntu /bin/bash
@@ -295,5 +297,173 @@ $ docker inspect bab10e1eb6fc
 ]
 
 ```
+## 删除容器
+### 启动时指定删除参数
+通过`docker ps -a`我们看到容器终止了但并未从磁盘中删除，如果只是临时启动查看调试，最好是在容器使用完就立即删除。可以在容器启动时指定删除参数 --rm,
+`docker run -it --rm ubuntu`
 
+
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+
+ubuntu@VM-40-206-ubuntu:~$ docker run -it --rm ubuntu
+
+root@ad012ed44bad:/# cat /etc/os-release
+NAME="Ubuntu"
+VERSION="16.04.2 LTS (Xenial Xerus)"
+ID=ubuntu
+ID_LIKE=debian
+PRETTY_NAME="Ubuntu 16.04.2 LTS"
+VERSION_ID="16.04"
+HOME_URL="http://www.ubuntu.com/"
+SUPPORT_URL="http://help.ubuntu.com/"
+BUG_REPORT_URL="http://bugs.launchpad.net/ubuntu/"
+VERSION_CODENAME=xenial
+UBUNTU_CODENAME=xenial
+
+root@ad012ed44bad:/# exit
+exit
+
+ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
+### 手动删除
+`docker rm [containterId][containerName]`
+可以一次指定多个id或name进行批量删除。
+
+### 指定范围删除
+可以使用-q列出id，-f(filter)指定范围，-a（all）
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker rm $(docker ps -a -q)
+55786ea74515
+3919977d3196
+2e560729b00e
+ecf071aa33e9
+cda92d5f5a3d
+ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
+
+## 指定名称、端口、后台运行容器
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker run --name webserver -d -p 80:80 nginx
+Unable to find image 'nginx:latest' locally
+latest: Pulling from library/nginx
+94ed0c431eb5: Pull complete
+9406c100a1c3: Pull complete
+aa74daafd50c: Pull complete
+Digest: sha256:788fa27763db6d69ad3444e8ba72f947df9e7e163bad7c1f5614f8fd27a311c3
+Status: Downloaded newer image for nginx:latest
+c8d74c1b40fcd95234568b9a98deb77a3a9fe2c29fac02094b1724cb6550e263
+
+ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   53 seconds ago      Up 52 seconds       0.0.0.0:80->80/tcp   webserver
+```
+
+## 停止后台运行的容器
+`docker stop <[id]|[name]>`
+
+## 进入容器执行操作
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker exec -it webserver bash
+
+root@c8d74c1b40fc:/# echo '<h1>Hello, Docker!</h1>' > /usr/share/nginx/html/index.html
+root@c8d74c1b40fc:/# exit
+exit
+
+ubuntu@VM-40-206-ubuntu:~$ docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   7 minutes ago       Up 7 minutes        0.0.0.0:80->80/tcp   webserver
+```
+这种操作生产中一般不用，而是使用Dockerfile来定制镜像
+## 查看容器的修改
+我们进入到容器中修改了nginx的欢迎页，相当于修改了容器的存储层。
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker diff webserver
+C /root
+A /root/.bash_history
+C /run
+A /run/nginx.pid
+C /usr
+C /usr/share
+C /usr/share/nginx
+C /usr/share/nginx/html
+C /usr/share/nginx/html/index.html
+C /var
+C /var/cache
+C /var/cache/nginx
+A /var/cache/nginx/client_temp
+A /var/cache/nginx/fastcgi_temp
+A /var/cache/nginx/proxy_temp
+A /var/cache/nginx/scgi_temp
+A /var/cache/nginx/uwsgi_temp
+```
+## 提交容器修改
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker commit \
+>     --author "gomaster.me" \
+>     --message "修改了nginx欢迎页" \
+>     webserver \
+>     nginx:v2
+sha256:2668bc9d4355941ff856b33c1b89afef0f16cb26d20e3dd99c634b1e419ec526
+
+ubuntu@VM-40-206-ubuntu:~$ docker images -a
+REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
+nginx               v2                  2668bc9d4355        About a minute ago   107MB
+nginx               latest              b8efb18f159b        13 days ago          107MB
+ubuntu              latest              14f60031763d        2 weeks ago          120MB
+ubuntu              14.04               54333f1de4ed        2 weeks ago          188MB
+```
+
+dcoker commit可以提交保留镜像的修改，但是我们看到很多无关的内容也都被加了进来。这属于一种黑箱操作。生产中除非被入侵后作为证据保留提交，一般都使用Dockerfile来定制镜像
+
+## 查看镜像历史
+`docker history nginx:v2`
+
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker history nginx:v2
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+2668bc9d4355        3 minutes ago       nginx -g daemon off;                            97B                 修改了nginx欢迎页
+b8efb18f159b        13 days ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daem...   0B
+<missing>           13 days ago         /bin/sh -c #(nop)  STOPSIGNAL [SIGTERM]         0B
+<missing>           13 days ago         /bin/sh -c #(nop)  EXPOSE 80/tcp                0B
+<missing>           13 days ago         /bin/sh -c ln -sf /dev/stdout /var/log/ngi...   22B
+<missing>           13 days ago         /bin/sh -c apt-get update  && apt-get inst...   52.2MB
+<missing>           13 days ago         /bin/sh -c #(nop)  ENV NJS_VERSION=1.13.3....   0B
+<missing>           13 days ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.13....   0B
+<missing>           13 days ago         /bin/sh -c #(nop)  MAINTAINER NGINX Docker...   0B
+<missing>           2 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
+<missing>           2 weeks ago         /bin/sh -c #(nop) ADD file:fa8dd9a679f473a...   55.3MB
+ubuntu@VM-40-206-ubuntu:~$
+```
+
+## 使用定制镜像
+根据之前提交的镜像修改，我们可以指定运行定制过的镜像。
+
+```sh
+ubuntu@VM-40-206-ubuntu:~$ docker run --name web2 -d -p 81:80 nginx:v2
+0f9d91cbf6339270dbd5f79adb4c8316a9a43314e03afa12b60a902dcf2ff62d
+```
+将容器nginx运行的80端口转发映射到了宿主机的81端口。
+
+注意端口的运行与转发
+
+注意下面的web4，nginx默认启动在80端口，而容器指定的是-p 82:81 虽然没有冲突可以启动，但是服务是访问不了的
+```
+ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                        NAMES
+594db566b3c0        nginx:v2            "nginx -g 'daemon ..."   51 seconds ago       Up 50 seconds       80/tcp, 0.0.0.0:82->81/tcp   web4
+c0676feff795        nginx:v2            "nginx -g 'daemon ..."   About a minute ago   Created                                          web3
+0f9d91cbf633        nginx:v2            "nginx -g 'daemon ..."   4 minutes ago        Up 4 minutes        0.0.0.0:81->80/tcp           web2
+c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   24 minutes ago       Up 24 minutes       0.0.0.0:80->80/tcp           webserver
+```
 
