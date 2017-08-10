@@ -11,7 +11,7 @@
 
 ## 资源
 [gitlab-ce docker镜像](https://github.com/twang2218/gitlab-ce-zh)
-
+[相关的gitlab docker k8s 博客内容比较新](http://blog.gezhiqiang.com/)
 ## 博客
 [一个pass开发者](http://www.zoues.com/category/docker/)
 

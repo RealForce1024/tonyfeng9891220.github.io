@@ -612,17 +612,85 @@ COPY index.html /usr/share/nginx/html/
 EXPOSE 80
 CMD ["/usr/sbin/nginx","-g","daemon off;"]
 ```
+##### VOLUME
+
+VOLUME["/data"]向容器内添加卷。
+一个卷是可以存在一个或多个容器的特定目录。VOLUME添加的目录可以绕过联合文件系统，并提供共享数据，或对数据持久化的功能。  
+
 
 ####4. 环境设置指令
 指定镜像在构建及容器在运行时的环境设置
-* WORKDIR
+* WORKDIR 
+`/path/to/workdir 从镜像创建一个新容器时，在容器内部设置工作目录` ENTRYPOINT，CMD等命令都会在该目录下执行。也可以使用该命令为其他命令指定工作目录，需要注意的是WORKDIR通常使用绝对路径，如果是相对路径，工作路径会一直传递下去。例如:
+
+```
+WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd
+
+/a/b/c
+```
 * ENV
+
+```
+ENV key=value
+ENV key=value ...
+```
+
+用来设置环境变量。与WORKDIR指令类似。
+环境变量中的指令作用于构建过程中以及运行过程中。
+
 * USER
+`USER daemon`
+用来指定镜像为哪类用户运行。
+例如:  
+
+```sh
+USER nginx
+```
+
+![-w400](media/15023331793508.jpg)
+
+如果不指定USER，默认为root用户
 
 #### 5. 触发器指令
-* ONBUILD
+* ONBUILD [INSTRUCTION]
+可以为镜像添加触发器，当一个镜像被用作其他镜像的基础镜像时，该触发器会被执行。当子镜像在构建时会出发触发器中的指令
 
+需要构建一个基础镜像，然后在该镜像上再构建子镜像，子镜像构建时才会触发指令。
+注意下面的`# Executing 1 build trigger...`
 
+```sh
+ubuntu@VM-40-206-ubuntu:~/mynginx$ vim Dockerfile
+ubuntu@VM-40-206-ubuntu:~/mynginx$ docker build -t cp-nginx-onbuild-base .
+Sending build context to Docker daemon  3.072kB
+Step 1/5 : FROM cp-nginx-onbuild
+# Executing 1 build trigger...
+Step 1/1 : COPY index.html /usr/share/nginx/html/
+ ---> 661a4052ec85
+Removing intermediate container 4a169d813d41
+Step 2/5 : MAINTAINER gomaster.me@sina.com "xx@qq.com"
+ ---> Running in 41e098584a53
+ ---> cbef1a831846
+Removing intermediate container 41e098584a53
+Step 3/5 : ONBUILD copy index.html /usr/share/nginx/html/
+ ---> Running in 2f25d77742b5
+ ---> 552adcf0878e
+Removing intermediate container 2f25d77742b5
+Step 4/5 : EXPOSE 80
+ ---> Running in 958c678635c6
+ ---> 7b3f18ef4f9e
+Removing intermediate container 958c678635c6
+Step 5/5 : CMD /usr/sbin/nginx -g daemon off;
+ ---> Running in 191f772117bf
+ ---> b1808c62e3a3
+Removing intermediate container 191f772117bf
+Successfully built b1808c62e3a3
+Successfully tagged cp-nginx-onbuild-base:latest
+ubuntu@VM-40-206-ubuntu:~/mynginx$ docker run --name cp-nginx-onbuild-base -p 9994:80 -d cp-nginx-onbuild-base
+ccffda2996b4793ec3de76e827f2af3c9a9bc6465789ba088a858f96c5d6ee3b
+```
 
 ### 编辑Dockerfile文件
 
@@ -654,6 +722,7 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 
 注意 `.` 代表的不是指定路径，而是指定上下文路径(docker enginee是cs结构，而build命令是在server端执行的，如何让服务端获得本地文件呢？上下文路径就特别重要)，Dockerfile中命令指定的路径都是上下文路径，也是相对路径。
 所以一般将Dockerfile放到项目的根目录或空目录然后将所需文件复制过来，如果有不需要的文件，可以类似的使用如.gitignore的方式使用.dockerignore文件定义忽略的文件。
+
 
 下面的图片中有什么优点，有什么缺点呢?
 ![](media/15022902251875.jpg)
@@ -710,6 +779,36 @@ ubuntu@VM-40-206-ubuntu:~$ docker inspect --format '{{json .State.Health}}' insp
     "Status": "unhealthy"
 }
 ```
+## 调试和history
+在构建过程中我们可以看到有中间层镜像生成，那么这些中间层镜像我们可以在以后进行容器运行调试，如果信息清屏掉，可以使用`docker history image`
+
+```sh
+ubuntu@VM-40-206-ubuntu:~/mynginx$ docker history cp-nginx-onbuild-base
+IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
+b1808c62e3a3        24 minutes ago      /bin/sh -c #(nop)  CMD ["/usr/sbin/nginx" ...   0B
+7b3f18ef4f9e        24 minutes ago      /bin/sh -c #(nop)  EXPOSE 80/tcp                0B
+552adcf0878e        24 minutes ago      /bin/sh -c #(nop)  ONBUILD COPY index.html...   0B
+cbef1a831846        24 minutes ago      /bin/sh -c #(nop)  MAINTAINER gomaster.me@...   0B
+661a4052ec85        24 minutes ago      /bin/sh -c #(nop) COPY file:1c5874c1653c5d...   25B
+8d774a3846c9        33 minutes ago      /bin/sh -c #(nop)  CMD ["/usr/sbin/nginx" ...   0B
+8be8ed29faee        33 minutes ago      /bin/sh -c #(nop)  EXPOSE 80/tcp                0B
+09fed8f10f53        33 minutes ago      /bin/sh -c #(nop)  ONBUILD COPY index.html...   0B
+415d66c633e7        33 minutes ago      /bin/sh -c #(nop)  MAINTAINER gomaster.me@...   0B
+9495c99c3918        About an hour ago   /bin/sh -c #(nop)  CMD ["/usr/sbin/nginx" ...   0B
+6279fb43655c        About an hour ago   /bin/sh -c #(nop)  EXPOSE 80/tcp                0B
+5df578f063fd        About an hour ago   /bin/sh -c #(nop) COPY file:5b8a2ab52016d0...   17B
+58e4551a85bb        12 hours ago        /bin/sh -c #(nop)  MAINTAINER gomaster.me@...   0B
+b8efb18f159b        2 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daem...   0B
+<missing>           2 weeks ago         /bin/sh -c #(nop)  STOPSIGNAL [SIGTERM]         0B
+<missing>           2 weeks ago         /bin/sh -c #(nop)  EXPOSE 80/tcp                0B
+<missing>           2 weeks ago         /bin/sh -c ln -sf /dev/stdout /var/log/ngi...   22B
+<missing>           2 weeks ago         /bin/sh -c apt-get update  && apt-get inst...   52.2MB
+<missing>           2 weeks ago         /bin/sh -c #(nop)  ENV NJS_VERSION=1.13.3....   0B
+<missing>           2 weeks ago         /bin/sh -c #(nop)  ENV NGINX_VERSION=1.13....   0B
+<missing>           2 weeks ago         /bin/sh -c #(nop)  MAINTAINER NGINX Docker...   0B
+<missing>           2 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
+<missing>           2 weeks ago         /bin/sh -c #(nop) ADD file:fa8dd9a679f473a...   55.3MB
+```
 ## gitlab中国社区镜像
 `docker run -d -p 3000:80 twang2218/gitlab-ce-zh:9.4.3 `   
 [一个很不错的gitlab社区版本](https://github.com/twang2218/gitlab-ce-zh)
@@ -723,9 +822,9 @@ ubuntu@VM-40-206-ubuntu:~$ docker inspect --format '{{json .State.Health}}' insp
 * DaoCloud
 
 [daocloud docker镜像加速器](https://www.daocloud.io/mirror#accelerator-doc)
+
 ```
 curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62.m.daocloud.io Copy
-
 ```
 >该脚本可以将 --registry-mirror 加入到你的 Docker 配置文件 /etc/default/docker 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同。更多详情请访问文档。
 
