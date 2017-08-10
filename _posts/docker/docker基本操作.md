@@ -319,6 +319,16 @@ $ docker inspect bab10e1eb6fc
 ]
 
 ```
+
+###docker top
+可以使用docker+通常的linux命令方式
+
+```sh
+$ docker top my-nginx
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                2106                2090                0                   Aug09               ?                   00:00:00            nginx: master process nginx -g daemon off;
+syslog              2136                2106                0                   Aug09               ?                   00:00:00            nginx: worker process
+```
 ## 6. 删除容器
 ### 启动时指定删除参数
 通过`docker ps -a`我们看到容器终止了但并未从磁盘中删除，如果只是临时启动查看调试，最好是在容器使用完就立即删除。可以在容器启动时指定删除参数 --rm,
@@ -509,11 +519,110 @@ c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   24 minutes ago 
 ```
 
 ## 14. Dockerfile定制镜像
-### Dockerfile指令
+### Dockerfile分类与指令
+####1. 镜像基本构建指令
 * FROM
 * MAINTAINER
 * RUN
 * EXPOSE
+
+####2. 指定容器运行时运行的命令
+* CMD
+* ENTRYPOINT
+
+##### CMD指令
+
+用来提供容器运行的默认命令，与run命令类似，都是执行命令。
+**区别**
+1. RUN指定的命令是在镜像构建过程中执行的，CMD指定的命令是在容器运行中执行的。
+2. 当我们使用docker run命令启动一个容器时，指定了一个容器运行时的命令，那么cmd指令中的命令会被覆盖，不会被执行。也就是说cmd指令是运来指定容器运行时的默认行为。
+
+CMD指令有两种模式
+1. exec模式
+`CMD ["executable","param1","param2"] `
+2. shell模式
+`CMD command param1 param2 `
+3. 与ENTRYPOINT搭配使用模式
+作为ENTRYPOINT指令的默认参数
+`CMD ["param1","param2"] `
+
+
+```sh
+~/mynginx$ cat Dockerfile
+
+FROM nginx
+MAINTAINER gomaster.me@sina.com "xx@qq.com"
+RUN echo "Hello Docker!" > /usr/share/nginx/html/index.html
+EXPOSE 80
+CMD ["/usr/sbin/nginx","-g","daemon off;"]
+```
+注意CMD的写法 尤其是最后一个参数`dammon off`后的`;`不能省略，否则启动失败。 
+
+启动  
+```sh
+docker run -d --name my-nginx -p 80:80 nginx
+```
+
+可以使用docker+通常的linux命令方式  
+
+```sh
+$ docker top my-nginx
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+root                2106                2090                0                   Aug09               ?                   00:00:00            nginx: master process nginx -g daemon off;
+syslog              2136                2106                0                   Aug09               ?                   00:00:00            nginx: worker process
+```
+
+##### ENTRYPOINT
+ENTRYPOINT指令和CMD指令相似，唯一区别在于其不会被run命令中的执行命令覆盖。 
+
+* exec模式
+ENTRYPOINT ["executable","param1","param2"] 
+* shell模式
+ENTRYPOINT command param1 param2 
+
+注意:使用ENTRYPOINT模式，可以手动 docker run --entrypoint覆盖
+
+##### ENTRYPOINT和CMD组合使用
+根据其特点，使用ENTRYPOINT指定执行指令，CMD指定指令默认的参数。
+也就是说docker run可以指定CMD覆盖，如果不覆盖则使用Dockerfile中CMD的定义，而ENTRYPOINT则不论如何都会执行。
+
+
+####3. 目录文件指令
+* ADD
+* COPY
+* VOLUME
+
+##### ADD&&COPY
+ADD和COPY都是将文件或目录复制到使用Dockerfile定义的镜像中。支持两个参数 src,dest 来源地址和目标地址。
+文件或目录的来源可以是本地地址，也可以是远程的url。
+如果是本地地址，必须是构建目录中的相对地址。远程url不推荐使用，更建议使用curl或wget获取文件。
+目标路径需要指定镜像中的绝对路径。
+
+区别:
+ADD 包含类似tar的解压功能
+如果单纯复制文件，Docker推荐使用COPY
+`COPY index.html /usr/share/nginx/html/`
+
+```sh
+ubuntu@VM-40-206-ubuntu:~/mynginx$ cat Dockerfile
+FROM nginx
+MAINTAINER gomaster.me@sina.com "xx@qq.com"
+#RUN echo "Hello Docker!" > /usr/share/nginx/html/index.html
+COPY index.html /usr/share/nginx/html/
+EXPOSE 80
+CMD ["/usr/sbin/nginx","-g","daemon off;"]
+```
+
+####4. 环境设置指令
+指定镜像在构建及容器在运行时的环境设置
+* WORKDIR
+* ENV
+* USER
+
+#### 5. 触发器指令
+* ONBUILD
+
+
 
 ### 编辑Dockerfile文件
 
@@ -605,10 +714,36 @@ ubuntu@VM-40-206-ubuntu:~$ docker inspect --format '{{json .State.Health}}' insp
 `docker run -d -p 3000:80 twang2218/gitlab-ce-zh:9.4.3 `   
 [一个很不错的gitlab社区版本](https://github.com/twang2218/gitlab-ce-zh)
 
-## 指定dockerhub加速器
+## DockerHub加速器
 [腾讯云docker等加速服务](https://github.com/tencentyun/qcloud-documents/blob/master/product/%E8%AE%A1%E7%AE%97%E4%B8%8E%E7%BD%91%E7%BB%9C/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/Linux%E7%B3%BB%E7%BB%9F%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4%E6%89%8B%E5%86%8C/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91%E8%BD%AF%E4%BB%B6%E6%BA%90%E5%8A%A0%E9%80%9F%E8%BD%AF%E4%BB%B6%E5%8C%85%E4%B8%8B%E8%BD%BD%E5%92%8C%E6%9B%B4%E6%96%B0.md)  
 [腾讯各镜像](https://market.qcloud.com/categories/67)  
 [腾讯云dockerHub加速器](https://www.qcloud.com/document/product/457/7207)  
 [docker普通用户不使用sudo的方法](http://www.cnblogs.com/ksir16/p/6530587.html)  
+
+* DaoCloud
+
+[daocloud docker镜像加速器](https://www.daocloud.io/mirror#accelerator-doc)
+```
+curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62.m.daocloud.io Copy
+
+```
+>该脚本可以将 --registry-mirror 加入到你的 Docker 配置文件 /etc/default/docker 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同。更多详情请访问文档。
+
+* 阿里云
+[阿里云Docker 镜像加速器](https://yq.aliyun.com/articles/29941)
+
+## 一些问题
+
+### 建立docker用户组
+1. 建立docker组:  
+`$ sudo groupadd docker`
+2. 将当前用户加入docker组:  
+`$ sudo usermod -aG docker $USER`
+
+### why daemon off with nginx on docker
+[docker运行nginx为什么要使用 daemon off](https://segmentfault.com/a/1190000009583997)
+
+### docker网络入门 端口转发
+[Docker网络原则入门：EXPOSE，-p，-P，-link](http://dockone.io/article/455)
 
 

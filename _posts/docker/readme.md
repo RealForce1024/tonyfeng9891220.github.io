@@ -12,4 +12,7 @@
 ## 资源
 [gitlab-ce docker镜像](https://github.com/twang2218/gitlab-ce-zh)
 
+## 博客
+[一个pass开发者](http://www.zoues.com/category/docker/)
+
 
