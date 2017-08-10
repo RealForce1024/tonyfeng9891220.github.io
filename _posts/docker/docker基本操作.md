@@ -521,31 +521,37 @@ c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   24 minutes ago 
 ## 14. Dockerfile定制镜像
 ### Dockerfile分类与指令
 ####1. 镜像基本构建指令
-* FROM
-* MAINTAINER
-* RUN
-* EXPOSE
+##### FROM
+##### MAINTAINER
+##### RUN
+##### EXPOSE
+
+>要将 EXPOSE 和在运行时使用 -p <宿主端口>:<容器端口> 区分开来。-p，是映射宿主端口和容器端口，换句话说，就是将容器的对应端口服务公开给外界访问，而 EXPOSE 仅仅是声明容器打算使用什么端口而已，并不会自动在宿主进行端口映射。
 
 ####2. 指定容器运行时运行的命令
 * CMD
 * ENTRYPOINT
 
 ##### CMD指令
-
+Docker不是虚拟机，而是进程，进程启动可以有参数。
+CMD 指令就是用于指定默认的容器主进程的启动命令的。
 用来提供容器运行的默认命令，与run命令类似，都是执行命令。
+
 **区别**
 1. RUN指定的命令是在镜像构建过程中执行的，CMD指定的命令是在容器运行中执行的。
 2. 当我们使用docker run命令启动一个容器时，指定了一个容器运行时的命令，那么cmd指令中的命令会被覆盖，不会被执行。也就是说cmd指令是运来指定容器运行时的默认行为。
 
-CMD指令有两种模式
+CMD指令有两种独立模式和一种搭配模式
 1. exec模式
 `CMD ["executable","param1","param2"] `
+相比shell模式，exec模式更推荐
+注意exec命令会被解析为以下形式
+`CMD ["sh","-c","execcutable param1 param2"] ` 
 2. shell模式
 `CMD command param1 param2 `
 3. 与ENTRYPOINT搭配使用模式
 作为ENTRYPOINT指令的默认参数
 `CMD ["param1","param2"] `
-
 
 ```sh
 ~/mynginx$ cat Dockerfile
@@ -586,7 +592,12 @@ ENTRYPOINT command param1 param2
 根据其特点，使用ENTRYPOINT指定执行指令，CMD指定指令默认的参数。
 也就是说docker run可以指定CMD覆盖，如果不覆盖则使用Dockerfile中CMD的定义，而ENTRYPOINT则不论如何都会执行。
 
+##### 容器主进程和前台执行
+我们一定要弄清楚容器是进程而非虚拟机，容器是为主进程存在而存在，当主进程退出，容器也就消亡。容器并非虚拟机，其应用都应该以前台执行，而不是向虚拟机或物理机一样启动后台服务进程，容器没有后台服务的概念。  
+`CMD service nginx start`这种形式错误在于将应用以后台守护进程的形式启动nginx服务。而该命令会被解析为`CMD["sh","-c","service nginx start"]`，因此主进程是`sh`，当`service nginx start`执行完毕后，`sh`主进程也随之结束。而sh作为主进程退出了，容器自然退出了。
 
+解决方案是**直接执行可执行文件，并且要求以前台形式运行**。
+`CMD ["nginx","-g","daemon off;"]`
 ####3. 目录文件指令
 * ADD
 * COPY
@@ -612,6 +623,8 @@ COPY index.html /usr/share/nginx/html/
 EXPOSE 80
 CMD ["/usr/sbin/nginx","-g","daemon off;"]
 ```
+没有特殊需求的话，docker官方推荐尽量使用copy，而add的行为并不是那么好控制。也就是可以遵循复制使用copy，仅解压的时候使用add。
+
 ##### VOLUME
 
 VOLUME["/data"]向容器内添加卷。
