@@ -46,6 +46,11 @@ $ docker run ubuntu echo 'hello docker'
 hello docker
 ```
 
+```sh
+$ docker run ubuntu echo 'hello docker'
+hello docker
+```
+
 run在新容器中执行命令，如果镜像不存在则到dockerHub中下载。注意指定镜像的方式最好加指定的tag，否则会默认的添加image:latest，没有匹配的，则会远程拉取下载。另一种方式可以通过指定唯一的ImageId即可。
 
 ```sh
@@ -71,8 +76,8 @@ CONTAINER ID        IMAGE               COMMAND                 CREATED         
 
 ## 4. 交互式启动容器(始终运行直到退出)
 格式: `docker run -i -t image /bin/bash`
-* `-i` --interactive=true|false false是默认  代表:交互式
-* `-t` --tty=true|false false是默认   代表:终端
+* `-i` --interactive=true|false false是默认  代表:交互式 保持打开
+* `-t` --tty=true|false false是默认   代表:伪终端
 * `-i -t` 可以缩略为 `-it`效果等同
 * /bin/bash 指定运行的shell 可默认省略
 
@@ -87,6 +92,17 @@ root        13     1  0 03:21 ?        00:00:00 ps -ef
 root@eff926ba2186:/# exit
 exit
 ```
+
+
+总结3,4两小节 
+当利用 docker run 来创建容器时,Docker 在后台运行的标准操作包括: 
+>1. 检查本地是否存在指定的镜像,不存在就从公有仓库下载
+>2. 利用镜像创建并启动一个容器 
+>3. 分配一个文件系统,并在只读的镜像层外面挂载一层可读写层 
+>4. 从宿主主机配置的网桥接口中桥接一个虚拟接口到容器中去 
+>5. 从地址池配置一个 ip 地址给容器 
+>6. 执行用户指定的应用程序 
+>7. 执行完毕后容器被终止
 
 ## 5. 查看容器
 
@@ -644,6 +660,14 @@ RUN pwd
 
 /a/b/c
 ```
+
+
+```sh
+FROM node:slim
+RUN mkdir /app
+WORKDIR /app
+CMD [ "npm", "start" ]
+```
 * ENV
 
 ```
@@ -704,7 +728,12 @@ Successfully tagged cp-nginx-onbuild-base:latest
 ubuntu@VM-40-206-ubuntu:~/mynginx$ docker run --name cp-nginx-onbuild-base -p 9994:80 -d cp-nginx-onbuild-base
 ccffda2996b4793ec3de76e827f2af3c9a9bc6465789ba088a858f96c5d6ee3b
 ```
+#### 6. HEALTHCHECK
 
+```sh
+HEALTHCHECK --interval=5s --timeout=3s \
+CMD curl -fs http://localhost/ || exit 1
+```
 ### 编辑Dockerfile文件
 
 ```sh
@@ -837,7 +866,7 @@ b8efb18f159b        2 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "da
 [daocloud docker镜像加速器](https://www.daocloud.io/mirror#accelerator-doc)
 
 ```
-curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62.m.daocloud.io Copy
+curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62.m.daocloud.io
 ```
 >该脚本可以将 --registry-mirror 加入到你的 Docker 配置文件 /etc/default/docker 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同。更多详情请访问文档。
 
@@ -857,5 +886,9 @@ curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62
 
 ### docker网络入门 端口转发
 [Docker网络原则入门：EXPOSE，-p，-P，-link](http://dockone.io/article/455)
+
+### docker alias
+[docker useful tip](https://kartar.net/2014/03/useful-docker-bash-functions-and-aliases/)
+[docker alias](https://github.com/tcnksm/docker-alias/blob/master/zshrc)
 
 
