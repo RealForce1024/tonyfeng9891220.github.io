@@ -35,8 +35,110 @@ Options:
       --no-trunc        Don't truncate output
   -q, --quiet           Only show numeric IDs
 ```
+## 启动容器
+```sh
+$ docker run --help
 
-## 3. 命令行式启动容器 (Ad hoc方式执行容器命令)
+Usage:	docker run [OPTIONS] IMAGE [COMMAND] [ARG...]
+
+Run a command in a new container
+
+Options:
+      --add-host list                  Add a custom host-to-IP mapping (host:ip)
+  -a, --attach list                    Attach to STDIN, STDOUT or STDERR
+      --blkio-weight uint16            Block IO (relative weight), between 10 and 1000, or 0 to disable (default 0)
+      --blkio-weight-device list       Block IO weight (relative device weight) (default [])
+      --cap-add list                   Add Linux capabilities
+      --cap-drop list                  Drop Linux capabilities
+      --cgroup-parent string           Optional parent cgroup for the container
+      --cidfile string                 Write the container ID to the file
+      --cpu-period int                 Limit CPU CFS (Completely Fair Scheduler) period
+      --cpu-quota int                  Limit CPU CFS (Completely Fair Scheduler) quota
+      --cpu-rt-period int              Limit CPU real-time period in microseconds
+      --cpu-rt-runtime int             Limit CPU real-time runtime in microseconds
+  -c, --cpu-shares int                 CPU shares (relative weight)
+      --cpus decimal                   Number of CPUs
+      --cpuset-cpus string             CPUs in which to allow execution (0-3, 0,1)
+      --cpuset-mems string             MEMs in which to allow execution (0-3, 0,1)
+  -d, --detach                         Run container in background and print container ID
+      --detach-keys string             Override the key sequence for detaching a container
+      --device list                    Add a host device to the container
+      --device-cgroup-rule list        Add a rule to the cgroup allowed devices list
+      --device-read-bps list           Limit read rate (bytes per second) from a device (default [])
+      --device-read-iops list          Limit read rate (IO per second) from a device (default [])
+      --device-write-bps list          Limit write rate (bytes per second) to a device (default [])
+      --device-write-iops list         Limit write rate (IO per second) to a device (default [])
+      --disable-content-trust          Skip image verification (default true)
+      --dns list                       Set custom DNS servers
+      --dns-option list                Set DNS options
+      --dns-search list                Set custom DNS search domains
+      --entrypoint string              Overwrite the default ENTRYPOINT of the image
+  -e, --env list                       Set environment variables
+      --env-file list                  Read in a file of environment variables
+      --expose list                    Expose a port or a range of ports
+      --group-add list                 Add additional groups to join
+      --health-cmd string              Command to run to check health
+      --health-interval duration       Time between running the check (ns|us|ms|s|m|h) (default 0s)
+      --health-retries int             Consecutive failures needed to report unhealthy
+      --health-start-period duration   Start period for the container to initialize before starting health-retries
+                                       countdown (ns|us|ms|s|m|h) (default 0s)
+      --health-timeout duration        Maximum time to allow one check to run (ns|us|ms|s|m|h) (default 0s)
+      --help                           Print usage
+  -h, --hostname string                Container host name
+      --init                           Run an init inside the container that forwards signals and reaps processes
+  -i, --interactive                    Keep STDIN open even if not attached
+      --ip string                      IPv4 address (e.g., 172.30.100.104)
+      --ip6 string                     IPv6 address (e.g., 2001:db8::33)
+      --ipc string                     IPC namespace to use
+      --isolation string               Container isolation technology
+      --kernel-memory bytes            Kernel memory limit
+  -l, --label list                     Set meta data on a container
+      --label-file list                Read in a line delimited file of labels
+      --link list                      Add link to another container
+      --link-local-ip list             Container IPv4/IPv6 link-local addresses
+      --log-driver string              Logging driver for the container
+      --log-opt list                   Log driver options
+      --mac-address string             Container MAC address (e.g., 92:d0:c6:0a:29:33)
+  -m, --memory bytes                   Memory limit
+      --memory-reservation bytes       Memory soft limit
+      --memory-swap bytes              Swap limit equal to memory plus swap: '-1' to enable unlimited swap
+      --memory-swappiness int          Tune container memory swappiness (0 to 100) (default -1)
+      --mount mount                    Attach a filesystem mount to the container
+      --name string                    Assign a name to the container
+      --network string                 Connect a container to a network (default "default")
+      --network-alias list             Add network-scoped alias for the container
+      --no-healthcheck                 Disable any container-specified HEALTHCHECK
+      --oom-kill-disable               Disable OOM Killer
+      --oom-score-adj int              Tune host's OOM preferences (-1000 to 1000)
+      --pid string                     PID namespace to use
+      --pids-limit int                 Tune container pids limit (set -1 for unlimited)
+      --privileged                     Give extended privileges to this container
+  -p, --publish list                   Publish a container's port(s) to the host
+  -P, --publish-all                    Publish all exposed ports to random ports
+      --read-only                      Mount the container's root filesystem as read only
+      --restart string                 Restart policy to apply when a container exits (default "no")
+      --rm                             Automatically remove the container when it exits
+      --runtime string                 Runtime to use for this container
+      --security-opt list              Security Options
+      --shm-size bytes                 Size of /dev/shm
+      --sig-proxy                      Proxy received signals to the process (default true)
+      --stop-signal string             Signal to stop a container (default "SIGTERM")
+      --stop-timeout int               Timeout (in seconds) to stop a container
+      --storage-opt list               Storage driver options for the container
+      --sysctl map                     Sysctl options (default map[])
+      --tmpfs list                     Mount a tmpfs directory
+  -t, --tty                            Allocate a pseudo-TTY
+      --ulimit ulimit                  Ulimit options (default [])
+  -u, --user string                    Username or UID (format: <name|uid>[:<group|gid>])
+      --userns string                  User namespace to use
+      --uts string                     UTS namespace to use
+  -v, --volume list                    Bind mount a volume
+      --volume-driver string           Optional volume driver for the container
+      --volumes-from list              Mount volumes from the specified container(s)
+  -w, --workdir string                 Working directory inside the container
+ 
+```
+### 3. 命令行式启动容器 (Ad hoc方式执行容器命令)
 所谓ad hoc方式就是 一次性执行完成后即销毁。
 
 格式: `docker run image [command] [arg]`   
@@ -74,7 +176,7 @@ CONTAINER ID        IMAGE               COMMAND                 CREATED         
 我们发现通过`docker run image command arg`命令是一次性启动容器执行命令执行完毕后销毁容器。
 
 
-## 4. 交互式启动容器(始终运行直到退出)
+### 4. 交互式启动容器(始终运行直到退出)
 格式: `docker run -i -t image /bin/bash`
 * `-i` --interactive=true|false false是默认  代表:交互式 保持打开
 * `-t` --tty=true|false false是默认   代表:伪终端
@@ -104,6 +206,63 @@ exit
 >6. 执行用户指定的应用程序 
 >7. 执行完毕后容器被终止
 
+但给我们进行容器内部执行top或ps命令时，看到的进程真的是只有运行的bash进程，这可谓是货真价实的轻量级虚拟化，Docker对资源的利用率是极高的。
+
+
+### 5. 后台运行及log
+
+```sh
+$ sudo docker run -d ubuntu:14.04 /bin/sh -c  "while true; do echo hello world >> out.txt; sleep 1; done"
+3aa5c9587ec6bb4a65e363e8f264b84bdb74ec079b66b531683248cb0cc14d4c
+$ dps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+3aa5c9587ec6        ubuntu:14.04        "/bin/sh -c 'while..."   13 seconds ago      Up 12 seconds                           nervous_nightingale
+094cc6b45666        ubuntu:14.04        "/bin/sh -c 'while..."   11 minutes ago      Up 11 minutes                           brave_leavitt
+f6777103d420        ubuntu:14.04        "/bin/sh -c 'while..."   14 minutes ago      Up 14 minutes                           amazing_borg
+a4bba758a357        ubuntu:14.04        "/bin/sh -c 'while..."   21 minutes ago      Up 21 minutes                           admiring_albattani
+$ docker exec -it nervous_nightingale /bin/bash
+root@3aa5c9587ec6:/# tail -f -n 5 out.txt
+hello world
+hello world
+hello world
+hello world
+hello world
+hello world
+...
+```
+
+```sh
+docker run  ubuntu:14.04 /bin/sh -c  "while true; do echo hello world; sleep 1; done"
+```
+上述命令直接echo不重定向 并且也不使用-d参数，则会输出到宿主机控制台打印。
+那么使用了-d后台执行（守护态运行），该如何查看输出呢。  
+
+可以使用`docker logs ImageId`查看  
+
+```sh
+$ docker run -d  ubuntu:14.04 /bin/sh -c  "while true; do echo hello world; sleep 1; done"
+4e68334f01e87e4ff616ee5b28b9df3348c69797cda56734768a745076b34962
+$ docker logs 4e6
+hello world
+hello world
+......
+```
+
+注意容器运行的长久和-d参数并无关系。而是和run执行的命令有关。
+
+```sh
+$ docker run -d ubuntu /bin/bash echo "helo"
+de23886dbb5ec0336a7338f02ba87b24d1ae1b8f388f377e2f0513155e1bef71
+$ dps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS               NAMES
+3aa5c9587ec6        ubuntu:14.04        "/bin/sh -c 'while..."   3 minutes ago       Up 3 minutes                            nervous_nightingale
+094cc6b45666        ubuntu:14.04        "/bin/sh -c 'while..."   15 minutes ago      Up 15 minutes                           brave_leavitt
+f6777103d420        ubuntu:14.04        "/bin/sh -c 'while..."   17 minutes ago      Up 17 minutes                           amazing_borg
+a4bba758a357        ubuntu:14.04        "/bin/sh -c 'while..."   24 minutes ago      Up 24 minutes                           admiring_albattani
+$ dpa
+CONTAINER ID        IMAGE                          COMMAND                  CREATED             STATUS                        PORTS               NAMES
+de23886dbb5e        ubuntu                         "/bin/bash echo helo"    9 seconds ago       Exited (126) 8 seconds ago                        compassionate_hermann
+```
 ## 5. 查看容器
 
 镜像可以理解为类/模板(静态)，而容器则为对象/实例(动态)。
@@ -345,18 +504,21 @@ UID                 PID                 PPID                C                   
 root                2106                2090                0                   Aug09               ?                   00:00:00            nginx: master process nginx -g daemon off;
 syslog              2136                2106                0                   Aug09               ?                   00:00:00            nginx: worker process
 ```
+## 停止后台运行的容器
+`docker stop <[id]|[name]>`
+## 重启容器
+`docker restart <[id] | [name]>`
+
 ## 6. 删除容器
 ### 启动时指定删除参数
 通过`docker ps -a`我们看到容器终止了但并未从磁盘中删除，如果只是临时启动查看调试，最好是在容器使用完就立即删除。可以在容器启动时指定删除参数 --rm,
 `docker run -it --rm ubuntu`
 
-
-
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 
-ubuntu@VM-40-206-ubuntu:~$ docker run -it --rm ubuntu
+$ docker run -it --rm ubuntu
 
 root@ad012ed44bad:/# cat /etc/os-release
 NAME="Ubuntu"
@@ -374,7 +536,7 @@ UBUNTU_CODENAME=xenial
 root@ad012ed44bad:/# exit
 exit
 
-ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
 ### 手动删除
@@ -382,25 +544,52 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 可以一次指定多个id或name进行批量删除。
 
 ### 指定范围删除
-可以使用-q列出id，-f(filter)指定范围，-a（all）
+可以使用-q列出id，-a（all）
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker rm $(docker ps -a -q)
+$ docker rm $(docker ps -a -q)
 55786ea74515
 3919977d3196
 2e560729b00e
 ecf071aa33e9
 cda92d5f5a3d
-ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
 ```
+### 删除正在运行中的容器
+docker rm -f id|name
+
+```sh
+ubuntu@ip-172-31-7-64:~$ dps
+CONTAINER ID        IMAGE                          COMMAND             CREATED             STATUS                  PORTS                                   NAMES
+7940bb3835e9        ubuntu                         "/bin/bash"         2 hours ago         Up 2 hours                                                      sad_bhaskara
+907e76a0bbce        twang2218/gitlab-ce-zh:9.4.3   "/assets/wrapper"   2 days ago          Up 39 hours (healthy)   22/tcp, 443/tcp, 0.0.0.0:3000->80/tcp   youthful_lalande
+ubuntu@ip-172-31-7-64:~$ docker rm 794
+Error response from daemon: You cannot remove a running container 7940bb3835e9211f4bec43fed39df871dabd560f7b6d442ab734d3716f170e7a. Stop the container before attempting removal or force remove
+ubuntu@ip-172-31-7-64:~$ docker rm -f 794
+794
+ubuntu@ip-172-31-7-64:~$ dps
+CONTAINER ID        IMAGE                          COMMAND             CREATED             STATUS                  PORTS                                   NAMES
+907e76a0bbce        twang2218/gitlab-ce-zh:9.4.3   "/assets/wrapper"   2 days ago          Up 39 hours (healthy)   22/tcp, 443/tcp, 0.0.0.0:3000->80/tcp   youthful_lalande
+```
+### 清除所有停止状态的容器
+docker rm $(docker ps -a -q)
+
+```sh
+ubuntu@ip-172-31-7-64:~$ docker rm $(docker ps -a -q)
+8866b7a94a13
+3efcf02ffdef
+......
+Error response from daemon: You cannot remove a running container 907e76a0bbced90f77c62545833c4f14b659281dfc4f8b181744fae250092501. Stop the container before attempting removal or force remove
+```
+注意:该组合命令会试图删除已经停止的容器，和docker rm命令类似，不会删除运行中的容器。删除所有，的话加上-f即可。但生产中尽量小心删除操作。 
 
 ## 删除镜像
 `docker rmi [options] Image [Image...]`
 
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker rmi --help
+$ docker rmi --help
 
 Usage:	docker rmi [OPTIONS] IMAGE [IMAGE...]
 
@@ -415,7 +604,7 @@ Options:
 ## 7. 指定名称、端口、后台运行容器
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker run --name webserver -d -p 80:80 nginx
+$ docker run --name webserver -d -p 80:80 nginx
 Unable to find image 'nginx:latest' locally
 latest: Pulling from library/nginx
 94ed0c431eb5: Pull complete
@@ -425,35 +614,92 @@ Digest: sha256:788fa27763db6d69ad3444e8ba72f947df9e7e163bad7c1f5614f8fd27a311c3
 Status: Downloaded newer image for nginx:latest
 c8d74c1b40fcd95234568b9a98deb77a3a9fe2c29fac02094b1724cb6550e263
 
-ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
 c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   53 seconds ago      Up 52 seconds       0.0.0.0:80->80/tcp   webserver
 ```
 
-## 8. 停止后台运行的容器
-`docker stop <[id]|[name]>`
+
 
 ## 9. 进入容器执行操作
 
+### exec  
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker exec -it webserver bash
+$ docker exec -it webserver bash
 
 root@c8d74c1b40fc:/# echo '<h1>Hello, Docker!</h1>' > /usr/share/nginx/html/index.html
 root@c8d74c1b40fc:/# exit
 exit
 
-ubuntu@VM-40-206-ubuntu:~$ docker ps
+$ docker ps
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
 c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   7 minutes ago       Up 7 minutes        0.0.0.0:80->80/tcp   webserver
 ```
 注意: exec后面的bash不能省略
 
 这种操作生产中一般不用，而是使用Dockerfile来定制镜像
+
+
+
+
+### attach    
+### ncenter  
+ubuntu14.04 及以前版本需要下载安装
+
+```sh
+wget https://www.kernel.org/pub/linux/utils/util-linux/v2.29/util-linux-2.29.tar.xz; tar xJvf util-linux-2.29.tar.xz;
+cd util-linux-2.29;
+./configure --without-ncurses && make nsenter;
+sudo cp nsenter /usr/local/bin;
+```  
+
+使用bashrc_docker添加一些alias
+```sh
+wget -P ~ https://github.com/yeasy/docker_practice/raw/master/_local/.bashrc_docker;
+echo "[ -f ~/.bashrc_docker ] && . ~/.bashrc_docker" >> ~/.bashrc; source ~/.bashrc;
+```
+
+docker-enter containerId
+
+注意:docker-enter可能因为ncenter没有安装无法使用，需先安装ncenter。另外docker-enter脚本执行过程中可能因为权限或路径的问题，需要修改下脚本
+
+```sh
+vim ~/.bashrc_docker
+if [ -z "$1" ]; then
+            # No command given.
+            # Use su to clear all host environment variables except for TERM,
+            # initialize the environment variables HOME, SHELL, USER, LOGNAME, PATH,
+            # and start a login shell.
+            #sudo $NSENTER "$OPTS" su - root
+            "$NSENTER" $OPTS /bin/su - root  ## 需要添加
+            sudo $NSENTER --target $PID --mount --uts --ipc --net --pid su - root
+        else
+            # Use env to clear all host environment variables.
+            sudo $NSENTER --target $PID --mount --uts --ipc --net --pid env -i $@
+        fi
+```
+
+docker-center ContainerID
+```sh
+ubuntu@ip-172-31-7-64:~$ dpl
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+7940bb3835e9        ubuntu              "/bin/bash"         About an hour ago   Up About an hour                        sad_bhaskara
+ubuntu@ip-172-31-7-64:~$ docker-enter 794
+mesg: ttyname failed: Success
+root@7940bb3835e9:~# ifconfig
+-su: ifconfig: command not found
+root@7940bb3835e9:~# exit
+logout
+ubuntu@ip-172-31-7-64:~$ dpl
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+7940bb3835e9        ubuntu              "/bin/bash"         About an hour ago   Up About an hour                        sad_bhaskara
+```
+
 ## 10. 查看容器的修改
 我们进入到容器中修改了nginx的欢迎页，相当于修改了容器的存储层。
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker diff webserver
+$ docker diff webserver
 C /root
 A /root/.bash_history
 C /run
@@ -475,14 +721,14 @@ A /var/cache/nginx/uwsgi_temp
 ## 11. 提交容器修改
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker commit \
+$ docker commit \
 >     --author "gomaster.me" \
 >     --message "修改了nginx欢迎页" \
 >     webserver \
 >     nginx:v2
 sha256:2668bc9d4355941ff856b33c1b89afef0f16cb26d20e3dd99c634b1e419ec526
 
-ubuntu@VM-40-206-ubuntu:~$ docker images -a
+$ docker images -a
 REPOSITORY          TAG                 IMAGE ID            CREATED              SIZE
 nginx               v2                  2668bc9d4355        About a minute ago   107MB
 nginx               latest              b8efb18f159b        13 days ago          107MB
@@ -497,7 +743,7 @@ dcoker commit可以提交保留镜像的修改，但是我们看到很多无关�
 
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker history nginx:v2
+$ docker history nginx:v2
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
 2668bc9d4355        3 minutes ago       nginx -g daemon off;                            97B                 修改了nginx欢迎页
 b8efb18f159b        13 days ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "daem...   0B
@@ -510,14 +756,14 @@ b8efb18f159b        13 days ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "da
 <missing>           13 days ago         /bin/sh -c #(nop)  MAINTAINER NGINX Docker...   0B
 <missing>           2 weeks ago         /bin/sh -c #(nop)  CMD ["bash"]                 0B
 <missing>           2 weeks ago         /bin/sh -c #(nop) ADD file:fa8dd9a679f473a...   55.3MB
-ubuntu@VM-40-206-ubuntu:~$
+$
 ```
 
 ## 13. 使用定制镜像
 根据之前提交的镜像修改，我们可以指定运行定制过的镜像。
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker run --name web2 -d -p 81:80 nginx:v2
+$ docker run --name web2 -d -p 81:80 nginx:v2
 0f9d91cbf6339270dbd5f79adb4c8316a9a43314e03afa12b60a902dcf2ff62d
 ```
 将容器nginx运行的80端口转发映射到了宿主机的81端口。
@@ -526,7 +772,7 @@ ubuntu@VM-40-206-ubuntu:~$ docker run --name web2 -d -p 81:80 nginx:v2
 
 注意下面的web4，nginx默认启动在80端口，而容器指定的是-p 82:81 虽然没有冲突可以启动，但是服务是访问不了的
 ```
-ubuntu@VM-40-206-ubuntu:~$ docker ps -a
+$ docker ps -a
 CONTAINER ID        IMAGE               COMMAND                  CREATED              STATUS              PORTS                        NAMES
 594db566b3c0        nginx:v2            "nginx -g 'daemon ..."   51 seconds ago       Up 50 seconds       80/tcp, 0.0.0.0:82->81/tcp   web4
 c0676feff795        nginx:v2            "nginx -g 'daemon ..."   About a minute ago   Created                                          web3
@@ -631,7 +877,7 @@ ADD 包含类似tar的解压功能
 `COPY index.html /usr/share/nginx/html/`
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~/mynginx$ cat Dockerfile
+/mynginx$ cat Dockerfile
 FROM nginx
 MAINTAINER gomaster.me@sina.com "xx@qq.com"
 #RUN echo "Hello Docker!" > /usr/share/nginx/html/index.html
@@ -699,8 +945,8 @@ USER nginx
 注意下面的`# Executing 1 build trigger...`
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~/mynginx$ vim Dockerfile
-ubuntu@VM-40-206-ubuntu:~/mynginx$ docker build -t cp-nginx-onbuild-base .
+/mynginx$ vim Dockerfile
+/mynginx$ docker build -t cp-nginx-onbuild-base .
 Sending build context to Docker daemon  3.072kB
 Step 1/5 : FROM cp-nginx-onbuild
 # Executing 1 build trigger...
@@ -725,7 +971,7 @@ Step 5/5 : CMD /usr/sbin/nginx -g daemon off;
 Removing intermediate container 191f772117bf
 Successfully built b1808c62e3a3
 Successfully tagged cp-nginx-onbuild-base:latest
-ubuntu@VM-40-206-ubuntu:~/mynginx$ docker run --name cp-nginx-onbuild-base -p 9994:80 -d cp-nginx-onbuild-base
+/mynginx$ docker run --name cp-nginx-onbuild-base -p 9994:80 -d cp-nginx-onbuild-base
 ccffda2996b4793ec3de76e827f2af3c9a9bc6465789ba088a858f96c5d6ee3b
 ```
 #### 6. HEALTHCHECK
@@ -779,11 +1025,11 @@ gitlab尽量单独部署一台机器，4g以上内存，低配机器安装都是
 ## 查看unhealthy的容器状态
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~$ docker ps
+$ docker ps
 CONTAINER ID        IMAGE                          COMMAND                  CREATED             STATUS                   PORTS                                   NAMES
 ed235fa04001        twang2218/gitlab-ce-zh:9.4.3   "/assets/wrapper"        2 hours ago         Up 2 hours (unhealthy)   22/tcp, 443/tcp, 0.0.0.0:3000->80/tcp   inspiring_mcclintock
 5d3c556c20ee        nginx:v3                       "nginx -g 'daemon ..."   3 hours ago         Up 3 hours               0.0.0.0:8888->80/tcp                    web-nginxv3
-ubuntu@VM-40-206-ubuntu:~$ docker inspect --format '{{json .State.Health}}' inspiring_mcclintock | python -m json.tool
+$ docker inspect --format '{{json .State.Health}}' inspiring_mcclintock | python -m json.tool
 {
     "FailingStreak": 136,
     "Log": [
@@ -825,7 +1071,7 @@ ubuntu@VM-40-206-ubuntu:~$ docker inspect --format '{{json .State.Health}}' insp
 在构建过程中我们可以看到有中间层镜像生成，那么这些中间层镜像我们可以在以后进行容器运行调试，如果信息清屏掉，可以使用`docker history image`
 
 ```sh
-ubuntu@VM-40-206-ubuntu:~/mynginx$ docker history cp-nginx-onbuild-base
+/mynginx$ docker history cp-nginx-onbuild-base
 IMAGE               CREATED             CREATED BY                                      SIZE                COMMENT
 b1808c62e3a3        24 minutes ago      /bin/sh -c #(nop)  CMD ["/usr/sbin/nginx" ...   0B
 7b3f18ef4f9e        24 minutes ago      /bin/sh -c #(nop)  EXPOSE 80/tcp                0B
@@ -890,5 +1136,13 @@ curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62
 ### docker alias
 [docker useful tip](https://kartar.net/2014/03/useful-docker-bash-functions-and-aliases/)
 [docker alias](https://github.com/tcnksm/docker-alias/blob/master/zshrc)
+
+脚本
+```sh
+wget -P ~ https://raw.githubusercontent.com/tcnksm/docker-alias/master/zshrc;
+## 注意下一行脚本需根据具体的src目录调整下
+mv raw.githubusercontent.com/tcnksm/docker-alias/master/zshrc .alias-docker;
+echo "[ -f ~/.alias-docker ] && . ~/.alias-docker" >> ~/.bashrc; source ~/.bashrc;
+```
 
 
