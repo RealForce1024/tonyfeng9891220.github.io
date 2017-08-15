@@ -152,8 +152,9 @@ ubuntu@ip-172-31-7-64:~$ docker run -it --name cdv02 myubuntu2
 root@1de702ad9215:/# ls
 bin  boot  dataVolume01  dataVolume2  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
 ```
- 
+ 使用Dockerfile指定的volume是不能够引蛇道本地已经存在的文件目录中的。
  我们来关注下使用Dockerfile的挂载信息。通过查看我们发现src是docker来生成的，并且每次创建不同的容器，本地的docker文件路径也是不一样的。并且这样的目录数据是服务被容器共享的。容器启动时在镜像中创建的数据卷都会被进行一次完整的初始化，那么根据镜像指定数据卷创建的容器所使用的数据卷就没有办法进行数据共享。我们不能访问本地目录时，该如何在容器间共享数据呢？解决方案是数据卷容器。
+ 
 ```sh
 $ docker inspect cdv01
 
@@ -232,4 +233,80 @@ nifty_johnson
 ubuntu@ip-172-31-7-64:~$ docker exec nifty_johnson cat /data/c3
 c22
 ```
+
+## 数据卷容器
+挂载数据卷的容器，叫做数据卷容器。容器挂载了数据卷，其他容器可以**通过挂载该容器实现数据共享**。
+![-w450](media/15026936197625.jpg)
+
+用法: `docker run --volumes-from container-name|id`
+
+
+```sh
+ubuntu@ip-172-31-7-64:~$ dpl
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+0b31695929e9        ubuntu              "/bin/bash"         44 hours ago        Up 9 minutes                            c2
+ubuntu@ip-172-31-7-64:~$ docker-enter 0b31
+mesg: ttyname failed: Success
+
+root@0b31695929e9:~# echo /data/c
+c1  c2  c3  c4
+
+root@0b31695929e9:~# echo "c4 colume" > /data/c4
+root@0b31695929e9:~# cat /data/c4
+c4 colume
+root@0b31695929e9:~# exit
+logout
+
+ubuntu@ip-172-31-7-64:~$ docker run -it --name c5 --volumes-from c2 ubuntu /bin/bash
+root@b8465f2c1ac9:/# ll /data
+total 24
+drwxr-xr-x  2 root root 4096 Aug 14 08:44 ./
+drwxr-xr-x 35 root root 4096 Aug 14 08:52 ../
+-rw-r--r--  1 root root    6 Aug 12 12:22 c1
+-rw-r--r--  1 root root   16 Aug 12 11:44 c2
+-rw-r--r--  1 root root    4 Aug 12 12:24 c3
+-rw-r--r--  1 root root   10 Aug 14 08:50 c4
+
+root@b8465f2c1ac9:~# echo "c5 in container" > /data/c5
+root@b8465f2c1ac9:~# ll /data
+total 28
+drwxr-xr-x  2 root root 4096 Aug 14 08:57 ./
+drwxr-xr-x 35 root root 4096 Aug 14 08:52 ../
+-rw-r--r--  1 root root    6 Aug 12 12:22 c1
+-rw-r--r--  1 root root   16 Aug 12 11:44 c2
+-rw-r--r--  1 root root    4 Aug 12 12:24 c3
+-rw-r--r--  1 root root   10 Aug 14 08:50 c4
+-rw-r--r--  1 root root   16 Aug 14 08:57 c5
+root@b8465f2c1ac9:~# exit
+logout
+ubuntu@ip-172-31-7-64:~$ docker-enter c2
+mesg: ttyname failed: Success
+root@0b31695929e9:~# ll /data
+total 28
+drwxr-xr-x  2 root root 4096 Aug 14 08:57 ./
+drwxr-xr-x 36 root root 4096 Aug 12 12:24 ../
+-rw-r--r--  1 root root    6 Aug 12 12:22 c1
+-rw-r--r--  1 root root   16 Aug 12 11:44 c2
+-rw-r--r--  1 root root    4 Aug 12 12:24 c3
+-rw-r--r--  1 root root   10 Aug 14 08:50 c4
+-rw-r--r--  1 root root   16 Aug 14 08:57 c5
+```
+我们看到两个容器的数据进行了数据共享。我们并不需要确切的知道一直的docker宿主机的文件目录，这点在多租户的环境下非常重要，因为在该种情况下我们并不想暴露服务器的实际目录。
+
+```sh
+docker inspect --format="{{.Volumes}}" c5
+```
+注意可以--format中按照层级来分配，比如`{{.Config.Volumes}}`
+![](media/15027023534135.jpg)
+
+数据卷容器只是配置信息的传递，当我们将数据卷容器删除，其他挂载该数据卷容器的数据卷还是可以进行读写的。
+![](media/15027025530943.jpg)
+
+如果使用`docker rm -v cid`即删除数据卷容器的同时也将数据卷删除，那么其他引用容器的数据是否可用? 通过下面的实验，依然有效。说明数据卷容器只是传递配置信息，当数据卷还有容器在使用时就不会被删除。
+![](media/15027028028749.jpg)
+
+## Docker数据备份和还原
+![](media/15027030668287.jpg)
+
+![-w450](media/15027032192695.jpg)
 

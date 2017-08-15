@@ -175,7 +175,7 @@ CONTAINER ID        IMAGE               COMMAND                 CREATED         
 ```
 我们发现通过`docker run image command arg`命令是一次性启动容器执行命令执行完毕后销毁容器。
 
-
+Ctrl+C退出，container就停止了，按`ctrl-p ctrl-q`(组合键)可以退出到宿主机，而保持container仍然在运行。另外，如果-d启动但后面的命令执行完就结束了，后台运行容器，不会进入到容器。
 ### 4. 交互式启动容器(始终运行直到退出)
 格式: `docker run -i -t image /bin/bash`
 * `-i` --interactive=true|false false是默认  代表:交互式 保持打开
@@ -266,6 +266,13 @@ de23886dbb5e        ubuntu                         "/bin/bash echo helo"    9 se
 ## 5. 查看容器
 
 镜像可以理解为类/模板(静态)，而容器则为对象/实例(动态)。
+
+`docker inspect -f {{format}} container`
+
+```sh
+ubuntu@ip-172-31-7-64:~$ docker inspect -f {{.Name}} 23f23
+/zealous_montalcini
+```
 ### docker ps
 
 `docker ps [-a]|[-l]`  
@@ -1144,5 +1151,36 @@ wget -P ~ https://raw.githubusercontent.com/tcnksm/docker-alias/master/zshrc;
 mv raw.githubusercontent.com/tcnksm/docker-alias/master/zshrc .alias-docker;
 echo "[ -f ~/.alias-docker ] && . ~/.alias-docker" >> ~/.bashrc; source ~/.bashrc;
 ```
+### 
+[启动服务后如何保持Docker容器运行？](https://gxnotes.com/article/106906.html)
 
+[下面是容器的常用操作命令](https://www.ibm.com/developerworks/community/blogs/132cfa78-44b0-4376-85d0-d3096cd30d3f/entry/%E5%AE%9E%E7%8E%B0%E5%AE%B9%E5%99%A8%E7%9A%84%E5%BA%95%E5%B1%82%E6%8A%80%E6%9C%AF_%E6%AF%8F%E5%A4%A95%E5%88%86%E9%92%9F%E7%8E%A9%E8%BD%AC_Docker_%E5%AE%B9%E5%99%A8%E6%8A%80%E6%9C%AF_30?lang=en)：
+
+```
+create      创建容器  
+
+run         运行容器  
+
+pause       暂停容器  
+
+unpause     取消暂停继续运行容器  
+
+stop        发送 SIGTERM 停止容器  
+
+kill        发送 SIGKILL 快速停止容器  
+
+start       启动容器  
+
+restart     重启容器  
+
+attach      attach 到容器启动进程的终端  
+
+exec        在容器中启动新进程，通常使用 "-it" 参数  
+
+logs        显示容器启动进程的控制台输出，用 "-f" 持续打印  
+
+rm          从磁盘中删除容器
+
+
+```
 
