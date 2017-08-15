@@ -211,6 +211,18 @@ exit
 
 ### 5. 后台运行及log
 
+docker logs : 获取容器的日志
+语法:
+`docker logs [OPTIONS] CONTAINER`
+OPTIONS说明：
+
+```sh
+-f : 跟踪日志输出
+--since :显示某个开始时间的所有日志
+-t : 显示时间戳
+--tail :仅列出最新N条容器日志
+```
+
 ```sh
 $ sudo docker run -d ubuntu:14.04 /bin/sh -c  "while true; do echo hello world >> out.txt; sleep 1; done"
 3aa5c9587ec6bb4a65e363e8f264b84bdb74ec079b66b531683248cb0cc14d4c
