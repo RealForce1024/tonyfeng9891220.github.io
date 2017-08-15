@@ -1,19 +1,88 @@
-操作步骤
-----------------
+##目录清单
+
+```sh
+☁  workshop_day1  tree
+.
+├── Vagrantfile
+├── VirtualBox-5.1.18-114002-OSX.dmg
+├── ci
+│   ├── 1.groovy
+│   ├── 2.groovy
+│   └── 3.groovy
+├── hello
+│   ├── build.gradle
+│   ├── config
+│   │   └── checkstyle.xml
+│   └── src
+│       ├── main
+│       │   ├── docker
+│       │   │   └── Dockerfile
+│       │   ├── java
+│       │   │   └── com
+│       │   │       ├── example
+│       │   │       │   ├── HelloApplication.java
+│       │   │       │   └── app
+│       │   │       │       └── hello
+│       │   │       │           └── HelloController.java
+│       │   │       └── leanms
+│       │   │           └── appointment
+│       │   │               ├── DatabaseLoader.java
+│       │   │               ├── HomeController.java
+│       │   │               ├── Resource.java
+│       │   │               └── ResourceRepository.java
+│       │   └── resources
+│       │       ├── VERSION
+│       │       └── application.properties
+│       └── test
+│           ├── java
+│           │   └── com
+│           │       └── example
+│           │           ├── HelloApplicationTests.java
+│           │           └── app
+│           │               └── hello
+│           │                   └── HelloControllerTest.java
+│           └── resources
+├── jdk-8u121-macosx-x64.dmg
+├── leanms_d1.box
+├── prepare.sh
+└── vagrant_1.9.2.dmg
+
+21 directories, 22 files
+```
+
+![-w500](media/15027964096817.jpg)
+
+注意: 其中内部的leanms_d1.box virtualbox镜像中含有docker-compose Dockerfile等文件
+
 ## CI部分
-1. 准备环境
-宿主机器上
+1、 执行初始化环境脚本  
+
 ```sh
 cd workshop01
 ./prepare.sh
 ```
-2. 登录虚拟机,启动Gitlab,Jenkins服务 
+
+`prepare.sh`功能为部署虚机镜像.
+
+```sh
+☁  workshop_day1  cat prepare.sh
+vagrant box add leanmsd1 leanms_d1.box
+vagrant up
+vagrant ssh
+```
+
+2、 登录虚拟机,启动Gitlab,Jenkins服务   
+
 ```sh
 vagrant ssh
-cd ci
+vagrant@vagrant:~$ ls
+cd  ci  temp
+
+vagrant@vagrant:~$ cd ci
 sudo docker-compose up
 ```
 
+**访问地址及账户信息**:
 Gitlab  
     http://192.168.33.10/  
     root/abcd1234  
@@ -21,9 +90,47 @@ Jenkins
     http://192.168.33.10:8080/  
     admin/abcd1234
 
+**docker-compose文件内容**:
+
+```sh
+vagrant@vagrant:~/ci$ cat docker-compose.yml
+version: '2'
+
+services:
+  gitlab:
+      image: gitlab/gitlab-ce:latest
+      ports:
+          - "443:443"
+          - "80:80"
+      networks:
+          - hello
+      volumes:
+          - ~/temp/gitlab/config:/etc/gitlab
+          - ~/temp/gitlab/logs:/var/log/gitlab
+          - ~/temp/gitlab/data:/var/opt/gitlab
+
+  jenkins:
+      image: leanms/jenkins:0.1
+      ports:
+          - "8080:8080"
+          - "50000:50000"
+      networks:
+          - hello
+      volumes:
+          - ~/temp/jenkins:/var/jenkins_home
+          - /var/run/docker.sock:/var/run/docker.sock
+          - ~/temp/gradle/:/root/.gradle
+
+networks:
+  hello:
+    driver: bridge
+```
+
+
+
 3. 提交代码  
     a. 先删除掉Gitlab仓库中的`hello`工程。(后续脚本都是固定的`hello`命名的工程)  
-    b. 新建`helo`工程，设置为public。  
+    b. 新建`hello`工程，设置为public。  
     c. 按照空的`hello`工程提供的readme方案，将本地代码关联到Gitlab仓库。  
       (最核心点在于 git init remote add commit push)
 
@@ -58,6 +165,7 @@ Jenkins
     git push -u origin --all
     git push -u origin --tags
     ```
+    
 4. 手动运行web服务   
     a. 使用gradle编译代码    
         虚机中  
@@ -174,23 +282,10 @@ sh blue_green_upgrade.sh
 
 agenda
 
-破冰
+破冰环节
     黄邦伟 喜欢咖啡 新加坡
     吴雪峰 跑步 
-    王龙 写代码的
-    景韵 devops 
-    龚波 户外
-
-
-    于慧明  看书
-    raoke  睡觉 
-    陈占文 旅行
-    林伟伟 读书
-
-    吕博洋 旅行 
-    科之光  旅行 
-    石国庆 爬山 
-    冯琪超 打球的
+    
 
 
 精益 微服务 极限编程

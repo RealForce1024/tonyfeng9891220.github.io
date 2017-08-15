@@ -26,4 +26,6 @@ breif
 
 [docker专题(2)：docker常用管理命令（上）](https://segmentfault.com/a/1190000000751601)
 
+[小娜老师的讲义-Kubernetes+docker实战（一）](http://blog.csdn.net/u013161561/article/details/55530718)
+
 
