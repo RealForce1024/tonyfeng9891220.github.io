@@ -1,7 +1,18 @@
+
 # docker基础操作
 命令用法很简单，记住一条即可。
 `docker command --help`
 
+## 安装
+daocloud的安装脚本 
+```sh
+curl -sSL https://get.daocloud.io/docker | sh
+```
+
+阿里云
+```sh
+curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -
+```
 ## 1. 拉取镜像 docker pull
 `docker pull <Image>`
 如果没有仓库，则说明是从默认的dockerHub仓库下载，但国内网络环境你懂的。最佳的方式是使用云服务商的dockerHub加速器。阿里云和腾讯云的加速器都非常不错。

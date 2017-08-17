@@ -1,10 +1,29 @@
 ## 理论 重要！
-很有启发的一片文章
 
-[不可错过的「持续集成」进阶指南](https://zhuanlan.zhihu.com/p/23264046)
+
+很有启发的一片文章 [不可错过的「持续集成」进阶指南](https://zhuanlan.zhihu.com/p/23264046)
 [谈谈持续集成，持续交付，持续部署之间的区别](http://blog.flow.ci/cicd_difference/)
 [应用Docker进行持续交付：用技术改变交付路程](https://yq.aliyun.com/articles/54783)
 [架構師觀點: 你需要什麼樣的 CI / CD ?](http://columns.chicken-house.net/2017/08/05/what-cicd-do-you-need/)
+看了该篇文章后，选择gitlab+docker/k8s是目前我决定使用构建CI/CD的平台。
+
+使用gitlab和k8s集成，对于目前的我来说没有必要。成本太高。大规模团队才适用。  
+
+- [Demo: CI/CD with GitLab](https://www.youtube.com/watch?v=1iXFbchozdY)
+- [Containers, Schedulers and GitLab CI](https://www.youtube.com/watch?v=d-9awBxEbvQ)
+
+这位印度工程师的案例非常好！但他的发音...
+- [CI/CD using Docker and Gitlab](https://www.youtube.com/watch?v=TPn5pL2yTmo)
+发现需要自行开启gitlab registry服务
+
+[GitLab容器注册服务已集成于Docker容器](http://www.infoq.com/cn/news/2016/05/gitlab-docker-registry?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global)
+
+[GitLab University: Docker](https://www.youtube.com/watch?v=ugOrCcbdHko)
+[Demo: Idea to Production](https://www.youtube.com/watch?v=pY4IbEXxxGY)
+[GitLab University: Basics of Git & GitLab](https://www.youtube.com/watch?v=03wb9FvO4Ak)
+
+[devops核心 持续交付](http://www.jianshu.com/p/5b433bc5ddf6)
+[DevOps系列｜为什么说Docker吊打了传统持续交付！](https://www.easyops.cn/news/362)
 [持续集成系统的演进之路](http://jolestar.com/ci-teamcity-vs-jenkins/)
 [https://fir.im/ 团队的ci产品 商业](http://docs.flow.ci/zh/ios_quick_start.html)  
 [flow.ci](https://flow.ci/?d=1502815891634)
@@ -23,9 +42,12 @@
 
 [JAVA后端工作流推荐五--Gitlab Runner对Gradle构建的SpringBoot项目进行持续集成--理论篇](https://blog.dxscx.com/2017/01/09/gitlab-runner/)
 [JAVA后端工作流推荐六--Gitlab Runner在Gradle构建的SpringBoot项目中的应用--实战篇](https://blog.dxscx.com/2017/01/09/gitlab-runner-gradle/)
+阿里云容器服务[基于Jenkins和Docker搭建持续交付流水线](https://www.alibabacloud.com/zh/getting-started/projects/setup-jenkins-based-continuous-delivery-pipeline-with-docker)
+
 ## 视频
 [Grab 在 gopherChina 上的演讲风格十分有趣，把持续集成和部署做到了极致，正如他们所说，“持续集成，我们是认真的”](https://www.v2ex.com/t/272343)
 可以查查去年的视频
+
 ## 实战训练
 [基于Docker的DevOps实战培训(GitLab+Jenkins)](http://docs.devopshub.cn/udad-devops-docker-hols/index.html)
 [DevOpsHub 文档中心](http://docs.devopshub.cn/)
@@ -112,4 +134,8 @@ gitlab-ci对于编译需要的环境，比如jdk，maven都需要自行配置。
 [如何基于接口文档生成模拟数据](http://blog.kazaff.me/2016/09/21/%E5%A6%82%E4%BD%95%E5%9F%BA%E4%BA%8E%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3%E7%94%9F%E6%88%90%E6%A8%A1%E6%8B%9F%E6%95%B0%E6%8D%AE/)
 
 [3 天烧脑式基于Docker的CI/CD实战训练营 | 北京站 宣传贴 不过目录可以学习下](http://dockone.io/article/2526)
+
+[gitlab docker 运维升级](http://www.jianshu.com/p/f836c3b867f8)
+
+
 
