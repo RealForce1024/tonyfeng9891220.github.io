@@ -225,28 +225,6 @@ fmt.Printf("%v\n", s)
 ```
 
 
-## 默认值
-变量声明时没有给予特定的初始值时，Go会给予默认值(Zero value)。有人也翻译称作为"零值"。
-
-默认值有以下几种:
-* 数值型 `0`
-* 布尔型 `false`
-* 字符型 `""`(空字符串)
-
-```go
-func main() {
-    var i int
-	var f string
-	var b bool
-	var s float64
-	//fmt.Printf(i, f, b, s)//can not use i(int) as string
-	fmt.Printf("%v,%q,%v,%v\n", i, f, b, s)
-	fmt.Printf("%v,%v,%v,%v\n", i, f, b, s)
-        //0,"",false,0 注意这里%q对于字符型值的作用
-        //0,,false,0
-}
-```
-
 
 ## 常量
 - 常量声明很像变量，只不过需要使用`const`关键字修饰
