@@ -6,14 +6,21 @@
 package main
 
 import (
-    "fmt"
+	"fmt"
 )
 
 func main() {
-    var str1 string = "\\\""
+	var str1 string = "\\\""
+	fmt.Printf("%v\n",str1)
 
-    fmt.Printf("用解释型字符串表示法表示的 %q 所代表的是 %s。\n", str1, `\`)
+	fmt.Printf("用解释型字符串表示法表示的 %q 所代表的是 %s。\n", str1, `\"`)
+	fmt.Printf("用解释型字符串表示法表示的 %q 所代表的是 %s。\n", str1,"\\")
+	fmt.Printf("用解释型字符串表示法表示的 %q 所代表的是 %s。\n", str1,`\\`)
 }
+// \"
+//用解释型字符串表示法表示的 "\\\"" 所代表的是 \"。
+//用解释型字符串表示法表示的 "\\\"" 所代表的是 \。
+//用解释型字符串表示法表示的 "\\\"" 所代表的是 \\。
 ```
 字符串表示有两种方式
 
@@ -60,6 +67,7 @@ func main() {
 		//fmt.Printf("%d\t%s\t%d\n", i, value,value)
 	}
 }
+
 // 13
 // 9
 // 0	'h'	104
@@ -90,6 +98,16 @@ func main() {
 	}
 }
 
+//0	h
+//1	e
+//2	l
+//3	l
+//4	o
+//5	,
+//6
+//7	世
+//10	界
+
 ```
 
 ```go
@@ -103,7 +121,7 @@ func main() {
 	s := "hello, 世界"
 
 	for i, val := range s { //val为int32类型 即rune
-		fmt.Printf("%d\t%q\t%d%[2]T\n", i, val, val)
+		fmt.Printf("%d\t%q\t%d%t%[2]T\n", i, val, val)
 	}
 
 	b := "hello"
@@ -111,15 +129,31 @@ func main() {
 		fmt.Printf("%v\t%[1]T\n", v)
 	}
 }
-```
 
-### `+`连接字符串 
+
+//0	'h'	104	int32
+//1	'e'	101	int32
+//2	'l'	108	int32
+//3	'l'	108	int32
+//4	'o'	111	int32
+//5	','	44	int32
+//6	' '	32	int32
+//7	'世'	19990	int32
+//10	'界'	30028	int32
+//104	int32
+//101	int32
+//108	int32
+//108	int32
+//111	int32
+```
+###字符串连接
+#### `+`连接字符串 
 
 ```go
 fmt.Println("hello"+"world")
 ```
 
-### `join`串联字符串
+#### `join`串联字符串
 
 ```go
 fmt.Println(strings.Join([]string{"hello", "world", "中国"}, "-"))
@@ -153,8 +187,12 @@ func main() {
 	fmt.Printf("%v\n", count)
 }
 
+//9
+//9
 ```
+
 ### 转换为字符串
+
 string()将数据转换为文本格式。计算机中存储的任何东西本质都是数字0,1。因此自然将65转为对应的文本A。
 
 ```go
@@ -168,15 +206,20 @@ import (
 func main() {
 	var a int = 65
 	b := string(a)
-	fmt.Printf("%v\n", b)
+	fmt.Printf("%v\n", b) //A
 
 	var c int = 65
 	d := strconv.Itoa(c)
-	fmt.Printf("%v\n", d)
+	fmt.Printf("%v\t%s\t%q\n", d,d,d)
 
 	f, _ := strconv.Atoi(d)
 	fmt.Printf("%v", f)
 }
+
+
+//A
+//65	65	"65"
+//65
 ```
 
 ### 不能修改的字符串该如何修改
@@ -188,7 +231,7 @@ s[0] = "e" //compile error
 ```
 
 不过可以曲线救国，赋值给string底层类型byte[]
-string和byte[]可以互转
+string和[]byte可以互转
 ```go
 var s string = "hello"
 var c []byte
@@ -198,6 +241,7 @@ c[0] = 'e'
 s = string(c) // []byte和s是可以互转的
 fmt.Printf("%v", s)
 ```
+注意：是字符串内容元素不能修改，但不是说字符串变量的值不能修改。
 
 但是byte不能存储汉字等字符
 
@@ -222,16 +266,20 @@ runes = []rune(s)
 runes[6] = '美'
 s = string(runes)
 fmt.Printf("%v\n", s)
+
+
+//eello 中国
+//32654	'美'
+//eello 美国
 ```
 
-
-
 ## 常量
+
 - 常量声明很像变量，只不过需要使用`const`关键字修饰
 - 常量可以使字符，字符串，布尔或数值型
 - 常量不能使用`:=`声明
-- 常量的值必须在编译期就能够确定!!! 可以在赋值表达式中涉及计算过程，但是所有用于计算的值需要在编译期就能获得。比如`const c1=1/2` ok,但`const c2 = getNumber()`自定义函数在编译期无法获得具体值，因此无法用于常量的赋值。 但内置函数是可以的`len()`。    
-常量是定义在程序编译阶段就确定下来的值，而程序在运行时无法改变该值。
+- 常量的值必须在编译期就能够确定!!! 可以在赋值表达式中涉及计算过程，但是所有用于计算的值需要在编译期就能获得。比如`const c1=1/2` ok,但`const c2 = getNumber()`自定义函数在编译期无法获得具体值，因此无法用于常量的赋值。 但内置函数是可以,比如`len()`。    
+**常量是定义在程序编译阶段就确定下来的值，而程序在运行时无法改变该值。**
 
 ```go
 package main
@@ -240,17 +288,18 @@ import "fmt"
 
 var a string = "hello"
 
-// const a = "hello"
 const (
-	b = len(a) // 编译错误
-	c
+	b = len("hello")
+	c //省略的话，直接和b的声明类型，值等相等
+	//d = len(b) // 编译错误 这里虽然是内置函数,但是引用给了变量的方式是无法用于常量的
 )
 
 func main() {
-
+	fmt.Println(c) //5
 }
 ```
-- 等号右边必须是常量或常量表达式，注意是常量表达式，一般的变量也是编译不通过的
+
+- 等号右边必须是常量或常量表达式，**注意是常量表达式，一般的变量也是编译不通过的**
 - 常量表达式必须是内置函数
 - 反斜杠`\`可以在常量表达式中作为多行的连接符使用。  
 - 常量用作枚举
@@ -363,7 +412,7 @@ func main() {
 
 ### iota
 
-iota是常量的计数器，从0开始，组中每定义一行(非一个)常量都会自动加1
+iota是常量的计数器，从0开始，组中每定义一行(非一个)常量都会自动加1（按行+1）
 
 ```go
 package main
@@ -394,13 +443,12 @@ func main() {
 		c,d
 		e,f
 	)
-
+   fmt.Println(a,b)
 	fmt.Println(c,d,e,f)
 }
-
+// 0 0
 // 1 1 2 2
 ```
-
 
 ```go
 package main
@@ -415,6 +463,7 @@ func main() {
 
 	fmt.Println(a,b,c)
 }
+//0 0 1
 ```
 
 - iota在**新的一行**都会自动加1。有了这个规则，就可以简写为
@@ -427,9 +476,9 @@ const(
 )
 
 const(
-	x = iota + 100
-	y
-	z
+	x = iota + 100//0+100
+	y //100+1
+	z //101+1
 )
 // 100,101,102
 ```
@@ -1028,7 +1077,6 @@ func main() {
 defer 调用会在当前函数执行结束前才被执行，这些调用被称为延迟调用，
 defer 中使用匿名函数依然是一个闭包。
 
-
 ```go
 package main
 
@@ -1039,7 +1087,7 @@ func main() {
 
     defer func(a int) { 
         fmt.Printf("x:%d,y:%d\n", a, y)  // y 为闭包引用
-    }(x)      // 复制 x 的值
+    }(x)      // 复制 x 的值，并且是立即复制了，a的值肯定是1，而y呢则是闭包引用，直到defer执行时，才能最终确定y的值
 
     x += 100
     y += 100
@@ -1054,5 +1102,461 @@ x:1,y:102
 ```
 从形式上看，匿名函数都是闭包。闭包的使用非常灵活，上面仅是几个比较简单的示例，不当的使用容易产生难以发现的 bug，当出现意外情况时，首先检查函数的参数，声明可以接收参数的匿名函数，这些类型的闭包问题也就引刃而解了。
 ```
+当然具体的情况还是看实际的需求。
 
+
+## defer
+
+- Go独有的defer机制让繁琐的重复代码问题变得简单。
+- 只需要调用的普通函数之前增加defer关键字，就完成了defer语法，
+> 当defer语句执行时，跟在defer后面的函数会被延迟执行。直到包含该defer语句的函数(外层函数)执行完毕时，defer后的函数才会被执行，不论包含defer语句的函数是通过return正常结束还是由于panic导致的异常结束。也就是说return后或panic后都会执行defer语句。
+- defer语句推迟到外层函数返回之前才执行。  
+- 即使发生严重错误，defer也会执行
+- 常用语资源清理，文件关闭，解锁以及记录时间等操作。
+- defer语句解决类似多处资源关闭的问题，可以精简代码处理。
+- defer经常被用于处理成对的操作，比如打开，关闭，连接，断开，加锁，释放锁。
+- **释放资源的defer语句应该直接跟在请求资源的语句后。**  所以一个函数内的多处资源释放使用defer只需要一行代码就可以替代。  
+- 调试复杂程序时，defer的机制也常被用于记录何时进入和退出函数
+- (解释上个特性)defer语句调用参数`会立刻求值`，但是函数直到外层函数返回之前是不会调用的。
+- defer语句中的函数会在return更新返回值变量之后再执行，又因为在函数中定义的匿名函数可以访问该函数的包括返回值在内的所有变量，因此对匿名函数采用defer机制，可以使其观察函数的返回值。  
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	defer fmt.Println(3 + 2)
+	defer fmt.Println("Hello")
+	fmt.Println("World")
+}
+
+// world
+// Hello
+// 5
+```
+
+```go
+fmt.Println("a")
+defer fmt.Println("b")
+defer fmt.Println("c")
+// a
+// c
+// b
+```
+
+简单的defer实现代码的切面编程
+实现追踪记录方法的开始、结束、持续时间
+
+```go
+package main
+
+import (
+	"log"
+	"time"
+)
+
+func bigSlowOperation() {
+	defer trace("bigSlowOperation()")()
+	//
+	time.Sleep(2 * time.Second)
+	//
+}
+
+func trace(msg string) func() {
+	start := time.Now()
+	log.Printf("enter %s\t%s\n", msg, start)
+	return func() {
+		log.Printf("exist %s (%s)", msg, time.Since(start))
+	}
+}
+
+func main() {
+	for i := 0; i < 5; i++ {
+		bigSlowOperation()
+	}
+}
+```
+
+- 匿名函数版本
+
+```go
+package main
+
+import (
+	"log"
+	"time"
+)
+
+func bigSlowOperation() {
+	defer func() func(){
+		start := time.Now()
+		log.Printf("enter bigSlowOperation() %s",start)
+		return func() {
+			log.Printf("exist bigSlowOperation() %s",time.Since(start))
+		}
+	}()() // notice
+	time.Sleep(2 * time.Second)
+}
+
+func main() {
+	for i := 0; i < 5; i++ {
+		bigSlowOperation()
+	}
+}
+```
+
+下面的版本直接使用匿名函数调用的方式，最为简便。
+
+```go
+package main
+
+import (
+	"time"
+	"fmt"
+)
+
+func trace() {
+	now := time.Now()
+	fmt.Printf("start at: %v\n", now)
+
+	defer func() {
+		fmt.Println("stop at:",time.Now())
+		fmt.Printf("duaration: %v\n", time.Since(now))
+	}()
+
+	time.Sleep(2 * time.Second)
+
+}
+
+func main() {
+	trace()
+}
+```
+
+defer语句的函数会在return更新返回值之后执行，又因为在函数中定义的匿名函数可以访问该函数的包括返回值在内的所有变量，因此对匿名函数采用defer机制，可以使其观察函数的返回值。 
+ 
+- 1. 记录观察函数的返回值
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	double(10)
+}
+
+func double(x int) (result int) {
+	defer func() { fmt.Printf("double(%d) = %d", x, result) }()
+	return x + x
+}
+```
+
+- 2. 
+
+```go
+func triple(x int) (result int) {
+	defer func(){result+=x}
+	return double(x)
+}
+triple(8)
+```
+
+- 被延迟执行的匿名函数可以修改函数返回给调用者的返回值
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	fmt.Println(triple(5))
+}
+
+func double(x int) (result int) {
+	defer func() { fmt.Printf("double(%d) = %d\n", x, result) }()
+	return x + x
+}
+
+func triple(x int) (result int) {
+	defer func(){result+=x}()
+	return double(x)
+}
+
+```
+
+### defer栈
+推迟的函数调用被压入栈中。当一个函数返回，它将以last-in-first-out(先进后出或后进先出)的顺序调用。阅读[这篇文章](https://blog.golang.org/defer-panic-and-recover)可以学习更多defer相关内容。
+
+```go
+package main
+import (
+	"fmt"
+)
+
+func main() {
+    fmt.Println("counting...")
+	for i := 0; i< 10; i++ {
+		defer fmt.Println(i)
+	}
+	fmt.Println("done.")
+}
+/**结果如下
+counting...
+done.
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+*/
+```
+
+### 函数体中的defer函数体执行完毕才能执行 
+在循环体中的defer语句需要特别注意
+需要在函数执行完毕之后，这些被延迟的函数才会执行
+注意：这样做是比较危险的操作，可能会导致资源消耗过快，导致内存溢出。
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	for i := 0; i < 5; i++ {
+		defer fmt.Println("defer", i)//possible resource leak,"defer" is called in a for loop
+		fmt.Println("函数体", i)
+	}
+}
+```
+
+```go
+for _,file := range fileNames {
+	f,err := os.Open(file)
+	if err != nil {
+		return err
+	}
+
+	defer f.Close() //Note: risky! could run out of the file 用完或耗尽资源
+	
+}
+```
+解决方案. 将循环体内的defer语句移到另一个函数中，每次循环时调用该函数。
+
+```go
+for _,file := range fileNames {
+	if f,err := doFile(file);err!=nil{
+		return err
+	}
+}
+
+func doFile(file string) error {
+	if f,err := os.Open(file); err != nil {
+		return err
+	}
+	defer f.Close()
+}
+```
+
+
+## defer使用时要注意的坑
+1. 注意命名返回参数与defer的使用
+
+```go
+package main
+
+import "fmt"
+
+func f() (result int) {
+	defer func() {
+		result++
+	}()
+	return 0
+}
+
+func main() {
+	fmt.Printf("result: %v", f())
+}
+```
+
+案例二
+
+```go
+package main
+
+import "fmt"
+
+func f() (r int) {
+	t := 5
+	defer func() {
+		t = t + 5
+		//r = t + 5
+	}()
+	//return r
+	return t
+}
+
+func main() {
+	fmt.Printf("result: %v", f())
+}
+
+```
+
+案例三
+
+```go
+package main
+
+import "fmt"
+
+func f() (r int) {
+	defer func() {
+		r = r + 5
+	}()
+	return 1
+}
+
+func main() {
+	fmt.Printf("result: %v", f())
+}
+
+```
+
+```go
+package main
+
+import "fmt"
+
+func f() (r int) {
+	defer func(r int) {
+		r = r + 5
+	}(r)
+	return 1
+}
+
+func main() {
+	fmt.Printf("result: %v", f())
+}
+
+```
+
+return语句并非一条原子指令。函数返回的过程是这样的:先给返回值赋值,然后调用defer表达式,最后才是返回到调用函数中。因此，我们就看到在回到调用函数之前，defer表达式可能修改了返回值，与我们的预估判断截然不同。
+
+解决方案将语句分解  
+
+```go
+returnValue = xxx //1. 先给返回值赋值
+defer(){}() // 2. 调用defer
+return //空的return
+```
+
+总结:defer与命名返回参数共用时，强烈建议使用空return。  
+
+2. 闭包和引用
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	for i := 0; i < 3; i++ {
+		defer fmt.Println(i)// 获得了i的地址拷贝
+	}
+
+	for i := 0; i < 3; i++ {
+		defer func() {
+			fmt.Println(i) // 定义defer时就获得了i=3时的拷贝
+		}()
+	}
+}
+
+// 3
+// 3
+// 3
+// 2
+// 1
+// 0
+```
+如果函数体内某个变量作为defer时匿名函数的参数时，则在定义defer时已经获得了拷贝，否则则是引用某个变量的地址。
+
+### os.Create函数打开的文件 不使用defer的原因
+```go
+// Fetch downloads the URL and returns the
+// name and length of the local file.
+func fetch(url string) (filename string, n int64, err error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", 0, err
+	}
+
+	defer resp.Body.Close()
+	local := path.Base(resp.Request.URL.Path)
+	if local == "/" {
+		local = "index.html"
+	}
+
+	f, err := os.Create(local)
+	if err != nil {
+		return "", 0, err
+	}
+
+	n, err = io.Copy(f, resp.Body)
+	// Close file, but prefer error from Copy, if any.
+	if closeErr := f.Close(); err == nil {
+		err = closeErr
+	}
+	return local, n, err
+}
+```
+通过os.Create打开文 件进行写入,在关闭文件时,我们没有对f.close采用defer机制,因为这会产生一些微妙的错 误。许多文件系统,尤其是NFS,写入文件时发生的错误会被延迟到文件关闭时反馈。如果 没有检查文件关闭时的反馈信息,可能会导致数据丢失,而我们还误以为写入操作成功。如 果io.Copy和f.close都失败了,我们倾向于将io.Copy的错误信息反馈给调用者,因为它先于 f.close发生,更有可能接近问题的本质。
+
+
+### defer与闭包
+```go
+package main
+
+import "fmt"
+
+func main() {
+	fs := [4]func(){}
+	fmt.Println(fs)
+
+	for i := 0; i < 4; i++ {
+		defer fmt.Println("defer i = ",i) // i 为int类型的参数 遵循值拷贝的规则
+		defer func() {fmt.Println("defer closure i = ",i) }() // 闭包引用外部变量的地址
+		fs[i] = func() { fmt.Println("closure i = ",i) } // 闭包引用外部变量的地址，到下面的迭代中执行
+	}
+
+	for _, f := range fs {
+		f()
+	}
+}
+
+// [<nil> <nil> <nil> <nil>]
+// closure i =  4
+// closure i =  4
+// closure i =  4
+// closure i =  4
+// defer closure i =  4
+// defer i =  3
+// defer closure i =  4
+// defer i =  2
+// defer closure i =  4
+// defer i =  1
+// defer closure i =  4
+// defer i =  0
+```
 

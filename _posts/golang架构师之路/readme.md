@@ -2,7 +2,7 @@
 
 ##博客
 [一个pass开发者](http://www.zoues.com) 关注PaaS/Devops/Golang
-
+[cloud native go翻译者  k8s优秀文章作者](http://jimmysong.io/talks/)
 [Grab新加坡、北京研发中心招聘 ](https://gocn.io/article/357) [grab新加坡 golang](https://www.v2ex.com/t/272343)
 
 
