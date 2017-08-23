@@ -239,6 +239,13 @@ func main() {
 ```
 ### select
 
+select语句选择一组可能的send操作和receive操作去处理。它类似switch,但是只是用来处理通讯(communication)操作。
+它的case可以是send语句，也可以是receive语句，亦或者default。
+
+receive语句可以将值赋值给一个或者两个变量。它必须是一个receive操作。
+
+最多允许有一个default case,它可以放在case列表的任何位置，尽管我们大部分会将它放在最后。
+
 ```go
 package main
 
@@ -274,6 +281,107 @@ func main() {
 }
 ```
 
+
+### select与超时处理的巧妙应用
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	ch := make(chan int)
+	go func() {
+		time.Sleep(2 * time.Second)
+		ch <- 100
+	}()
+
+	for {
+		select {
+		case res := <-ch:
+			fmt.Println(res)
+			//case time.After(time.Second): // select case must be receive, send or assign recv
+		case <-time.After(time.Second): //其实它利用的是time.After方法，它返回一个类型为<-chan Time的单向的channel，在指定的时间发送一个当前时间给返回的channel中。
+			fmt.Println("timeout")
+			return //否则死循环打印timeout
+		}
+	}
+}
+
+```
+
+[golang实践--如何实现万次/秒的定时任务管理器](http://www.chongchonggou.com/g_645214621.html)
+### timer
+timer是一个定时器，代表未来的一个单一事件，你可以告诉timer你要等待多长时间，它提供一个Channel，在将来的那个时间那个Channel提供了一个时间值。下面的例子中第二行会阻塞2秒钟左右的时间，直到时间到了才会继续执行。
+当然如果你只是想单纯的等待的话，可以使用time.Sleep来实现。
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	timer1 := time.NewTimer(time.Second * 2)
+	<-timer1.C
+	fmt.Println("Timer 1 expired")
+	//fmt.Println("time 2 second")
+}
+```
+
+
+timer.Stop停止计时器
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	timer2 := time.NewTimer(time.Second)
+	go func() {
+		<-timer2.C
+		fmt.Println("Timer 2 expired")
+	}()
+	stop2 := timer2.Stop()//使得expired无法执行
+	if stop2 {
+		fmt.Println("Timer 2 stopped")
+	}
+
+	time.Sleep(10*time.Second)
+}
+
+```
+### ticker
+ticker是一个定时触发的计时器，它会以一个间隔(interval)往Channel发送一个事件(当前时间)，而Channel的接收者可以以固定的时间间隔从Channel中读取事件。下面的例子中ticker每500毫秒触发一次，你可以观察输出的时间。
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	ticker := time.NewTicker(time.Millisecond * 500)
+	go func() {
+		for t := range ticker.C {
+			fmt.Println("Tick at", t)
+		}
+	}()
+
+	time.Sleep(10*time.Second)
+}
+```
+类似timer, ticker也可以通过Stop方法来停止。一旦它停止，接收者不再会从channel中接收数据了。
 ## 单向通道与多项通道  
 除了按照有无缓存划分通道的种类，还可以通过通道的方向划分为单向通道和双向通道，而双向通道是默认的。  
 单向通道即数据只能按照一个方向进行传输，按照发送者和接受者的数据流方向的不同，可以分为接收通道和发送通道。  
