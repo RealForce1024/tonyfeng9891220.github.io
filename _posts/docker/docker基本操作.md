@@ -1132,19 +1132,32 @@ b8efb18f159b        2 weeks ago         /bin/sh -c #(nop)  CMD ["nginx" "-g" "da
 [一个很不错的gitlab社区版本](https://github.com/twang2218/gitlab-ce-zh)
 
 ## DockerHub加速器
-[腾讯云docker等加速服务](https://github.com/tencentyun/qcloud-documents/blob/master/product/%E8%AE%A1%E7%AE%97%E4%B8%8E%E7%BD%91%E7%BB%9C/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/Linux%E7%B3%BB%E7%BB%9F%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4%E6%89%8B%E5%86%8C/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91%E8%BD%AF%E4%BB%B6%E6%BA%90%E5%8A%A0%E9%80%9F%E8%BD%AF%E4%BB%B6%E5%8C%85%E4%B8%8B%E8%BD%BD%E5%92%8C%E6%9B%B4%E6%96%B0.md)  
-[腾讯各镜像](https://market.qcloud.com/categories/67)  
-[腾讯云dockerHub加速器](https://www.qcloud.com/document/product/457/7207)  
-[docker普通用户不使用sudo的方法](http://www.cnblogs.com/ksir16/p/6530587.html)  
+
 
 * DaoCloud
-
+aws上使用了该daoCloud版本的加速器速度极速飙升！！真的是飙升！！！
 [daocloud docker镜像加速器](https://www.daocloud.io/mirror#accelerator-doc)
 
 ```
 curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62.m.daocloud.io
 ```
 >该脚本可以将 --registry-mirror 加入到你的 Docker 配置文件 /etc/default/docker 中。适用于 Ubuntu14.04、Debian、CentOS6 、CentOS7、Fedora、Arch Linux、openSUSE Leap 42.1，其他版本可能有细微不同。更多详情请访问文档。
+
+```sh
+ubuntu@ip-172-31-11-218:~$ curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62.m.daocloud.io
+docker version >= 1.12
+{"registry-mirrors": ["http://bbfa5e62.m.daocloud.io"]}
+Success.
+You need to restart docker to take effect: sudo service docker restart
+```
+
+
+
+[腾讯云docker等加速服务](https://github.com/tencentyun/qcloud-documents/blob/master/product/%E8%AE%A1%E7%AE%97%E4%B8%8E%E7%BD%91%E7%BB%9C/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/Linux%E7%B3%BB%E7%BB%9F%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%90%E7%BB%B4%E6%89%8B%E5%86%8C/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91%E8%BD%AF%E4%BB%B6%E6%BA%90%E5%8A%A0%E9%80%9F%E8%BD%AF%E4%BB%B6%E5%8C%85%E4%B8%8B%E8%BD%BD%E5%92%8C%E6%9B%B4%E6%96%B0.md)  
+[腾讯各镜像](https://market.qcloud.com/categories/67)  
+[腾讯云dockerHub加速器](https://www.qcloud.com/document/product/457/7207)  
+[docker普通用户不使用sudo的方法](http://www.cnblogs.com/ksir16/p/6530587.html)  
+
 
 * 阿里云
 [阿里云Docker 镜像加速器](https://yq.aliyun.com/articles/29941)

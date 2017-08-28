@@ -16,7 +16,14 @@ Get方法的参数一个是路由路径，另外一个是封装的handlerFunc，
 - httpHandler: `echo.$httpMethod($path,$handlerFunc)`
 - 参数获取: PathParam, QueryParam,FormValue,FormFile(配合os创建打开并copy流还要defer关闭流) 文件
 - 快捷访问: curl的使用，注意`$path`路由路径末尾带有"/"将是全匹配，也就是访问时必须带有`/`
-- 返回值 c.String(httpStatus) c.Json(..) c.Html(status,ok)
+- 返回值 
+
+```go
+c.String(httpStatus) 
+c.Json(..) c.Html(status,ok)
+c.File(errorPage)
+```
+
 ## curl json
 
 ```sh
@@ -230,4 +237,27 @@ func DeleteUser(c echo.Context) error {
 }
 
 ```
+
+## 自定义错误
+
+```go
+func main(){
+   eo.HTTPErrorHandler = customHTTPErrorHandler
+}
+
+func customHTTPErrorHandler(err error, c echo.Context) {
+	code := http.StatusInternalServerError
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	fmt.Println("code==>", code)
+	errorPage := fmt.Sprintf("views/exception/%d.html", code)
+	if err := c.File(errorPage); err != nil {
+		c.Logger().Error(err)
+	}
+	c.Logger().Error(err)
+}
+```
+[官网自定义错误](https://echo.labstack.com/guide/error-handling)
+
 
