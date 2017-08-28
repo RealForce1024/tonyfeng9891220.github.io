@@ -1,9 +1,18 @@
 
+## go语言使用可变栈
+
+>大部分编程语言使用固定大小的函数调用栈,常见的大小从64KB到2MB不等。固定大小栈会限制递归的深度,当你用递归处理大量数据时,需要避免栈溢出;除此之外,还会导致安全 性问题。与相反,Go语言使用可变栈,栈的大小按需增加(初始时很小)。这使得我们使用递归时不必考虑溢出和安全问题。
+
+大部分编程语言使用固定大小的函数调用栈,递归处理大量数据时，需避免栈溢出。Java程序经常需要堆栈的配置参数调优。  
+而Go语言使用可变栈,栈的大小按需增加(初始时很小)。这使得我们使用递归 时不必考虑溢出和安全问题。
+
+所以这一点可能看出go语言的安全与性能保障是极其强大的。
+
 ## 并发 concurrency
+### Channel--一种Go特有的数据类型
 
-### 数据结构Channel
-
-- Channel是Go程序(Goroutine)的一种高级数据结构。它可作为不同Goroutine之间的桥梁即数据传输通道，在通道内传递的指定类型消息，我们将其称为通道的类型化数据(或类型元素)。  
+- Channel是Go程序(Goroutine)的一种高级数据结构或数据类型。它可作为不同Goroutine之间的桥梁即数据传输通道，在通道内传递的指定类型消息，我们将其称为通道的类型化数据(或类型元素)。  
+`channel <- data -> channel`
 - Channel定义
 通过描述，我们自然能想到一个Channel的定义:  
 `chan T`   
@@ -547,6 +556,7 @@ c <- true // 无缓存的时候是阻塞的，里面的内容需要被写完或�
 >如果存在多个channel的时候,我们该如何操作呢,Go里面提供了一个关键字 select ,通过select可以监听channel上的数据流动。
 
 >select 默认是阻塞的,只有当监听的channel中有发送或接收可以进行时才会运行,当多个channel都准备好的时候,select是随机的选择一个执行的。
+
 ```go
 package main
 
@@ -611,4 +621,14 @@ func main() {
 
 [golang-channel详解](http://colobu.com/2016/04/14/Golang-Channels/)
 
+[golang concurrency](https://www.youtube.com/watch?v=UP8agyrTeok&list=PLSak_q1UXfPqOSPQ9Y_1pwQW57g3tRz1m&index=78)
+![-w450](media/15039189701145.jpg)
+
+concurrency vs parallesim
+![-w450](media/15039194887267.jpg)
+
+
+[最棒的go面向对象的讲解](https://github.com/GoesToEleven/GolangTraining/blob/master/20_struct/00_object-oriented/notes.txt)
+go面向对象不创建class，只需创建type
+不需要实例化，只需要给类型赋值即可。
 

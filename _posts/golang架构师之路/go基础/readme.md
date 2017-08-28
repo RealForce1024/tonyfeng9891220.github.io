@@ -5,3 +5,8 @@
 ## 博客
 [golang数据结构算法博客](http://blog.csdn.net/rufidmx/article/details/10226105)
 
+
+
+https://app.pluralsight.com/library/courses/go-fundamentals/table-of-contents
+![](media/15039178264705.jpg)
+

@@ -97,15 +97,13 @@ func printStack() {
 ```
 >将panic机制类比其他语言异常机制的读者可能会惊讶,runtime.Stack为何能输出已经被释放 函数的信息?在Go的panic机制中,延迟函数的调用在释放堆栈信息之前。
 
-
 Recover捕获异常
 当程序因为panic发生崩溃时，我们并不希望程序因此终止，因为很多收尾或资源等问题，我们可能还需要回退或恢复等让其继续正常工作。
 
 
+[关于golang的panic recover异常错误处理](http://xiaorui.cc/2016/03/09/%E5%85%B3%E4%BA%8Egolang%E7%9A%84panic-recover%E5%BC%82%E5%B8%B8%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/)
 
-
-
-
+[Go语言中使用Defer几个场景](http://developer.51cto.com/art/201306/400489.htm)
 
 
 
