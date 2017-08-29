@@ -324,6 +324,10 @@ func main() {
 这里再次证明了变量的**作用域和生命周期是两个不同的概念，一个是静态的，一个是动态的。**  
 
 
+>closure helps us limit the scope of variables used by multiple functions
+without closure, for two or more funcs to have access to the same variable,
+that variable would need to be package scope
+
 ### 函数值的重要特性-记录迭代变量的内存地址
 
 - 首先我们先来看下普通变量在迭代中如何记录值的.

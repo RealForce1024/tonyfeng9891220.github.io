@@ -628,7 +628,5 @@ concurrency vs parallesim
 ![-w450](media/15039194887267.jpg)
 
 
-[最棒的go面向对象的讲解](https://github.com/GoesToEleven/GolangTraining/blob/master/20_struct/00_object-oriented/notes.txt)
-go面向对象不创建class，只需创建type
-不需要实例化，只需要给类型赋值即可。
+
 

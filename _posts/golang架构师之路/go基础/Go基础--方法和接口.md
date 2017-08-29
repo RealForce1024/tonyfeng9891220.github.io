@@ -918,7 +918,7 @@ func Change(x []int) {
 上述案例表明，变参是传入前就决定了的形式，param(x ...int) 参数x需要是散值，但x却组成了数组形式。
 但是当参数实际传入的是数组时，param(x []int)就必须与之对应，否则是无法编译通过的。
 
-## Go中一切皆值
+## Go中一切皆值，一切皆类型
 函数也是值，类型则是函数类型。简而言之，函数类型也是值  
 `a := 3  // 3是int类型的值`  
 `f := FuncName // f是func类型的值`
@@ -938,6 +938,17 @@ func A() {
 }
 // A()
 ```
+
+
+函数也是类型，在todd的面向对象讲解中，讲到golang的面向对象和其他语言的区别，明确地指出类型的重要。
+[最棒的go面向对象的讲解](https://github.com/GoesToEleven/GolangTraining/blob/master/20_struct/00_object-oriented/notes.txt)
+go面向对象不创建class，只需创建type
+不需要实例化，只需要给类型赋值即可。
+
+
+
+
+
 
 ### 匿名函数
 

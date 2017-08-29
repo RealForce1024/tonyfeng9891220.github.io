@@ -1182,6 +1182,7 @@ func remove(slice []int, i int) []int {
 // [1 2 4 5 6]
 ```
 
+[切片的追加删除插入操作](http://www.cnblogs.com/dajianshi/p/4235142.html)
 ## Map映射
 **Map映射将键映射到值** 以`k,v`键值对的形式出现。  
 映射的默认零值是`nil`。一个`nil`映射既没有`key`，也不能添加`key`。  

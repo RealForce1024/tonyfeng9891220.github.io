@@ -47,6 +47,59 @@ fmt.Printf("%v", a)
 */
 ```
 
+
+
+### 字符串中的字符
+字符串操作
+码过程中避免不了中文字符，那我们该如何提取一个中文呢？
+首先我们要知道**string[index]获取的是字符byte**
+不能向其他语言一样可以直接通过索引方式获取(比如java字符串直接通过charAt方法直接取字符，python中则默认和go一样，不过其提供了编码的转换,先转换为unicode，再转换为其他编码格式[python字符串操作](https://my.oschina.net/leejun2005/blog/74430))，
+[golang字符串操作](http://www.nljb.net/default/Golang-Go%E8%AF%AD%E8%A8%80%E6%96%AD%E7%82%B9%E7%BB%AD%E4%BC%A0/)
+[string rune byte的关系](https://golangtc.com/t/528cc004320b52227200000f)
+```python
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+if __name__ == "__main__":
+     a = "hello,中国"
+     a = unicode(a,"utf-8")
+     a.encode("utf-8")
+     print a
+     print a[6]
+```
+在Go中需要将字符串转换成rune数组。
+举个例子，反转字符串
+!drow
+
+```go
+func reverse(str string) {
+    for i,j := 0,len(str); j<=len(str)/2; i=i+1,j=j-1 {
+        str[i],str[j] = str[i],str[j]
+    }
+    fmt.Println(str)
+}
+```
+### 字符的格式化
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	g := 'M'
+	fmt.Printf("%v \n", g)
+	fmt.Printf("%d \n", g)
+	fmt.Printf("%s \n", g)
+	fmt.Printf("%q \n", g)
+	fmt.Printf("%T \n", g)
+}
+
+//77 
+//77 
+//%!s(int32=77) 
+//'M' 
+//int32
+```
 ### 字符串的长度
 
 ```go
@@ -146,6 +199,50 @@ func main() {
 //108	int32
 //111	int32
 ```
+
+### 字符串的零值
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	var a int
+	var b string  //零值 啥也看不到，但不是null
+	var c float64
+	var d bool
+
+	fmt.Printf("%v \n", a)
+	fmt.Printf("%v \n", b)
+	fmt.Printf("%v \n", c)
+	fmt.Printf("%v \n", d)
+
+	fmt.Println()
+}
+
+0 
+ 
+0 
+false 
+```
+### 反引号
+
+```
+Go语言的字符串类型string在本质上就与其他语言的字符串类型不同：
+Java的String、C++的std::string以及Python3的str类型都只是定宽字符序列
+Go语言的字符串是一个用UTF-8编码的变宽字符序列，它的每一个字符都用一个或多个字节表示
+即：一个Go语言字符串是一个任意字节的常量序列。
+
+Golang的双引号和反引号都可用于表示一个常量字符串，不同在于：
+
+双引号用来创建可解析的字符串字面量(支持转义，但不能用来引用多行)
+反引号用来创建原生的字符串字面量，这些字符串可能由多行组成(不支持任何转义序列)，原生的字符串字面量多用于书写多行消息、HTML以及正则表达式
+而单引号则用于表示Golang的一个特殊类型：rune，类似其他语言的byte但又不完全一样，是指：码点字面量（Unicode code point），不做任何转义的原始内容。
+```
+引用: [Golang的单引号、双引号与反引号](https://segmentfault.com/a/1190000004850183)
+
 ###字符串连接
 #### `+`连接字符串 
 
