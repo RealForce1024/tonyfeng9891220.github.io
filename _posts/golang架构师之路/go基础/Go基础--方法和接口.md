@@ -946,10 +946,6 @@ go面向对象不创建class，只需创建type
 不需要实例化，只需要给类型赋值即可。
 
 
-
-
-
-
 ### 匿名函数
 
 ```Go
@@ -1532,7 +1528,7 @@ func stop(printer empty) {
 ```Go
 hp := HP_Printer{"hp printer"}
 fmt.Println(hp.name)
-p := Devicer(hp)
+p := Devcicer(hp)
 p.Start()
 ```
 
@@ -1614,7 +1610,8 @@ func main() {
 ```
 
 
-
+## interace机制
+[go语言的interface机制](http://www.cnblogs.com/concurrency/p/4311958.html)
 
 
 

@@ -628,5 +628,6 @@ concurrency vs parallesim
 ![-w450](media/15039194887267.jpg)
 
 
+[用golang造轮子](http://www.cnblogs.com/concurrency/p/6880276.html)
 
 

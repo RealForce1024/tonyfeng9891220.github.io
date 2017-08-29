@@ -156,6 +156,80 @@ func main() {
 }
 ```
 
+
+
+### 理解&和*操作符 
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	a := 43
+
+	fmt.Println(a)  // 43
+	fmt.Println(&a) // 0x20818a220
+
+	var b = &a
+	fmt.Println(b)  // 0x20818a220
+	fmt.Println(*b) // 43
+
+	*b = 42        // b says, "The value at this address, change it to 42"
+	fmt.Println(a) // 42
+
+	// this is useful
+	// we can pass a memory address instead of a bunch of values (we can pass a reference)
+	// and then we can still change the value of whatever is stored at that memory address
+	// this makes our programs more performant
+	// we don't have to pass around large amounts of data
+	// we only have to pass around addresses
+
+	// everything is PASS BY VALUE in go, btw
+	// when we pass a memory address, we are passing a value
+}
+```
+
+
+`*int`这里的`*`是`*int`类型的一部分
+
+```go
+package main
+
+import "fmt"
+
+func zero(z *int) {
+	*z = 0
+}
+
+func main() {
+	x := 5
+	zero(&x)
+	fmt.Println(x) // x is 0
+}
+
+```
+
+
+参数拷贝的指针地址的值，自然间接引用传递改变。
+```go
+package main
+
+import "fmt"
+
+func zero(z *int) {
+	fmt.Println(z)
+	*z = 0
+}
+
+func main() {
+	x := 5
+	fmt.Println(&x)
+	zero(&x)
+	fmt.Println(x) // x is 0
+}
+```
 ### 变量初始化器
 - 变量声明定义可以包含一个初始值，每个变量一个。  
 - 如果已经存在初始值，则可以省略类型，变量将采用初始值的类型。
