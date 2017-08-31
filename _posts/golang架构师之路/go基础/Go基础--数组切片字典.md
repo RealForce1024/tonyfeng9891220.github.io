@@ -777,6 +777,64 @@ func printSlice(s string, x []int) {
 ```
 规律总结:一旦`[a:]`其容量就可能发生改变。其他时候不变。  
 
+
+
+## 比较make和var
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	student := []string{}
+	students := [][]string{}
+	student[0] = "Todd"
+	// student = append(student, "Todd")
+	fmt.Println(student)
+	fmt.Println(students)
+}
+
+```
+
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	var student []string
+	var students [][]string
+	student[0] = "Todd"
+	// student = append(student, "Todd")
+	fmt.Println(student)
+	fmt.Println(students)
+}
+
+```
+
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	student := make([]string, 35)
+	students := make([][]string, 35)
+	student[0] = "Todd"
+	// student = append(student, "Todd")
+	fmt.Println(student)
+	fmt.Println(students)
+}
+```
+
 ## 切片的切片
 切片可以容纳任意类型，包括其他的切片。  
 
@@ -994,6 +1052,89 @@ Errorf(linenum,"undefined:%s",name)
 ```
 interface{}表示函数的最后一个参数可以接受任意类型。  
 
+
+### 可变参数类型底层类型是slice，但不能传入slice类型。
+其实道理和`var myInt int`道理是一样的，不能定义int类型，却传入myInt，go是强类型语言。
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	n := average(43, 56, 87, 12, 45, 57)
+	fmt.Println(n)
+}
+
+func average(sf ...float64) float64 {
+//func average(sf []float64) float64 { //无法编译通过
+	fmt.Println(sf)
+	fmt.Printf("%T \n", sf)
+	var total float64
+	for _, v := range sf {
+		total += v
+	}
+	return total / float64(len(sf))
+}
+
+```
+
+
+实参和参数需要对应。
+```go
+package main
+
+import "fmt"
+
+func main() {
+	data := []float64{43, 56, 87, 12, 45, 57}
+	n := average(data)
+	fmt.Println(n)
+}
+
+func average(sf []float64) float64 {
+	total := 0.0
+	for _, v := range sf {
+		total += v
+	}
+	return total / float64(len(sf))
+}
+```
+
+### 解引用slice...
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	foo(1, 2)
+	foo(1, 2, 3)
+	aSlice := []int{1, 2, 3, 4}
+	foo(aSlice...)
+	//foo(aSlice) //can't use aSlice(type []int) as int
+	foo()
+}
+
+func foo(numbers ...int) {
+	fmt.Println(numbers)
+}
+```
+
+三个点
+上面我们看到有三个点"..."的特殊标记。那么这三个点"..."有啥作用呢？
+
+2.1 不定参数
+如上所述，在定义不定参数时，表示从该参数开始记录不定参数
+
+2.2 解引用slice
+当要传递若干个值到不定参数函数中得时候，可以手动书写每个参数，也可以将一个slice传递给该函数：
+
+    YourFunc (YourSlice...)
+通过"..."可以将slice中得参数对应的传递给函数。相当于python中得“*args”
+
+这里要注意的是，`解引用slice目前只能在不定参数函数传递参数时使用，在其他地方使用会报错`。
 
 
 ## range
@@ -1228,7 +1369,47 @@ func main() {
 
 // {40.68433 -74.39967}
 ```
+## 注意 map nil
 
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	var myGreeting map[string]string
+	fmt.Println(myGreeting)
+	fmt.Println(myGreeting == nil)
+}
+
+// add these lines:
+/*
+	myGreeting["Tim"] = "Good morning."
+	myGreeting["Jenny"] = "Bonjour."
+*/
+// and you will get this:
+// panic: assignment to entry in nil map
+```
+要么使用`:=`(注意使用map的字面量的方式)，要么使用make
+![-w450](media/15041828040077.jpg)
+
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	myGreeting := map[string]string{}
+	fmt.Println(myGreeting)
+	myGreeting["Tim"] = "Good morning."
+	myGreeting["Jenny"] = "Bonjour."
+
+	fmt.Println(myGreeting)
+}
+```
 ## 映射的字面值(匿名映射)
 映射的字面值类似结构体字面值，但是`key`是必须的。  
 

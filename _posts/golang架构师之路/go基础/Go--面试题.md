@@ -82,4 +82,140 @@ func main() {
 }
 ```
 
+## 边界检查
+
+```go
+package main
+
+import "fmt"
+
+func max(numbers ...int) int {
+	var largest int
+	for _, v := range numbers {
+		if v > largest {
+			largest = v
+		}
+	}
+	return largest
+}
+
+func main() {
+	//greatest := max(4, 7, 9, 123, 543, 23, 435, 53, 125)
+	//greatest := max(-1, -2) //如果都是负数将是错误的
+	greatest := max2(-1, -2)
+	fmt.Println(greatest)
+}
+func max2(numbers ...int) int {
+	var largest int
+	for i, v := range numbers {
+		if v > largest || i == 0 {
+			largest = v
+		}
+	}
+	return largest
+}
+
+/*
+FYI
+For your code to also work with only negative numbers such as
+
+greatest := max(-200 -700)
+
+include this as your range statement
+for i, v := range numbers {
+	if v > largest || i == 0 {
+		largest = v
+	}
+}
+
+What does that code do?
+
+The first time through the range loop
+the index, i, will be zero
+so largest will be set to the first number
+
+Originally largest is set to the zero value for an int, which is zero
+
+Zero would be greater than any negative number
+
+if you only have negative numbers
+you need largest to be something less than zero
+
+Thanks to Ricardo G for this code improvement!
+*/
+
+```
+
+## slice容量
+问题:我们知道切片的容量将随着随着长度的增大而自动扩容，那么下面的代码能否正常运行?如果不行，该如何解决?
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	greeting := make([]string, 3, 5)
+	// 3 is length - number of elements referred to by the slice
+	// 5 is capacity - number of elements in the underlying array
+
+	greeting[0] = "Good morning!"
+	greeting[1] = "Bonjour!"
+	greeting[2] = "buenos dias!"
+	greeting[3] = "suprabadham"
+
+	fmt.Println(greeting[2])
+}
+
+```
+## 可变参数的使用
+
+`append（slice []Type,elem ...Type）`
+
+- `...`符号可以解引用slice为可变参数
+- 添加类型必须是一致的
+- slice是开闭区间
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	mySlice := []int{1, 2, 3, 4, 5}
+	myOtherSlice := []int{6, 7, 8, 9}
+	otherSlice := []int{11,12,13}
+	//otherStringSlice:=[]string{"hello","world"}
+	mySlice = append(mySlice, myOtherSlice...)
+	mySlice = append(mySlice,otherSlice...)
+	//mySlice = append(mySlice,otherStringSlice...)
+
+	fmt.Println(mySlice)
+}
+
+```
+## 去掉周三
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	mySlice := []string{"Monday", "Tuesday"}
+	myOtherSlice := []string{"Wednesday", "Thursday", "Friday"}
+
+	mySlice = append(mySlice, myOtherSlice...)
+	fmt.Println(mySlice)
+
+	mySlice = append(mySlice[:2], mySlice[3:]...)
+	fmt.Println(mySlice)
+
+}
+```
+
+## 
+
 

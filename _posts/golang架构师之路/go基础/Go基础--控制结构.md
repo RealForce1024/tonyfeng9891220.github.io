@@ -232,6 +232,7 @@ func main() {
 ```
 在 main方法 的 `fmt.Println` 调用开始前，两次对 `pow` 的调用均已执行并返回。
 
+
 ```go
 package main
 
@@ -256,6 +257,30 @@ func main() {
 // %!g(int=1) >= -1
 // -1
 ```
+
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	b := true
+
+	if food := "Chocolate"; b {
+		fmt.Println(food)
+	}
+
+	if fmt.Println("hello"); !b {
+		fmt.Println("world")
+	} else if fmt.Println("else if");!b {
+		fmt.Println("else")
+	}
+
+}
+```
+if else if 短路情况就知道了，未必都会执行，只要if成立，elseif的输出就不会走。假设if不成立，但if也会执行，elseif 成立当然执行。
 
 ```go
 package main
@@ -561,7 +586,7 @@ func main() {
 }
 ```
 
-## switch计算求值顺序
+### switch计算求值顺序
 switch的case语句自上而下顺序执行，直到匹配成功终止。  
 例如:
 ```go
@@ -602,7 +627,7 @@ func main() {
 }
 ```
 
-## 不带条件的switch
+### 不带条件的switch
 - 没有条件的switch等同于`switch true`。这种形式能够将一长串`if-then-else`写得更清晰。  
 - 也可以理解为**条件表达式要么在 switch关键字后面，要么在case后面**
 
@@ -666,6 +691,160 @@ func main() {
 
 ```
 switch true中需要case的表达式为布尔表达式。
+
+
+### 多个值switch计算
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	switch "Jenny" {
+	case "Tim", "Jenny":
+		fmt.Println("Wassup Tim, or, err, Jenny")
+	case "Marcus", "Medhi":
+		fmt.Println("Both of your names start with M")
+	case "Julian", "Sushant":
+		fmt.Println("Wassup Julian / Sushant")
+	}
+}
+```
+
+### 没有表达式
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	myFriendsName := "Mar"
+
+	switch {
+	case len(myFriendsName) == 2:
+		fmt.Println("Wassup my friend with name of length 2")
+	case myFriendsName == "Tim":
+		fmt.Println("Wassup Tim")
+	case myFriendsName == "Jenny":
+		fmt.Println("Wassup Jenny")
+	case myFriendsName == "Marcus", myFriendsName == "Medhi":
+		fmt.Println("Your name is either Marcus or Medhi")
+	case myFriendsName == "Julian":
+		fmt.Println("Wassup Julian")
+	case myFriendsName == "Sushant":
+		fmt.Println("Wassup Sushant")
+	default:
+		fmt.Println("nothing matched; this is the default")
+	}
+}
+
+/*
+  expression not needed
+  -- if no expression provided, go checks for the first case that evals to true
+  -- makes the switch operate like if/if else/else
+  cases can be expressions
+*/
+
+```
+注意该种场景，也是完全可以使用`,`表示一种情况下多个值的比较。
+
+### switch 类型断言
+
+```go
+package main
+
+import "fmt"
+
+//  switch on types
+//  -- normally we switch on value of variable
+//  -- go allows you to switch on type of variable
+
+type contact struct {
+	greeting string
+	name     string
+}
+
+// SwitchOnType works with interfaces
+// we'll learn more about interfaces later
+func SwitchOnType(x interface{}) {
+	switch x.(type) { // this is an assert; asserting, "x is of this type"
+	case int:
+		fmt.Println("int")
+	case string:
+		fmt.Println("string")
+	case contact:
+		fmt.Println("contact")
+	default:
+		fmt.Println("unknown")
+
+	}
+}
+
+func main() {
+	SwitchOnType(7)
+	SwitchOnType("McLeod")
+	var t = contact{"Good to see you,", "Tim"}
+	SwitchOnType(t)
+	SwitchOnType(t.greeting)
+	SwitchOnType(t.name)
+}
+
+```
+
+### switch type类型自推断
+可以先了解下 go-控制结构中的 `ok partner`的类型判断。
+
+实际上我们使用`ok partner`的方式只适用于少量的分支判断，但是如果想本例中传入的是广泛的空接口，这种想法将很麻烦。switch结构更加适合，配合Go的类型推断和`switch type`结构。
+
+```Go
+func stop(printer empty) {
+	if hp, ok := printer.(HP_Printer); ok {
+		fmt.Println(hp.name, "stop()")
+		return
+	}
+	fmt.Print("Unknown printer.")
+
+	switch v:=printer.(type) {
+	case HP_Printer:
+		fmt.Println(v.name,"stop()")
+	default:
+		fmt.Println("Unknown printer.")
+	}
+}
+```
+
+### switch fallthrough break
+
+```go
+func customHTTPErrorHandler(err error, c echo.Context) {
+	code := http.StatusInternalServerError
+	if he, ok := err.(*echo.HTTPError); ok {
+		code = he.Code
+	}
+	fmt.Println("code==>", code)
+
+	var errorPage string
+
+	switch code {
+	case 404:
+		fallthrough  //switch人第一个expr为true的case开始执行，如果case带有fallthrough，程序会继续执行下一条case,不会再判断下一条case的expr,如果之后的case都有fallthrough,default出会被执行。
+		//默认是break，但如果使用falthrough，就会强制执行下一个case的语句块，同时注意并不需要下一case表达式是成立的。
+	case 500:
+		errorPage = fmt.Sprintf("static/html/exception/%d.html", code) //采用static相对路径，而非/static绝对路径要从当前路径开始
+	default:
+		errorPage = fmt.Sprintf("static/html/exception/unknown.html") //其余的都做不识别的请求处理
+	}
+	if err := c.File(errorPage); err != nil {
+		c.Logger().Error(err)
+	}
+	c.Logger().Error(err)
+}
+```
+
+[golang switch fallthrough](http://studygolang.com/topics/9)
 
 ## 跳转语句 goto break continue
 

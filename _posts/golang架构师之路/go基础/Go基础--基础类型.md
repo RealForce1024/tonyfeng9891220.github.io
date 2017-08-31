@@ -243,6 +243,7 @@ func main() {
 }
 ```
 
+
 ### 短声明变量初始化
 - 在函数中，`:=`简洁赋值(短赋值块)可以使用于代替`var`定义。(隐藏着隐式类型的概念，也就是**通过表达式的右边值或变量的类型进行类型推断而获得类型**)  
 - 在函数外，每个语句都必须以关键词开始(`var,func`等等)，所以<font color='red'>**`:=`结构是不可以在函数外使用的**</font>  
@@ -263,6 +264,49 @@ func main() {
 
 - 用于多个返回值  
 `val, err := Func1(var1)`  
+
+
+
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	student := []string{}
+	students := [][]string{}
+	fmt.Println(student)
+	fmt.Println(students)
+	fmt.Println(student == nil)
+
+	var a []int
+	fmt.Println(a == nil)
+	var b []string
+	fmt.Println(b == nil)
+}
+```
+`:=`声明并初始化
+var 仅仅声明 并未初始化 所以是零值.
+
+而make则赋予了零值
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	student := make([]string, 35)
+	students := make([][]string, 35)
+	fmt.Println(student)
+	fmt.Println(students)
+	fmt.Println(student == nil)
+}
+```
 
 ### `_`空白标志符
 `_`空白标识符被用于抛弃值，`_`实际上是一个只写变量，你不能得到它的值。由于go要求无多余代码，也就是必须使用所有被声明的变量，但有时我们并不需要使用从一个函数中得到所有返回值。

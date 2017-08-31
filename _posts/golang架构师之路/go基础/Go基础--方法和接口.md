@@ -1415,56 +1415,6 @@ exit status 2
 // hello, true
 // 0, false
 ```
-### switch type类型自推断
-
-我们使用ok partner的方式只适用于少量的分支判断，但是如果想本例中传入的是广泛的空接口，这种想法将很麻烦。switch结构更加适合，配合Go的类型推断和`switch type`结构。     
-
-```Go
-func stop(printer empty) {
-	if hp, ok := printer.(HP_Printer); ok {
-		fmt.Println(hp.name, "stop()")
-		return
-	}
-	fmt.Print("Unknown printer.")
-
-	switch v:=printer.(type) {
-	case HP_Printer:
-		fmt.Println(v.name,"stop()")
-	default:
-		fmt.Println("Unknown printer.")
-	}
-}
-```
-
-### switch fallthrough break
-
-```go
-func customHTTPErrorHandler(err error, c echo.Context) {
-	code := http.StatusInternalServerError
-	if he, ok := err.(*echo.HTTPError); ok {
-		code = he.Code
-	}
-	fmt.Println("code==>", code)
-
-	var errorPage string
-
-	switch code {
-	case 404:
-		fallthrough  //switch人第一个expr为true的case开始执行，如果case带有fallthrough，程序会继续执行下一条case,不会再判断下一条case的expr,如果之后的case都有fallthrough,default出会被执行。
-		//默认是break，但如果使用falthrough，就会强制执行下一个case的语句块，同时注意并不需要下一case表达式是成立的。
-	case 500:
-		errorPage = fmt.Sprintf("static/html/exception/%d.html", code) //采用static相对路径，而非/static绝对路径要从当前路径开始
-	default:
-		errorPage = fmt.Sprintf("static/html/exception/unknown.html") //其余的都做不识别的请求处理
-	}
-	if err := c.File(errorPage); err != nil {
-		c.Logger().Error(err)
-	}
-	c.Logger().Error(err)
-}
-```
-
-[golang switch fallthrough](http://studygolang.com/topics/9)
 ### 空接口
 
 没有一个方法的接口类型被认作为空接口。 

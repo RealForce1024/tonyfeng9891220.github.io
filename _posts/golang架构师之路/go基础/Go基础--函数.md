@@ -98,6 +98,33 @@ func main() {
 }
 ```
 
+
+尽量避免使用命名返回值
+```go
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println(greet("Jane ", "Doe"))
+}
+
+func greet(fname string, lname string) (s string) {
+	s = fmt.Sprint(fname, lname)
+	return
+}
+
+/*
+IMPORTANT
+Avoid using named returns.
+
+
+Occasionally(偶尔) named returns are useful. Read this article for more information:
+https://www.goinggo.net/2013/10/functions-and-naked-returns-in-go.html
+*/
+
+```
+
 ## 函数值
 
 ```go
@@ -147,6 +174,61 @@ func square() func() int {
 
 需要注意一定要获取到函数值的引用，否则只是相同的值而已。因为只有获得闭包返回变量后才能获得匿名函数的隐式变量。  
 
+
+## 回调
+
+### 案例1 打印
+```go
+package main
+
+import "fmt"
+
+func main() {
+	nums := []int{2, 1, 3, 4}
+	visit2(nums, myPrint)
+}
+
+func visit2(nums []int, callback func(int)) {
+	for _, v := range nums {
+		callback(v)
+	}
+}
+func myPrint(num int) {
+	fmt.Println(num)
+}
+
+```
+
+
+### 案例2 过滤
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var myArr = []int{1, 2, 3, 4, 5}
+	fmt.Println(filter3(myArr, myFilter))
+}
+func myFilter(i int) bool {
+	if i%2 == 0 {
+		return true
+	}
+	return false
+}
+
+func filter3(arr []int, callback func(int) bool) []int {
+	var filter_arr []int
+	for _, n := range arr {
+		if callback(n) {
+			filter_arr = append(filter_arr, n)
+		}
+	}
+	return filter_arr
+}
+
+```
 ## 函数进阶 函数类型与函数值(闭包)
 
 go语言本质都是**值**类型，函数是**函数值**类型。因此我们可以简单的声明一个函数类型
@@ -239,6 +321,27 @@ func add1(r rune) rune {
 
 函数行为参数化思想是很有意思的一种编程思维，在函数式编程中和接口编程中有很大使用价值。要掌握。
 
+
+```go
+package main
+
+import "fmt"
+
+func visit(numbers []int, callback func(int)) {
+	for _, n := range numbers {
+		callback(n)
+	}
+}
+
+func main() {
+	visit([]int{1, 2, 3, 4}, func(n int) {
+		fmt.Println(n)
+	})
+}
+
+// callback: passing a func as an argument
+
+```
 ### 匿名函数作为函数值在使用的时候定义
 
 ```go
@@ -524,7 +627,7 @@ x:1,y:102
 - **释放资源的defer语句应该直接跟在请求资源的语句后。**  所以一个函数内的多处资源释放使用defer只需要一行代码就可以替代。  
 - 调试复杂程序时，defer的机制也常被用于记录何时进入和退出函数
 - (解释上个特性)defer语句调用参数`会立刻求值`，但是函数直到外层函数返回之前是不会调用的。
-- defer语句中的函数会在return更新返回值变量之后再执行，又因为在函数中定义的匿名函数可以访问该函数的包括返回值在内的所有变量，因此对匿名函数采用defer机制，可以使其观察函数的返回值。  
+- **defer语句中的函数会在return更新返回值变量之后再执行，又因为在函数中定义的匿名函数可以访问该函数的包括返回值在内的所有变量，因此对匿名函数采用defer机制，可以使其观察函数的返回值。**  
 
 ```go
 package main
@@ -965,7 +1068,33 @@ func main() {
 // defer closure i =  4
 // defer i =  0
 ```
+### defer与naked-return
 
+```go
+package main
+
+import "fmt"
+
+func ReturnId() (id int, err error) {
+   //id =10
+	defer func(id int) {
+		if id == 10 {
+			err = fmt.Errorf("Invalid Id\n")
+		}
+	}(id)
+
+	id = 10
+
+	return
+}
+func main() {
+	id, err := ReturnId()
+	fmt.Println(id,err)
+}
+
+```
+两种情况完全不同
+[naked-return](https://www.goinggo.net/2013/10/functions-and-naked-returns-in-go.html)
 ## 传值还是传引用?
 
 ```go
