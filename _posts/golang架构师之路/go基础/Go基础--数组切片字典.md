@@ -1444,7 +1444,7 @@ func main() {
 请注意段落结尾符 `}}`或`))`，如果不是的话，需要使用`,`。只要有`}}`或`))` 可以省略`,`，否则不行。快捷键使用`ctrl+shift+j`可以迅速解决该问题(在Gogland IDE中)。
 
 ## 映射的操作
-
+### crud操作
 - 插入或修改映射`m`的元素  
 
 ```go
@@ -1508,6 +1508,61 @@ The value: 0 Present? false
 */
 ```
 
+### 注意delete删除不存在的key没有任何的错误
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	myGreeting := map[int]string{
+		0: "Good morning!",
+		1: "Bonjour!",
+		2: "Buenos dias!",
+		3: "Bongiorno!",
+	}
+
+	fmt.Println(myGreeting)
+	delete(myGreeting, 7)
+	fmt.Println(myGreeting)
+}
+
+```
+
+### 预判段删除
+```go
+package main
+
+import "fmt"
+
+func main() {
+
+	myGreeting := map[int]string{
+		0: "Good morning!",
+		1: "Bonjour!",
+		2: "Buenos dias!",
+		3: "Bongiorno!",
+	}
+
+	fmt.Println(myGreeting)
+
+	if val, exists := myGreeting[7]; exists {
+		delete(myGreeting, 7)
+		fmt.Println("val: ", val)
+		fmt.Println("exists: ", exists)
+	} else {
+		fmt.Println("That value doesn't exist.")
+		fmt.Println("val: ", val)
+		fmt.Println("exists: ", exists)
+	}
+
+	fmt.Println(myGreeting)
+}
+
+```
+
 ```go
 	var m map[int]string
 	m = map[int]string{}
@@ -1565,6 +1620,8 @@ func main() {
 }
 
 ```
+
+
 ## 练习：映射
 实现`WordCount`。它应该返回在字符串`s`中的每个单词出现的次数的集合。`wc.Test`函数将为提供的函数跑测试并打印成功或失败。提示:[strings.Fields](https://golang.org/pkg/strings/#Fields)会有很大帮助
 

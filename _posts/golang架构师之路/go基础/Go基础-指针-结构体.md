@@ -175,8 +175,64 @@ func main() {
 }
 ```
 
+
+## go 面向对象
+
+### 用户自定义类型
+
+```go
+package main
+
+import "fmt"
+
+type foo int
+
+func main() {
+	var myAge foo
+	myAge = 44
+	fmt.Printf("%T %v \n", myAge, myAge)
+}
+// main.foo 44
+```
+
+### 别名类型与底层类型间转换
+
+```go
+package main
+
+import "fmt"
+
+type foo int
+
+func main() {
+	var myAge foo
+	myAge = 44
+	fmt.Printf("%T %v \n", myAge, myAge)
+
+	var age int = 23
+	//可以与底层类型互相转换
+	fmt.Println(foo(age))
+	fmt.Println(int(myAge))
+
+}
+```
+但上述例子中的转换并不是好的实践方式。在官方API中的`Duration`为了给该类型添加方法，需要根据返回值进行转换。
+
+```go
+type Duration int64
+
+// Hours returns the duration as a floating point number of hours.
+func (d Duration) Hours() float64 {
+	hour := d / Hour
+	nsec := d % Hour
+	return float64(hour) + float64(nsec)/(60*60*1e9)
+}
+```
+
+
+
 ## struct
-`struct`结构体是字段的集合。  
+`struct`结构体是字段的集合。 结构体是也是自定义类型底层类型的一种。结构体是组合类型。 
 
 ```go
 package main
@@ -265,6 +321,36 @@ func main() {
 ```
 
 
+```go
+package main
+
+import "fmt"
+
+type person struct {
+	first string
+	last  string
+	age   int
+}
+
+func main() {
+	p1 := person{"James", "Bond", 20}
+	p2 := person{"Miss", "Moneypenny", 18}
+	fmt.Println(p1.first, p1.last, p1.age)
+	fmt.Println(p2.first, p2.last, p2.age)
+
+	p3 := person{}
+	fmt.Println(p3)
+
+	var p4 person
+	fmt.Println(p4)
+
+}
+
+//James Bond 20
+//Miss Moneypenny 18
+//{  0}
+//{  0}
+```
 
 ## 结构体字段
 
@@ -590,6 +676,7 @@ func main() {
 
 // {kobe 24}
 ```
+
 ## 匿名结构嵌套
 类似于java中的引用类型字段，go则使用匿名结构字段
 
@@ -925,6 +1012,7 @@ func main() {
 
 
 ## 方法
+
 前面我们讲到struct在go中充当了经典面向对象模型中的Class，那么go中是如何实现方法的呢?  
 通常来说面向对象方法的调用就是向调用对象发送消息，从这个角度而言，对象(struct)是消息的接收者。  
 Go对方法的实现就是基于上述原理基于函数增加了接收者(receiver)，很巧妙地链接到了struct对象上。  
@@ -948,6 +1036,7 @@ func main() {
 }
 // my name is: Odie
 ```
+
 go中没有方法重载，那么当garfield也说话时，我们同样可以绑定一个say方法到Cat上。 
 
 ```go
@@ -1015,6 +1104,49 @@ func (cat Cat) Say()  {
 	fmt.Println(cat.Name)
 }
 ```
+
+
+## receiver 是参数而非self或this
+
+
+> (p person) is the "receiver"
+it is another parameter
+not idiomatic to use "this" or "self"
+
+
+
+```go
+package main
+
+import "fmt"
+
+type person struct {
+	first string
+	last  string
+	age   int
+}
+
+func (p person) fullName() string {
+	return p.first + p.last
+}
+
+func (p *person) String() {
+	fmt.Printf("%s - %d\n", p.fullName(), p.age)
+}
+
+func main() {
+	p1 := person{"James", "Bond", 20}
+	p2 := person{"Miss", "Moneypenny", 18}
+	fmt.Println(p1.fullName())
+	fmt.Println(p2.fullName())
+
+	p3 := person{"kobe", "brant", 24}
+	p3.String()
+}
+
+```
+
+
 
 ## receiver的值传递与指针传递
 

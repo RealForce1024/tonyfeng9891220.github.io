@@ -49,7 +49,7 @@ fmt.Printf("%v", a)
 
 
 
-### 字符串中的字符
+### 字符串字符转换
 字符串操作
 码过程中避免不了中文字符，那我们该如何提取一个中文呢？
 首先我们要知道**string[index]获取的是字符byte**
@@ -78,6 +78,134 @@ func reverse(str string) {
     fmt.Println(str)
 }
 ```
+### runes是数字
+[runes维基百科](https://zh.wikipedia.org/wiki/%E7%9B%A7%E6%81%A9%E5%AD%97%E6%AF%8D)
+卢恩字母
+
+rune are unicode number
+```go
+letter := 'A'
+fmt.Println(letter)
+fmt.Printf("%T \n",letter)
+// 65  unicode码
+// int32
+```
+
+![-w450](media/15041902001996.jpg)
+
+![-w450](media/15041902331505.jpg)
+
+#### 字符为uint8
+字符串由字符组成，取出来的字符类型并非string类型，而是字符原生底层的类型uint8。所以直接从字符串任意取出一个字符是uint8类型(byte)，也是unicode码，想要看到自然语言，也是需要一层转换，使用string类型转换即可。而使用rune转换字符串，因为都是unicode码，只是类型有了提升变为int32
+
+
+
+
+
+
+。
+字符串取字符需要做string(Item)转换
+```go
+package main
+
+import "fmt"
+
+func main() {
+	word := "Hello"
+	fmt.Printf("%T %v\n", word[0], word[0]) // uint8 <==> byte
+	letter := rune(word[0])
+	fmt.Println(letter)
+	fmt.Printf("%T\n", letter) //int32
+
+	fmt.Println(string(word[0])) //需要做一层转换
+}
+
+```
+
+
+
+### 转换为字符串
+
+string()将数据转换为文本格式。计算机中存储的任何东西本质都是数字0,1。因此自然将65转为对应的文本A。
+
+```go
+package main
+
+import (
+	"fmt"
+	"strconv"
+)
+
+func main() {
+	var a int = 65
+	b := string(a)
+	fmt.Printf("%v\n", b) //A
+
+	var c int = 65
+	d := strconv.Itoa(c)
+	fmt.Printf("%v\t%s\t%q\n", d,d,d)
+
+	f, _ := strconv.Atoi(d)
+	fmt.Printf("%v", f)
+}
+
+
+//A
+//65	65	"65"
+//65
+```
+
+### 不能修改的字符串该如何修改
+字符串一旦定义不能修改，否则将无法编译通过。
+
+```go
+var s string = "hello"
+s[0] = "e" //compile error
+```
+
+不过可以曲线救国，赋值给string底层类型byte[]
+string和[]byte可以互转
+```go
+var s string = "hello"
+var c []byte
+//c = s[:] 注意s[:]为string类型  string[n]为byte类型
+c = []byte(s)
+c[0] = 'e'
+s = string(c) // []byte和s是可以互转的
+fmt.Printf("%v", s)
+```
+注意：是字符串内容元素不能修改，但不是说字符串变量的值不能修改。
+
+但是byte不能存储汉字等字符
+
+```go
+var s string = "hello 中国"
+var c []byte
+//c = s[:] 注意s[:]为string类型  string[n]为byte类型
+c = []byte(s)
+c[0] = 'e'
+s = string(c) // []byte和s是可以互转的
+fmt.Printf("%v\n", s)
+
+//c[6] = '美' //注意 byte alias as int8 无法存储汉字 constant 32654 overflows byte
+//var b byte = '美'
+//fmt.Printf("%v\n", b)
+var r rune = '美'
+fmt.Printf("%v\t%[1]q\n", r)
+
+var runes []rune
+runes = []rune(s)
+//runes[6] = "美"
+runes[6] = '美'
+s = string(runes)
+fmt.Printf("%v\n", s)
+
+
+//eello 中国
+//32654	'美'
+//eello 美国
+```
+
 ### 字符的格式化
 
 ```go
@@ -288,87 +416,6 @@ func main() {
 //9
 ```
 
-### 转换为字符串
-
-string()将数据转换为文本格式。计算机中存储的任何东西本质都是数字0,1。因此自然将65转为对应的文本A。
-
-```go
-package main
-
-import (
-	"fmt"
-	"strconv"
-)
-
-func main() {
-	var a int = 65
-	b := string(a)
-	fmt.Printf("%v\n", b) //A
-
-	var c int = 65
-	d := strconv.Itoa(c)
-	fmt.Printf("%v\t%s\t%q\n", d,d,d)
-
-	f, _ := strconv.Atoi(d)
-	fmt.Printf("%v", f)
-}
-
-
-//A
-//65	65	"65"
-//65
-```
-
-### 不能修改的字符串该如何修改
-字符串一旦定义不能修改，否则将无法编译通过。
-
-```go
-var s string = "hello"
-s[0] = "e" //compile error
-```
-
-不过可以曲线救国，赋值给string底层类型byte[]
-string和[]byte可以互转
-```go
-var s string = "hello"
-var c []byte
-//c = s[:] 注意s[:]为string类型  string[n]为byte类型
-c = []byte(s)
-c[0] = 'e'
-s = string(c) // []byte和s是可以互转的
-fmt.Printf("%v", s)
-```
-注意：是字符串内容元素不能修改，但不是说字符串变量的值不能修改。
-
-但是byte不能存储汉字等字符
-
-```go
-var s string = "hello 中国"
-var c []byte
-//c = s[:] 注意s[:]为string类型  string[n]为byte类型
-c = []byte(s)
-c[0] = 'e'
-s = string(c) // []byte和s是可以互转的
-fmt.Printf("%v\n", s)
-
-//c[6] = '美' //注意 byte alias as int8 无法存储汉字 constant 32654 overflows byte
-//var b byte = '美'
-//fmt.Printf("%v\n", b)
-var r rune = '美'
-fmt.Printf("%v\t%[1]q\n", r)
-
-var runes []rune
-runes = []rune(s)
-//runes[6] = "美"
-runes[6] = '美'
-s = string(runes)
-fmt.Printf("%v\n", s)
-
-
-//eello 中国
-//32654	'美'
-//eello 美国
-```
 
 ## 常量
 
