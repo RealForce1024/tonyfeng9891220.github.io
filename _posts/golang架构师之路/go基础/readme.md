@@ -1,5 +1,7 @@
 ## 书籍
+[无闻go语言入门翻译](http://wiki.jikexueyuan.com/project/the-way-to-go/)
 [go语言圣经](https://www.kancloud.cn/hartnett/gopl-zh/126044)
+[go圣经 gitbook](http://docs.ruanjiadeng.com/gopl-zh/index.html)
 ## 资料
 [go中关于闭包的坑](http://www.jianshu.com/p/fa21e6fada70)
 ## 博客
