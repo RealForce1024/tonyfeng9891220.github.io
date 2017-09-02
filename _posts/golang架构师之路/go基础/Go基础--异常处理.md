@@ -1,3 +1,58 @@
+## 错误检查的必要性
+
+```go
+package main
+
+import (
+	"bytes"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+	"fmt"
+)
+
+func main() {
+	msg := "Do not dwell in the past, do not dream of the future, concentrate the mind on the present."
+	rdr := strings.NewReader(msg)
+	io.Copy(os.Stdout, rdr)
+
+	rdr2 := bytes.NewBuffer([]byte(msg))
+	io.Copy(os.Stdout, rdr2)
+
+	//res, _ := http.Get("http://www.mcleods.com")
+	res, err := http.Get("www.baidu.com")
+	/*if err != nil {
+		fmt.Println(err)
+		return
+	}*/
+	io.Copy(os.Stdout, res.Body)
+	res.Body.Close()
+}
+
+```
+如果没有错误的检查，得到的信息将不够直接明了。
+
+```go
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x40 pc=0x11e3dba]
+
+goroutine 1 [running]:
+main.main()
+	/Users/fqc/work/src/GolangTraining/21_interfaces/01_interface/05_io-copy/01_no-error-checking/main.go:25 +0x16a
+exit status 2
+```
+上述的原因认真分析，能够看出大概是res为nil导致的，并且是指针为nil。
+![-w450](media/15043479523967.jpg)
+
+
+
+如果去除注释，将得到清晰的堆栈信息。并且友好
+
+```go
+Get www.baidu.com: unsupported protocol scheme ""
+```
+
 ## Panic异常
 > Go的类型系统会在编译时捕获很多错误,但有些错误只能在运行时检查,如数组访问越界、 空指针引用等。这些运行时错误会引起painc异常。
 

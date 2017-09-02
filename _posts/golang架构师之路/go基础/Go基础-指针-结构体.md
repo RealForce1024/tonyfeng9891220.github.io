@@ -727,7 +727,9 @@ func main() {
 }
 ```
 
-## 复合结构体字段
+## 内嵌类型
+
+也是复合结构体字段，某类型中嵌套另个一结构体字段    
 
 ```go
 package main
@@ -778,6 +780,32 @@ func main() {
 }
 ```
 不建议使用匿名结构体字段。  
+
+
+## 结构体指针
+
+```go
+package main
+
+import "fmt"
+
+type person struct {
+	name string
+	age  int
+}
+
+func main() {
+	p1 := &person{"James", 20}
+	fmt.Println(p1)
+	fmt.Printf("%T\n", p1)
+	fmt.Println(p1.name)
+	fmt.Println(p1.age)
+
+   //fmt.Println(*p1.name) 
+	fmt.Println((*p1).name)
+}
+```
+注意对于地址重定向的写法。 另外golang语言自身对于地址重定向做了语法糖优化，开发者编码时无需再做这步操作。但如果手动操作，则需注意格式，(*p)是主体，而`.`操作符的优先级较高，所以需要`()`提升`*`操作符的优先级。
 
 ## 结构体比较
 
@@ -1112,9 +1140,26 @@ func (cat Cat) Say()  {
 > (p person) is the "receiver"
 it is another parameter
 not idiomatic to use "this" or "self"
+"Not many people know this, but method notation, i.e. v.Method() is actually syntactic sugar and Go also understands the de-sugared version of it: (T).Method(v). You can see an example here. Naming the receiver like any other parameter reflects that it is, in fact, just another parameter quite well.
+This also implies that the receiver-argument inside a method may be nil. This is not the case with this in e.g. Java."
+SOURCE:
+https://www.reddit.com/r/golang/comments/3qoo36/question_why_is_self_or_this_not_considered_a/?utm_source=golangweekly&utm_medium=email
 
+```go
+package main
 
+type T struct{}
 
+func (t T) Method() {}
+
+func main() {
+	t := T{}
+	t.Method()    // this is valid
+	(T).Method(t) // this too
+}
+```
+
+注意下面的p5也是有初始值的
 ```go
 package main
 
@@ -1142,10 +1187,15 @@ func main() {
 
 	p3 := person{"kobe", "brant", 24}
 	p3.String()
+
+	p4 := person{}
+	p4.String()
+
+	var p5 person
+	p5.String()
+
 }
-
 ```
-
 
 
 ## receiver的值传递与指针传递
