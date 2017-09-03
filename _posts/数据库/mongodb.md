@@ -1,5 +1,5 @@
 # 
-[install](https://docs.mongodb.com/master/tutorial/install-mongodb-on-ubuntu/?_ga=2.265524232.681108377.1504368240-739410429.1504368240)
+[install mongo 官网](https://docs.mongodb.com/master/tutorial/install-mongodb-on-ubuntu/?_ga=2.265524232.681108377.1504368240-739410429.1504368240)
 
 [golang mongo](http://blog.csdn.net/wangshubo1989/article/details/77567598?hmsr=studygolang.com&utm_medium=studygolang.com&utm_source=studygolang.com)
 
