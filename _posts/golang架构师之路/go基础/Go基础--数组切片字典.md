@@ -1324,6 +1324,19 @@ func remove(slice []int, i int) []int {
 ```
 
 [切片的追加删除插入操作](http://www.cnblogs.com/dajianshi/p/4235142.html)
+
+
+### 切片的比较
+[Golang比较两个slice是否相等](http://www.jianshu.com/p/80f5f5173fca)
+
+决定开个go-commons
+[go-utils](https://github.com/search?utf8=%E2%9C%93&q=goutils&type=)
+[go-helper]()
+[awesome-go]()
+https://biglin.io/about/
+
+空接口的问题
+https://www.kancloud.cn/kancloud/the-way-to-go/72528
 ## Map映射
 **Map映射将键映射到值** 以`k,v`键值对的形式出现。  
 映射的默认零值是`nil`。一个`nil`映射既没有`key`，也不能添加`key`。  
