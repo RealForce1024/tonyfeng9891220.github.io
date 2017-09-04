@@ -216,6 +216,19 @@ func main() {
 }
 ```
 
-## 
+## golang中的字符串连接有哪几种?哪种最高效
+
+[字符串连接哪一种方式最高效](https://gocn.io/question/265)
+
+
+![](media/15045189628805.jpg)
+
+![](media/15045189837371.jpg)
+
+![](media/15045190085062.jpg)
+
+strings.Join 最慢
+fmt.Sprintf 和 string + 差不多
+bytes.Buffer又比上者快约500倍
 
 

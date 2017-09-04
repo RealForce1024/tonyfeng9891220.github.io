@@ -741,4 +741,7 @@ func main() {
 // g=6,h=7
 ```
 
+字符串操作的总结
+[go常用字符串操作总结](http://www.jianshu.com/p/de1c400db620)
+
 
