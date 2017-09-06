@@ -232,3 +232,44 @@ fmt.Sprintf 和 string + 差不多
 bytes.Buffer又比上者快约500倍
 
 
+## 请使用两种方式将下列代码改进
+
+```go
+ch := make(chan int)
+ch <- 100
+fmt.Println(<-ch)
+```
+
+```sh
+//fatal error: all goroutines are asleep - deadlock!
+```
+
+
+分析：
+原因是：
+ch <- 100，是`unbuffered channel`，它会block，直到有人把它发送的消息取走。因此，第6行的语句永远无法执行，造成死锁
+
+go判断死锁的代码位于：
+src/pkg/runtime/proc.c
+
+改进方式1:
+
+```go
+ch := make(chan int,1)
+ch <- 100
+fmt.Println(<-ch)
+```
+
+改进方式2：
+
+```go
+ch := make(chan int)
+go func(){
+    ch <- 100
+}()
+fmt.Println(<-ch)
+```
+[如何理解默认阻塞的channel](https://golangtc.com/t/545b3529421aa960c7000082)
+[go deadlock](http://blog.sina.com.cn/s/blog_630c58cb01016j1u.html)
+
+

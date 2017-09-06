@@ -5,3 +5,6 @@
 
 [JetBrains Go IDE Overview](https://www.youtube.com/watch?v=o3igXAE9eDo)
 
+shift+h 复合vim的习惯 shift+l
+![](media/15046797321855.png)
+
