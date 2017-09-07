@@ -366,8 +366,7 @@ func main() {
 		}*/
 
 	var wg sync.WaitGroup
-	done := make(chan bool)
-
+	
 	values := []string{"a", "b", "c"}
 	for _, v := range values {
 		fmt.Println("--->", v)
@@ -375,11 +374,9 @@ func main() {
 		go func(u string) {
 			defer wg.Done()
 			fmt.Println(u)
-			<-done
 		}(v)
 	}
 
-	close(done)
 	wg.Wait()
 
 }
@@ -391,6 +388,22 @@ func main() {
 
 [goroutine的奇怪输出](https://gocn.io/question/1117)
 
+根据实验，确实最后的G的最先执行的次数占比最大。但同时也有不是第一个执行的时候
+```go
+package main
+
+func main() {
+	go println("a")
+	go println("b")
+	go println("d")
+	go println("m")
+	go println("G")
+	select {}
+}
+```
+![](media/15048012201907.jpg)
+
+而再分析上面的字典遍历后在开启go任务，时间上更加充裕的分配，那么go程将把最后一个提到最前执行的可能性就更大。
 
 # go channel的正确使用姿势
 
