@@ -142,6 +142,44 @@ func main() {
 //main exit
 ```
 
+# 通知可以使任意含义，未必是结束
+
+
+```go
+package main
+
+import (
+	"sync"
+	"fmt"
+	"time"
+)
+
+func main() {
+	//主任务:ready? go
+	//多项子任务:running
+
+	var wg sync.WaitGroup
+	ready := make(chan struct{})
+
+	for i := 0; i < 3; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			fmt.Println(id, "ready...")
+			<-ready
+			fmt.Println(id, "running")
+		}(i)
+	}
+
+	time.Sleep(time.Second)
+	fmt.Println("ready?go!")
+	close(ready)
+	wg.Wait()
+
+}
+
+```
+
 # 将任意函数并发执行
 
 ```go
@@ -150,19 +188,23 @@ package main
 import (
 	"fmt"
 	"go_commons"
-	"runtime"
 	"sync"
+	"runtime"
 )
 
 func main() {
-	defer go_commons.TraceTime()()
-	//count()
+
+	count()
 	n := runtime.NumCPU()
-	//test(n) //13.x ms
-	//test2(n)
+	test(n) //13.x ms
+	test2(n)
 	test3(n, count)
+	test4(n, count)
 }
+
 func test2(n int) {
+	defer go_commons.TraceTime()()
+
 	/*
 	go func() {
 		for i := 0; i < n; i++ {
@@ -183,6 +225,8 @@ func test2(n int) {
 }
 
 func test3(core int, fn func()) {
+	defer go_commons.TraceTime()()
+
 	var wg sync.WaitGroup
 	for i := 0; i < core; i++ {
 		wg.Add(1)
@@ -195,7 +239,12 @@ func test3(core int, fn func()) {
 	wg.Wait()
 }
 
+func test4(n int, fn func()) {
+	defer go_commons.TraceTime()()
+	go_commons.ConcurrentFn(n, fn)
+}
 func test(n int) {
+	defer go_commons.TraceTime()()
 	for i := 0; i < n; i++ {
 		count()
 	}
@@ -208,8 +257,140 @@ func count() {
 	}
 	fmt.Println(sum)
 }
+```
+# 模拟TLS 本地存储
+
+```go
+package main
+
+import (
+	"sync"
+	"fmt"
+)
+
+var wg sync.WaitGroup
+
+var gs [5]struct {
+	id, result int
+}
+
+func main() {
+	for i := 0; i < len(gs); i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+			gs[id].id = id
+			gs[id].result = (id + 1) * 100
+		}(i)
+
+	}
+	wg.Wait()
+	fmt.Println(gs)
+}
+// [{0 100} {1 200} {2 300} {3 400} {4 500}]
+```
+# 信号处理
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	var done = make(chan struct{})
+	var c = make(chan string)
+	go func() {//该任务接收消息并打印，然后通知结束任务
+		fmt.Println(<-c)
+		close(done)
+	}()
+	c <- "hello"
+	<-done
+	fmt.Println("main exit")
+}
 
 ```
+
+# 特别注意迭代channel时尽量别用len作为长度
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	ch := make(chan int, 3)
+	ch <- 1
+	ch <- 2
+	close(ch)
+	/*for c := range ch {
+		fmt.Println(c)
+	}*/
+	fmt.Println(len(ch))
+	fmt.Println(cap(ch))
+
+	for i := 0; i < len(ch)+1; i++ {
+		fmt.Println("len:",len(ch))
+		c, ok := <-ch
+		fmt.Println(c, ok)
+	}
+}
+
+```
+
+# goroutine的执行顺序
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+
+	/*	done := make(chan bool)
+
+		values := []string{"a", "b", "c"}
+		for _, v := range values {
+			fmt.Println("--->", v)
+			go func(u string) {
+				fmt.Println(u)
+				done <- true
+			}(v)
+		}
+
+		// wait for all goroutines to complete before exiting
+		for _ = range values {
+		<-done
+		}*/
+
+	var wg sync.WaitGroup
+	done := make(chan bool)
+
+	values := []string{"a", "b", "c"}
+	for _, v := range values {
+		fmt.Println("--->", v)
+		wg.Add(1)
+		go func(u string) {
+			defer wg.Done()
+			fmt.Println(u)
+			<-done
+		}(v)
+	}
+
+	close(done)
+	wg.Wait()
+
+}
+
+```
+
+>go关键字只是一个语法糖，可以认为 go func()()只是创建了一个 待被执行任务（G），for循环只能保证三个任务的创建顺序是G(a)->G(b)->G(c)，但三个任务很可能会被分配到不同的cpu core上执行（go的运行时调度器来分配）。所以三个任务的执行顺序是不确定的。
+>但是比较奇妙的是，一般情况下在同一个goroutine中创建的多个任务中最后创建那个任务最可能先被执行。原因的话就要看go的实现细节了：简单说同一goroutine中三个任务被创建后 理论上会按顺序 被放在同一个任务队列，但实际上最后那个任务会被放在专一的next（下一个要被执行的任务的意思）的位置，所以优先级最高，最可能先被执行。剩下的两个任务如果go运行时调度器发现有空闲的core，就会把任务偷走点，让别的core执行，这样才能充分利用多核，提高并发能力。
+
+[goroutine的奇怪输出](https://gocn.io/question/1117)
+
 
 # go channel的正确使用姿势
 

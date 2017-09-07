@@ -269,7 +269,150 @@ go func(){
 }()
 fmt.Println(<-ch)
 ```
+
+# 流水线问题
+
+[用goroutine打印4个文件内容](https://gocn.io/question/768)
+
+```go
+func main(){
+    var wg sync.WaitGroup
+    exit := make(chan bool)
+    ch := make(chan int,4)
+    
+    for i:=0; i <cap(ch); i++ {
+        wg.Add(1)
+        go func(id int) {
+            defer wg.Done()
+            fmt.Println(id,"->",i+1)
+        }(i)
+        close(exit)
+    }
+    
+    wg.Wati()
+    <-exit
+}
+```
+
+
 [如何理解默认阻塞的channel](https://golangtc.com/t/545b3529421aa960c7000082)
 [go deadlock](http://blog.sina.com.cn/s/blog_630c58cb01016j1u.html)
 
+
+
+[golang 实现一种环形队列，及周期任务](http://blog.csdn.net/u013597671/article/details/76339825)
+
+[扛住100亿次请求？我们来试一试](http://blog.csdn.net/mergerly/article/details/76243804)
+
+[进一步认识golang并发](http://blog.csdn.net/gophers/article/details/24665419)
+[golang每日一练](http://www.sunaloe.cn/)
+
+[multiply thread    ](https://github.com/houjingbiao/Code-Template/blob/master/01.multithread.md)
+
+[golang流水线问题](https://www.google.com/search?q=golang+%E6%B5%81%E6%B0%B4%E7%BA%BF%E9%97%AE%E9%A2%98&safe=active&ei=QruwWc6pHMH2jwPK3aOICQ&start=0&sa=N&biw=1920&bih=1006)
+
+http://www.sunaloe.cn/about
+
+http://fuxiaohei.me/2017/4/22/gopherchina-2017.html   
+>interface{} 另一个特殊场景就是空接口，对应的代码就是需要类型推断：
+```go
+func do(v interface{}){
+    switch t := v.(type){
+        case int:
+            fmt.Printf("int - %d",t)
+        case error:
+            fmt.Printf("error - %s",t.Error())
+        default:
+            fmt.Printf("interface - %v",t)
+    }
+}
+```
+不到万不得已不要这么写代码。否则需要推断类型的 case 越来越多，代码可维护性瞬间下降。
+
+
+# 闭包引用问题
+
+下列代码输出什么?
+
+```go
+package main
+
+import (
+	"fmt"
+	"os"
+)
+
+func main() {
+	for i := 0; i < 3; i++ {
+		go func() {
+			fmt.Println(i)
+		}()
+	}
+	os.Stdin.Read(make([]byte,1))
+}
+```
+
+上述原因在于main执行太快，而goroutine都没来得及执行，i已经变味了3
+
+那么我们可以采取让main执行慢一些，生成的3个goroutine将会有看能正常执行
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	for i := 0; i < 3; i++ {
+		go func() {
+			fmt.Println(i)
+		}()
+		time.Sleep(1 * time.Second)
+	}
+}
+
+```
+
+
+```go
+	for i := 0; i < 3; i++ {
+		go func(v int) {
+			fmt.Println(v)
+		}(i)
+		time.Sleep(1 * time.Second)
+	}
+```
+
+```go
+for i := 0; i < 3; i++ {
+      v := i
+		go func() {
+			fmt.Println(v)
+		}()
+		time.Sleep(1 * time.Second)
+	}
+```
+
+# redis实现优先级
+[redis实现优先级](http://www.cnblogs.com/nullcc/p/5924244.html)
+
+# 迭代channel类型数据的注意
+
+为避免死锁，迭代channel的时候一定要注意注意对channel的关闭。
+
+```go
+func main() {
+    c := make(chan bool)
+    go func() {
+        fmt.Println("test") 
+        c <- true
+        close(c) //需要加上，否则panic
+    }()
+    
+    for v := range c {
+        fmt.Println(v)
+    }
+}
+```
 

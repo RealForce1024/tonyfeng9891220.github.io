@@ -731,6 +731,16 @@ func main() {
 // s1不是nil []
 ```
 
+## slice can only be  compared to nil
+
+```go
+a := []int{1, 2, 3, 4, 5}
+	fmt.Println(unsafe.Sizeof(a))
+	var b = make([]int, 5)
+	fmt.Println(unsafe.Sizeof(b))
+	//fmt.Println(a == b) //invalid operation: a == b (slice can only be compared to nil)
+```
+
 ## 使用make创建切片
 切片可以使用内置的`make`函数创建。这也是你可以创建动态长度的数组方式。  
 `make`函数**分配一个默认零值的数组并且返回一个指向该数组的切片**
