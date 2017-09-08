@@ -24,5 +24,5 @@
 [goroutine背后的系统知识](http://www.infoq.com/cn/articles/knowledge-behind-goroutine)
 [golang的很多小工具以及笔记](https://github.com/dongjun111111/notes/blob/master/Golang/Golang%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86.md)
 
-
+[空接口](http://www.kuaizh.com/cntdetail.php?type=cnt_new_desc&id=1308)
 
