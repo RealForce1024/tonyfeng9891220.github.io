@@ -36,16 +36,50 @@ panic: 触发异常
 - [关于golang的panic recover异常错误处理](http://xiaorui.cc/2016/03/09/%E5%85%B3%E4%BA%8Egolang%E7%9A%84panic-recover%E5%BC%82%E5%B8%B8%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86/)
 - [Go语言中使用Defer几个场景](http://developer.51cto.com/art/201306/400489.htm)
 
+2、非原子操作的return和defer联合使用的坑
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func main() {
+	fmt.Println(doubleScore(0))    //0
+	fmt.Println(doubleScore(20.0)) //40
+	fmt.Println(doubleScore(50.0)) //50
+}
+func doubleScore(source float32) (score float32) {
+	defer func() {
+		if score < 1 || score >= 100 {
+			//将影响返回值
+			score = source
+		}
+	}()
+	score = source * 2
+	return
+
+	//或者
+	//return source * 2
+}
+```
 
 2、请指出下面代码的问题并说明原因
 
 ```go
+package main
+
+import (
+	"fmt"
+)
+
 type student struct {
 	Name string
 	Age  int
 }
 
-func pase_student() {
+func pase_student() map[string]*student {
 	m := make(map[string]*student)
 	stus := []student{
 		{Name: "zhou", Age: 24},
@@ -55,9 +89,95 @@ func pase_student() {
 	for _, stu := range stus {
 		m[stu.Name] = &stu
 	}
+	return m
+}
+func main() {
+	students := pase_student()
+	for k, v := range students {
+		fmt.Printf("key=%s,value=%v \n", k, v)
+	}
 }
 ```
-案例解析: go的迭代变量会复用地址，也就说`stu`取地址`&stu`始终是一样的地址，所以循环体中的代码问题在于每个m存储的student实例地址是一样的。 解决方案可以将map中的指针声明修改为结构体类型。
+案例解析: Go的迭代变量会复用地址，也就说迭代变量`stu`取地址`&stu`始终是一样的地址，所以循环体中的代码问题在于每个m存储的student实例地址是一样的。 解决方案可以将map中的指针声明修改为结构体类型。
+而如果改为结构体类型，则为非引用类型，每次都是副本,值的拷贝。
+
+故有三种解决方案:
+所以解决方案有两个
+1. 去除指针，使用结构体
+2. 保留指针，但在每次迭代时，都要取出，使用shadow variable覆盖
+3. 取出数组原始的指针值
+
+
+方案一
+
+```go
+type student struct {
+	Name string
+	Age  int
+}
+
+func pase_student() map[string]*student {
+	m := make(map[string]*student)
+	stus := []student{
+		{Name: "zhou", Age: 24},
+		{Name: "li", Age: 23},
+		{Name: "wang", Age: 22},
+	}
+	for _, stu := range stus {
+		fmt.Printf("%p\n", &stu)
+		m[stu.Name] = &stu
+	}
+	return m
+}
+```
+
+每次的循环迭代变量的地址都是一样,错误就在于每次赋值都是指向的底层地址，循环变量最终都是执行完都是指向最后一个值。
+
+```go
+0xc42000a260
+0xc42000a260
+0xc42000a260
+key=zhou,value=&{wang 22} 
+key=li,value=&{wang 22} 
+key=wang,value=&{wang 22} 
+```
+
+方案二
+
+```go
+func pase_student() map[string]*student {
+	m := make(map[string]*student)
+	stus := []student{
+		{Name: "zhou", Age: 24},
+		{Name: "li", Age: 23},
+		{Name: "wang", Age: 22},
+	}
+	for _, stu := range stus {
+		stu:=stu
+		m[stu.Name] = &stu
+	}
+	return m
+}
+```
+
+方案三
+
+```go
+func pase_student() map[string]*student {
+	m := make(map[string]*student)
+	stus := []student{
+		{Name: "zhou", Age: 24},
+		{Name: "li", Age: 23},
+		{Name: "wang", Age: 22},
+	}
+	for i, _ := range stus {
+		stu:=stus[i]
+		m[stu.Name] = &stu
+	}
+	return m
+}
+```
+
 
 3、下面的代码会输出什么，并说明原因
 
@@ -81,6 +201,212 @@ func main() {
 	wg.Wait()
 }
 ```
+
+解析:
+默认情况runtime.GOMAXPROCS为4，即golang的任务调度器为4核，并发并行执行，goroutine执行是由调度器分配的，顺序是随机的。而第一行代码就将runtime.GOMAXPROCS设置为1，一个任务调度器，goroutine将被放到同一个goroutine任务列表中执行，顺序执行，但是由于第一个中的变量是go 匿名函数引用外部参数值，为闭包形式是延迟加载的，所以打印出的都是10（注意不是9），而第二个goroutine则为匿名函数中传递了参数，匿名函数参数则立即计算并拷贝的，所以每次都是正常执行。而又因为同一个任务列表中goroutine一般是FIFO的，但是go的机制有个特殊点在于runq.next也就是goroutine切换时会将最后一个任务放到runq.next优先执行。所以，第二个循环中的goroutine列表中的最后一个goroutine将优先打印，其他的则按顺序执行。因此我们看到的打印输出结果将是
+我做了下标记将其区分 m为第二个循环中的
+
+```sh
+m:  9
+i:  10
+i:  10
+i:  10
+i:  10
+i:  10
+i:  10
+i:  10
+i:  10
+i:  10
+i:  10
+m:  0
+m:  1
+m:  2
+m:  3
+m:  4
+m:  5
+m:  6
+m:  7
+m:  8
+```
+
+不过我用的是go1.8，其他版本未必是这个顺序，和调度器底层实现有关。所以还是随机性最大。
+# go没有继承，只有组合
+
+下面代码会输出什么?
+
+```go
+package main
+
+import "fmt"
+
+type People struct{}
+
+func (p *People) ShowA() {
+	fmt.Println("showA")
+	p.ShowB()
+}
+func (p *People) ShowB() {
+	fmt.Println("showB")
+}
+
+type Teacher struct {
+	People
+}
+
+func (t *Teacher) ShowB() {
+	fmt.Println("teacher showB")
+}
+
+func main() {
+	t := Teacher{}
+	t.ShowA()
+}
+```
+解析:go没有继承，只有组合。
+我们看到Teacher中有个匿名字段People，因为该匿名字段可以直接使用当前struct类型直接调用其组合类型包含的函数或字段。我们可以先看下非匿名字段的情况(匿名字段在调用时候较为便利，因为可以省略)。
+当我们采用了命名字段，再次调用People的方法就必须加上字段名。因为其receiver要求的是People。
+那么我们也就知道了，匿名字段下，其receiver其实也是People类型。那么调用的的方法自然也是People
+的方法。没有继承这么一说。毕竟这个People类型并不知道自己会被什么类型组合，当然也就无法调用方法时去使用未知的组合者Teacher类型的功能。
+
+```go
+type Teacher struct {
+	p People
+}
+
+func main() {
+	t := Teacher{}
+	//t.ShowA()
+	t.p.ShowA()
+}
+```
+
+调用所谓"继承"或实际上来说是组合的方法B，我们可以采用
+t.ShowB()即可。其实也是t.p.ShowB()的缩写。
+
+
+#  select伪随机
+下面代码会触发异常吗？请详细说明
+
+```go
+
+func main() {
+	runtime.GOMAXPROCS(1)
+	int_chan := make(chan int, 1)
+	string_chan := make(chan string, 1)
+	int_chan <- 1
+	string_chan <- "hello"
+	select {
+	case value := <-int_chan:
+		fmt.Println(value)
+	case value := <-string_chan:
+		panic(value)
+	}
+}
+
+```
+解析: 可能会。
+ select可以在多个chan间等待执行。有三点原则：
+ 
+- select 中只要有一个case能return，则立刻执行。
+- 当如果同一时间有多个case均能return则伪随机方式抽取任意一个执行。
+- 如果没有一个case能return则可以执行”default”块。
+
+而在上述代码中运行，满足第二条原则满足，将会随机选择，所以是可能会。
+
+
+# slice追加
+
+请写出以下输出内容
+
+```go
+func main() {
+	s := make([]int, 5)
+	s = append(s, 1, 2, 3)
+	fmt.Println(s)
+}
+```
+
+slice初始化之后[0,0,0,0,0]，容量也为5，但是可以自动扩容。append函数追加元素，不够则扩容，但不会覆盖原有的元素。所以输出将是[0,0,0,0,0,1,2,3]
+
+# 锁问题
+
+
+```go
+type UserAges struct {
+	ages map[string]int
+	sync.Mutex
+}
+
+func (ua *UserAges) Add(name string, age int) {
+	ua.Lock()
+	defer ua.Unlock()
+	ua.ages[name] = age
+}
+
+func (ua *UserAges) Get(name string) int {
+	if age, ok := ua.ages[name]; ok {
+		return age
+	}
+	return -1
+}
+```
+map非并发安全，对于同一个指针的同一时间读写操作引发资源竞争，需要引入读写锁，否则会报错误信息:“fatal error: concurrent map read and map write”。go1.9中也可以使用并发安全的map来解决。
+
+
+# 非缓冲通道的特性 
+
+```go
+func (set *threadSafeSet) Iter() <-chan interface{} {
+	ch := make(chan interface{})
+	go func() {
+		set.RLock()
+
+		for elem := range set.s {
+			ch <- elem
+		}
+
+		close(ch)
+		set.RUnlock()
+
+	}()
+	return ch
+}
+```
+
+解析:非缓冲通道阻塞，需要有接守者，否则一直阻塞，将会引起panic
+
+
+# receiver 指针还是struct 还是指针或struct都可
+```go
+package main
+
+import (
+	"fmt"
+)
+
+type People interface {
+	Speak(string) string
+}
+
+type Stduent struct{}
+
+func (stu *Stduent) Speak(think string) (talk string) {
+	if think == "bitch" {
+		talk = "You are a good boy"
+	} else {
+		talk = "hi"
+	}
+	return
+}
+
+func main() {
+	var peo People = Stduent{}
+	think := "bitch"
+	fmt.Println(peo.Speak(think))
+}
+```
+
+解析:不能通过。因为值Student{}并未实现接口。需要&Student{}
 
 ## 边界检查
 
@@ -415,4 +741,12 @@ func main() {
     }
 }
 ```
+
+[Golang面试题解析](https://my.oschina.net/u/553243/blog/1478739)
+[golang面试题解析](https://yushuangqi.com/blog/2017/golang-mian-shi-ti-da-an-yujie-xi.html)
+[goroutine 的调度顺序是随机的](https://zhuanlan.zhihu.com/p/27343468)
+[golang开发者的50度灰](http://colobu.com/2015/09/07/gotchas-and-common-mistakes-in-go-golang/)
+[](https://www.zhihu.com/question/60952598)
+
+>没参加过GO语言的面试，用了2年多快3年go语言，主要用来写游戏服务器框架，如果要我出面试题，大概会从以下几个方面考虑：1. Data Race问题怎么解决？能不能不加锁解决这个问题？2. 使用goroutine以及channel设计TCP链接的消息收发，以及消息处理。3. 使用go语言，编写并行计算的快速排序算法。然后结合项目需求再提一些问题，比如数据库，网络协议，加密解密。考go语言细节的话建议买本比较流行的go语言书，从里面挑几条重要的语法问题出一下，以免招不到人。另外就是go语言中比较特别的自带test和benchmark，这是我喜欢go语言的重要原因之一，我一直觉得软件测试是保证软件质量的重要一环，运用好这中测试方法可以极大的提高软件质量和开发效率，面试的时候也能问问这方面情况。
 

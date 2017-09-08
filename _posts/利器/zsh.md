@@ -10,12 +10,13 @@ linux服务器可以参考aws ubuntu
 # aws ubuntu install zsh 
 
 这两篇即可解决
-```sh
-https://gist.github.com/tsabat/1498393
-https://github.com/robbyrussell/oh-my-zsh/issues/1224
-```
+[](https://gist.github.com/tsabat/1498393)
+[](https://github.com/robbyrussell/oh-my-zsh/issues/1224)
+
 注意将下面两行配置到`~/.zshrc`中，无需每次都`source ~/.bashrc`
 
+
+见上节的percol安装
 ```sh
 export percol=~/percol-0.2.1/bin
 export PATH=$percol:$PATH
