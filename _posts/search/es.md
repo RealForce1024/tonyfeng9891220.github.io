@@ -75,6 +75,7 @@ elk大功告成
 [aws elk](https://www.youtube.com/watch?v=ge8uHdmtb1M&list=PL5zjQdAWZiUyxxHI72D_O5i77jlJrxKZr)
 
 [aws elk](https://github.com/andrewpuch/elasticsearch-logstash-kibana-tutorial)
+
 ```
 Amazon Linux AMI 2015.09
 

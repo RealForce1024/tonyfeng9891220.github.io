@@ -26,3 +26,5 @@
 
 [空接口](http://www.kuaizh.com/cntdetail.php?type=cnt_new_desc&id=1308)
 
+[关于并发和并行的讨论](https://laike9m.com/blog/huan-zai-yi-huo-bing-fa-he-bing-xing,61/)
+
