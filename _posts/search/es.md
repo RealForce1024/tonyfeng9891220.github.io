@@ -4,12 +4,18 @@
 wget https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.2.tar.gz
 ```
 
-
 [es 1.7 aws discovery](https://www.elastic.co/guide/en/elasticsearch/reference/1.7/modules-discovery-ec2.html)
 
 [es aws plugin](https://github.com/elastic/elasticsearch-cloud-aws)
 
+[docker install elk](https://www.youtube.com/watch?v=6bXSfjwQVIc)
 
+[rancher elk](https://www.youtube.com/watch?v=OD7SKa87Dsg)
+
+[creating loadbalancer with rancher](https://www.youtube.com/watch?v=j63WGOS-0qs)
+
+
+[How To 10 Minute Build Prometheus with Rancher in AWS](https://www.youtube.com/watch?v=cFF0TEviDEQ)
 ```sh
 bin/plugin install elasticsearch/elasticsearch-cloud-aws/VERSION
 ```

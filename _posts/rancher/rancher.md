@@ -63,7 +63,23 @@ master节点需要做权限控制，可以使用github与rancher的校验设置�
 curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh /dev/stdin 1.12.3
 ```
 
+docker 加速器
+```sh
+curl -sSL https://get.daocloud.io/daotools/set_mirror.sh | sh -s http://bbfa5e62.m.daocloud.io
+```
+
+
+centos
+```sh
+https://docs.docker.com/cs-engine/1.12/#install-on-suse-linux-enterprise-123
+```
 
 ## docker磁盘挂载问题
 [Docker中的device or resource busy问题分析](http://niusmallnan.com/2016/12/27/docker-device-resource-busy/)
+
+
+
+[容器的思考](http://www.sohu.com/a/131907106_198222)
+
+
 
