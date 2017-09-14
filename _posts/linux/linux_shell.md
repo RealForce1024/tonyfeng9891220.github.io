@@ -7,7 +7,6 @@ total 24
 ☁  aaaa  rm $(ls .|grep hello)
 ```
 
-
 ```sh
 tail -f -n 3 1.txt
 ```
