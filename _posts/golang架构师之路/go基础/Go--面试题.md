@@ -818,6 +818,24 @@ func main() {
 }
 ```
 
+
+## go的静态变量
+
+```go
+func reverse1(s []int) []int {
+	length := len(s)
+	// s2 := []int{} // s2 := [length]int{} //non-constant array bound length
+
+	for i := 0; i < length; i++ {
+		j := length - i - 1
+		s[j] = s[i]
+	}
+	return s
+}
+
+```
+
+
 [Golang面试题解析](https://my.oschina.net/u/553243/blog/1478739)
 [golang面试题解析](https://yushuangqi.com/blog/2017/golang-mian-shi-ti-da-an-yujie-xi.html)
 [goroutine 的调度顺序是随机的](https://zhuanlan.zhihu.com/p/27343468)
