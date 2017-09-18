@@ -65,3 +65,14 @@ xxx.sublime-build
 ![](media/15057102114042.jpg)
 
 
+[go sublime go build and run](https://gist.github.com/timrandg/5955052)
+
+```go
+{
+    "cmd": ["go run '${file}'"],
+    "selector": "source.go",
+    "path": "/usr/local/go/bin",
+    "shell": true
+}  
+```
+
