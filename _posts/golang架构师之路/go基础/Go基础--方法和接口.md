@@ -1647,11 +1647,16 @@ $GoPATH/bin/Gotour // 中文Go tour  ```
 
 
 
+指针or结构
+![](media/15057201469075.jpg)
 
 
 
 
 
+![](media/15057201621510.jpg)
+
+![](media/15057201805724.jpg)
 
 
 

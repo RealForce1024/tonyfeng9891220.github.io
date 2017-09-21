@@ -297,6 +297,13 @@ de23886dbb5e        ubuntu                         "/bin/bash echo helo"    9 se
 ubuntu@ip-172-31-7-64:~$ docker inspect -f {{.Name}} 23f23
 /zealous_montalcini
 ```
+
+### 开机启动--restart=always
+
+```sh
+docker run -d -p 9997:9999 --restart=always myapp:myapp
+```
+[Docker容器开机自动启动（在宿主机重启后或者Docker服务重启后）](http://molewan.blog.51cto.com/287340/1743902)
 ### docker ps
 
 `docker ps [-a]|[-l]`  
@@ -831,7 +838,7 @@ CMD 指令就是用于指定默认的容器主进程的启动命令的。
 用来提供容器运行的默认命令，与run命令类似，都是执行命令。
 
 **区别**
-1. RUN指定的命令是在镜像构建过程中执行的，CMD指定的命令是在容器运行中执行的。
+1. **RUN指定的命令是在镜像构建过程中执行的，CMD指定的命令是在容器运行中执行的**。
 2. 当我们使用docker run命令启动一个容器时，指定了一个容器运行时的命令，那么cmd指令中的命令会被覆盖，不会被执行。也就是说cmd指令是运来指定容器运行时的默认行为。
 
 CMD指令有两种独立模式和一种搭配模式

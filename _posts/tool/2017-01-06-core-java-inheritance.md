@@ -8,6 +8,7 @@ keywords: java, 复习
 
 继承(inheritance)，面向对象的核心技术之一。  
 利用继承，可以基于一个已存在的类构造新的类。继承已存在的类就是复用(继承)这些类的方法和域。在此基础上，还可以添加新的方法和域，以满足新的需求。
+
 ```java
 public class Manager extends Employee {
     private double bonus;
