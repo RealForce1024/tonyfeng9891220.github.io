@@ -1229,6 +1229,11 @@ rm          从磁盘中删除容器
 
 
 ```
+### docker 批量删除
+批量删除未打标签的images
+`docker rmi $(docker images -f "dangling=true" -q)`
+
+![](media/15060739498904.jpg)
 
 ###docker小技巧
 [docker 小技巧](http://blog.sina.com.cn/s/blog_53ab41fd0101lrvv.html)
