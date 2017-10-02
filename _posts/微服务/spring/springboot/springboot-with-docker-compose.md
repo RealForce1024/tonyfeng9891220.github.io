@@ -1,11 +1,7 @@
 
-## install sdk
-	-- sdk install java
-	-- sdk install springboot
-	-- sdk install gradle
-	
-	# 环境准备
-1. install sdkman and using it to install that needed
+
+## 环境准备 sdkman java gradle springboot
+install sdkman and using it to install that needed (java\gradle\springboot)
 
 ```sh
 curl -s "https://get.sdkman.io" | bash
@@ -14,6 +10,7 @@ sdk install java
 sdk install gradle
 sdk install springboot
 ```
+
 ![-w450](media-1/15055715565156.jpg)
 
 注意：开启了科学上网(翻墙)代理
@@ -21,6 +18,7 @@ sdk install springboot
 
 
 ![-w450](media/15055780034539.jpg)
+
 
 ## install docker
 
@@ -41,9 +39,16 @@ mac版本
 
 ## new WebApp.groovy  && spring run
 
-由于安装了spring-cli，所以可以直接命令行`spring run springboot-app`。其中springboot-app只需要是springboot的文件即可，不论是java版本还是groovy版本，都可直接运行。
+由于安装了spring-cli，所以可以直接命令行`spring run springboot-app-file`。其中springboot-app只需要是springboot的文件即可，不论是java版本还是groovy版本，都可直接运行(是需要下载依赖的)。
 
-###groovy版本
+### sdk 切换
+
+```sh
+sdk default scala 2.11.6
+```
+
+### groovy版本
+
 ```groovy
 @RestController
 class WebApp{
@@ -58,7 +63,9 @@ just run `spring run WebApp.groovy`
 ![-w450](media/15055783505421.jpg)
 
 
+
 ### java版本
+
 ```java
 package springbootdemo 
 import org.springframework.boot.SpringApplication; 
@@ -84,6 +91,7 @@ just run `spring run WebApp2.java`
 notice: just create file and run. the spring-cli will download the dependency. until now, it has no any config file . even pom,gradle script or properties. just one file groovy or java.
 
 ![-w450](media/15055782334167.jpg)
+
 ## 使用gradle创建springboot工程
 ### config build.gradle
 
@@ -100,8 +108,8 @@ buildscript {
 
 }
 
-apply plugin: ‘java'
-apply println 'idea'
+apply plugin: 'java'
+apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
 jar {
@@ -124,10 +132,10 @@ dependencies {
 
 注意spring cli 的方式不要和gradle配置文件混淆，因为没有关系
 `spring init -dweb --build gradle config-server  --group="com.micro"`
---build gradle只是指明创建类型为gradle方式。 
-config-server为工程名称
---group 为包名
---mainClassName 别瞎猜
+**--build gradle** 只是指明创建类型为gradle方式。 
+config-server 为工程名称
+**--group**  为包名
+**--mainClassName** 别瞎猜
 
 ```sh
 ☁  events_microservices [master] ⚡ spring help init                                                                                                                                [master|]
@@ -200,12 +208,11 @@ Project extracted to '/Users/fqc/git-work/events_microservices/config-server'
 ![](media/15062315861437.jpg)
 
 
-https://spring.io/guides/gs/multi-module/
-https://docs.spring.io/spring-boot/docs/current/reference/html/cli-using-the-cli.html
+- https://spring.io/guides/gs/multi-module/
+- https://docs.spring.io/spring-boot/docs/current/reference/html/cli-using-the-cli.html
 
 ### 配置gradle仓库国内地址
 [repository server](https://xiexianbin.cn/java/2016/12/18/change-gradle-maven-repo-url)
-
 
 ```sh
 allprojects {
@@ -217,6 +224,7 @@ allprojects {
 ```
 
 ### spring boot cli方式执行创建
+
 `spring init --list` 列出spring的生态环境项目
 `spring init -dweb --build gradle myapp` 使用gradle脚本和web依赖创建spring工程。
 
@@ -225,7 +233,7 @@ allprojects {
 有两种方式  
 
 1.  在gradle中指定springboot插件可以使用功能`bootRun`
-2.  使用fat jar的方式 `gradle clean build && java -jar ...` ,`gradle clean build -x test`可以忽略测试，(测试构建很耗时)
+2.  使用fat jar的方式 `gradle clean build && java -jar ...` ,`gradle clean build -x test`可以忽略测试(测试构建很耗时)
 
 ![](media/15060577341599.jpg)
 
