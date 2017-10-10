@@ -281,6 +281,7 @@ springbootApplication注解首先有标注的作用
 ## 配置文件
 
 注意两点`---`和层级关系，错一个都不行
+**key: value 中间需要有空格隔开**
 ```yml
 spring:
   profiles: dev
@@ -301,8 +302,7 @@ server:
   port: 7777
 ```
 
-## 开启
-actuator
+## 开启actuator插件 （审计，健康检查，监控等产品就绪时需要的功能）
 
 ```sh
 compile('org.springframework.boot:spring-boot-starter-actuator')
@@ -314,26 +314,23 @@ compile('org.springframework.boot:spring-boot-starter-actuator')
 ![](media/15059174887180.jpg)
 
 
-## management.security.enabled
+### management.security.enabled
 很多springboot提供的系统级别api默认是开启权限验证的。开发时可以先关闭掉
-management.security.enabled = false
-## 日志配置
+`management.security.enabled = false`
 
+## 日志配置
 
 ```sh
 compile('org.springframework.boot:spring-boot-starter-logging')
 ```
 ![](media/15059191832278.jpg)
 
-
-
 [Spring Boot 日志配置方法(超详细)](http://www.jb51.net/article/118849.htm)
 
-[SpringBoot干货系列（七）：默认日志logback配置解析
-](http://www.qingpingshan.com/rjbc/java/246216.html)
-
+[SpringBoot干货系列（七）：默认日志logback配置解析](http://www.qingpingshan.com/rjbc/java/246216.html)
 
 ## dockerfile
+
 ![](media/15059594855189.jpg)
 
 注意以下两种方式都可以
@@ -345,12 +342,12 @@ compile('org.springframework.boot:spring-boot-starter-logging')
 
 ![](media/15059598107300.jpg)
 
-通常为了降低单元测试或行为测试的隔离性，比如一个服务需要底层基础设施服务，如mongodb服务等，注入一些数据，不依赖别人环境，同时不需要访问其他环境。docker-compose所做的就是将很多container依赖组装起来。
-
+通常为了降低单元测试或行为测试的隔离性，比如一个服务需要底层基础设施服务，如mongodb服务等，注入一些数据，不依赖别人环境，同时不需要访问其他环境。**docker-compose所做的就是将很多container依赖组装起来。**
 
 ![](media/15059600165524.jpg)
 
-注意 一些配置最好能在docker-compose中配置，不用修改源码，更加方便。
+注意 **一些配置最好能在docker-compose中配置，不用修改源码，更加方便**。
+
 ![](media/15059631734587.jpg)
 
 ![](media/15059632670779.jpg)
@@ -371,8 +368,6 @@ gradle clean build && java -jar -Dspring.profiles.active=prod build/libs/myapp-0
 ```
 ![](media/15059610545147.jpg)
 [springboot属性配置官方手册](https://docs.spring.io/spring-boot/docs/current/reference/html/howto-properties-and-configuration.html)
-
-
 
 ## 编写微服务
 ### 编写Dockerfile文件
@@ -403,7 +398,7 @@ CMD ["java","-jar","/app/myapp-latest.jar"]
 ```sh
 docker build -t myapp:myapp1.0 .
 ```
-### 设置开机重启docker容器服务
+### 设置开机重启docker容器服务 --restart=always
 
 
 ```sh
@@ -419,16 +414,13 @@ docker run -d -p 9997:9999 --restart=always myapp:myapp
 
 ## 将json文件导入mongodb
 
-
 ![](media/15059987188294.jpg)
 
 ![](media/15059985499292.jpg)
 
 ![](media/15059987022434.jpg)
 
-注意现在本地跑起来没问题，再放入docker执行。
-
-
+注意先在本地跑起来没问题，再放入docker执行。
 
 ![](media/15060000397728.jpg)
 
@@ -441,7 +433,7 @@ add
 ![](media/15060000748108.jpg)
 
 
-### gradle docker plugin
+## gradle docker plugin
 
 [使用gradle生成Spring Boot应用的Docker Image](http://www.jdon.com/dl/best/docker-containers-with-gradle-in-4-steps.html)
 
@@ -520,10 +512,6 @@ java:alpine本身是145m，加上工程19.8m，165m合理。
 ![](media/15060639715740.jpg)
 
 
-
-
-
-
 ## docker compose up
 ![](media/15060701341314.jpg)
 
@@ -542,12 +530,18 @@ java:alpine本身是145m，加上工程19.8m，165m合理。
 
 ![](media/15060731564430.jpg)
 
+
+
 ![](media/15060732883721.jpg)
+
+注意下面的dockerFile中的port指定7777,那么上图中的ports:要为**9999:7777**
+
+![](media/15076012030074.jpg)
 
 ## docker-compose 一键构建打包启动
 
 ```sh
-gradle clean build -x test && gradle buildDocker -x test && docker-compose up --build
+gradle clean build -x test && gradle buildDocker -x test && docker-compose up
 ```
 
 ![](media/15060737527555.jpg)
@@ -587,4 +581,22 @@ docker exec $CONTAINER_ID mongoimport --db test --collection event --type json -
 
 ## 其他资料
 [Crafting perfect Java Docker build flow](https://codefresh.io/blog/java_docker_pipeline/)
+
+
+
+## gradle 构建时有时会卡死
+
+
+![](media/15075990340273.jpg)
+
+
+[解决方案 关闭掉org.gradle.daemon=false](https://docs.gradle.org/current/userguide/gradle_daemon.html)
+
+
+```
+修改或新建 ~/.gradle/gradle.properties
+添加一行 org.gradle.daemon=false
+```
+![](media/15075990049700.jpg)
+
 
