@@ -535,8 +535,11 @@ java:alpine本身是145m，加上工程19.8m，165m合理。
 ![](media/15060732883721.jpg)
 
 注意下面的dockerFile中的port指定7777,那么上图中的ports:要为**9999:7777**
+并且注意配置的重叠加载 在docker-compose中指定了使用`docker(只是一个命名)文件`，而默认项中的context-path是有效的
+
 
 ![](media/15076012030074.jpg)
+图为application.yml. 指定的应用程序
 
 ## docker-compose 一键构建打包启动
 
@@ -599,4 +602,9 @@ docker exec $CONTAINER_ID mongoimport --db test --collection event --type json -
 ```
 ![](media/15075990049700.jpg)
 
+
+
+
+## spring boot profile with docker
+http://www.littlebigextra.com/use-spring-profiles-docker-containers/
 

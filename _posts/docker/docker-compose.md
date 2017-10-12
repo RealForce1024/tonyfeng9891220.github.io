@@ -44,3 +44,8 @@ curl -L https://raw.githubusercontent.com/docker/compose/1.8.0/contrib/completio
 ![-w500](media/15027650736693.jpg)
 
 
+## docker compose completion 自动补全
+[官方文档](https://docs.docker.com/compose/completion/#zsh)
+![](media/15077720529466.jpg)
+
+

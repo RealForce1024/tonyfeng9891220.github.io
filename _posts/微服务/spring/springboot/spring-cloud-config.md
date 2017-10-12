@@ -11,3 +11,8 @@ So in the previous example if you have a RestController with @RequestMapping("/t
 ```
 question source: [how do i choose the url for my spring boot webapp](https://stackoverflow.com/questions/24452072/how-do-i-choose-the-url-for-my-spring-boot-webapp)
 
+
+## config 访问
+![](media/15076071938690.jpg)
+
+

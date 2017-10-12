@@ -879,7 +879,7 @@ syslog              2136                2106                0                   
 ```
 
 ##### ENTRYPOINT
-ENTRYPOINT指令和CMD指令相似，唯一区别在于其不会被run命令中的执行命令覆盖。 
+ENTRYPOINT指令和CMD指令相似，**唯一区别在于其不会被run命令中的执行命令覆盖**。 
 
 * exec模式
 ENTRYPOINT ["executable","param1","param2"] 
@@ -1048,6 +1048,9 @@ CONTAINER ID        IMAGE               COMMAND                  CREATED        
 
 注意 `.` 代表的不是指定路径，而是指定上下文路径(docker enginee是cs结构，而build命令是在server端执行的，如何让服务端获得本地文件呢？上下文路径就特别重要)，Dockerfile中命令指定的路径都是上下文路径，也是相对路径。
 所以一般将Dockerfile放到项目的根目录或空目录然后将所需文件复制过来，如果有不需要的文件，可以类似的使用如.gitignore的方式使用.dockerignore文件定义忽略的文件。
+
+下图则为没有真正理解 `.` 的上下文含义。一定要避免该中情形。docker build 命令会首先将上下文目录和子目录发送到docker daemon中，因此如果构建上下文在一个非空目录下，会将不需要的目录全部发送。
+![](media/15077671069766.jpg)
 
 
 下面的图片中有什么优点，有什么缺点呢?
