@@ -6,7 +6,7 @@
 [](https://sentry.io/welcome/)
 
 
-
+[Unix 哲学：Elixir 将会替代 Go](https://linux.cn/article-6075-1.html)
 [](https://elixirschool.com/cn/)
 [elixir程序设计 gitbook](https://www.gitbook.com/book/wizardforcel/programming-elixir/details)
 [](https://mydearxym.gitbooks.io/phoenix-doc-in-chinese/content/)
@@ -27,4 +27,7 @@ gocn.io
 不要上来就问代码实现，这类问题如何解决？   而是解决该类问题 应如何思考
 
 idothings
+
+[](http://szpzs.oschina.io/2017/06/14/why-i-often-implement-things-from-scratch/) erlang elixir
+
 

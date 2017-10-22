@@ -227,7 +227,7 @@ allprojects {
 
 `spring init --list` 列出spring的生态环境项目
 `spring init -dweb --build gradle myapp` 使用gradle脚本和web依赖创建spring工程。
-
+`spring init -dweb --build gradle config-server  --group="com.micro" --name="ConfigServerApplication"`
 ## 运行gradle springboot项目
 
 有两种方式  

@@ -34,4 +34,13 @@ shift+h 复合vim的习惯 shift+l
 自定义调整选项的顺序
 ![](media/15065568176097.jpg)
 
+springboot application Run dashboard
+![](media/15077779022760.jpg)
+
+
+![](media/15077779316013.jpg)
+
+
+![](media/15077779404656.jpg)
+
 
