@@ -158,6 +158,8 @@ java中的equals,hashCode的区别和联系?
 equals如何比较并不重要，但是不理解equals存在的目的就容易踩坑。比如这里面的一个例子http://atleeon.com/code/2013/11/29/java-equals-hashcode/
 ```
 
+[](http://blog.csdn.net/lclai/article/details/6195104)
+[](https://my.oschina.net/yongqingfan/blog/628174)
 [HASHCODE和HASHMAP、HASHTABLE](http://www.debugrun.com/a/WXl4bmk.html)
 
 ```java
@@ -173,4 +175,57 @@ HashCode的作用
     上面说的对象相同指的是用eqauls方法比较。
     你当然可以不按要求去做了，但你会发现，相同的对象可以出现在Set集合中。同时，增加新元素的效率会大大下降。
 ```
+---
+
+描述下java的Error、Exception的区别，试着举例几种RuntimeException.
+
+[如何优雅的处理java异常](https://www.zhihu.com/question/28254987)
+![](media/15089483604175.jpg)
+
+[](https://my.oschina.net/hanzhankang/blog/195529)
+[](http://www.runoob.com/java/java-exceptions.html)
+[](http://blog.csdn.net/mr_pang/article/details/49624425)
+[](http://outofmemory.cn/c/java-outOfMemoryError)
+
+---
+讲解java克隆的作用以及深浅克隆的原理区别
+
+---
+简述线程同步的几种方式
+
+---
+ThreadLocal的实现原理及使用场景
+[java ThreadLocal(应用场景及使用方式及原理)](http://blog.csdn.net/coslay/article/details/38293689)
+[Java多线程系列八——volatile和ThreadLocal](https://www.yuanmas.com/info/mZzg6kD0OK.html)
+
+---
+volatile
+[聊聊并发（一）——深入分析Volatile的实现原理](http://www.infoq.com/cn/articles/ftf-java-volatile)
+[IBM java理论与实践](https://www.ibm.com/developerworks/cn/java/j-jtp06197.html)
+---
+简述spring aop
+
+---
+简述tcp的三次握手
+
+---
+编写一个单例类
+
+[java单例的几种实现方式](http://www.cnblogs.com/CodeGuy/p/3580486.html) 
+[如何正确地写出单例模式](http://wuchong.me/blog/2014/08/28/how-to-correctly-write-singleton-pattern/)dcl 指令重排序
+[如何在Java中使用双重检查锁实现单例](http://xylsh.github.io/2014/double-checked-locking-singleton)
+
+[Java的单例模式与延时加载 写得很到位](http://blog.sina.com.cn/s/blog_6fd0fd4b0101326l.html)
+[使用静态内部类实现延迟加载单例模式](http://www.javaweb1024.com/java/Javajichu/2015/03/25/454.html)
+[Java静态内部类加载](http://blog.csdn.net/zhang_yanye/article/details/50344447)
+    
+[加载一个类时，其内部类是否同时被加载？引申出单例模式的另一种实现方式](http://yongliang567.iteye.com/blog/904467)
+
+[关于java内部类加载顺序的问题](https://www.oschina.net/question/2273217_217864)
+
+[可以不要再使用Double-Checked Locking了](http://www.importnew.com/23980.html)
+[java性能小技巧](http://www.importnew.com/1531.html)
+
+
+
 
