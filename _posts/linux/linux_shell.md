@@ -7,7 +7,16 @@ total 24
 ☁  aaaa  rm $(ls .|grep hello)
 ```
 
+## tail
 ```sh
 tail -f -n 3 1.txt
+```
+
+
+## grep or
+```sh
+☁  .ssh  git config -l | grep "user.name\|user.email"
+user.name=fqc
+user.email=feng-qichao@qq.com
 ```
 

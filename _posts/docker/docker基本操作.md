@@ -1195,11 +1195,19 @@ mac版本
 
 脚本
 ```sh
+## 建议将下行命令直接替换成我的github地址的文件 
 wget -P ~ https://raw.githubusercontent.com/tcnksm/docker-alias/master/zshrc;
+
 ## 注意下一行脚本需根据具体的src目录调整下
 mv raw.githubusercontent.com/tcnksm/docker-alias/master/zshrc .alias-docker;
 echo "[ -f ~/.alias-docker ] && . ~/.alias-docker" >> ~/.bashrc; source ~/.bashrc;
 ```
+
+如果服务请求不到，可以直接引入进来。
+![](media/15095425847842.jpg)
+
+为了方便，我直接在github上做了一个仓库，以后可以方便使用。
+
 ### 
 [启动服务后如何保持Docker容器运行？](https://gxnotes.com/article/106906.html)
 
