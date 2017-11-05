@@ -171,9 +171,11 @@ in .gitlab.yml always use spaces, not tabs.
 
 
 [官网gitlab-ci-cd安装](https://about.gitlab.com/features/gitlab-ci-cd/)
+[get started gitlab-ci](http://52.80.26.254:9999/help/ci/quick_start/README)
+[gitlab CI/CD](https://docs.gitlab.com/ce/ci/quick_start/README.html)
 [gitlab-runner安装](https://docs.gitlab.com/runner/install/linux-repository.html)
 [gitlab-runner register](https://docs.gitlab.com/runner/register/index.html)
-
+[gitlab 中文官网](https://docs.gitlab.com.cn/runner/register/index.html)
 
 ![](media/15096364094906.jpg)
 
@@ -221,6 +223,32 @@ in .gitlab.yml always use spaces, not tabs.
 [搭建自己的 Gitlab CI Runner](https://lutaonan.com/blog/gitlab-ci-runner/)
 [使用Gitlab-Runner Docker 构建 node 项目](http://yangblink.com/2016/11/21/%E4%BD%BF%E7%94%A8Gitlab-Runner-Docker-%E6%9E%84%E5%BB%BA-node-%E9%A1%B9%E7%9B%AE/) 
 ## 注意gitlab-reconfige命令会覆盖或清空掉修改过的配置
+# gitlab权限
+[关于gitlab若干权限问题](http://blog.smallmuou.xyz/git/2016/03/11/%E5%85%B3%E4%BA%8EGitlab%E8%8B%A5%E5%B9%B2%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98.html)
+
+# 完美git flow
+
+配合[gitflow](https://www.git-tower.com/learn/git/ebook/cn/command-line/advanced-topics/git-flow) 使得微服务的代码分支管理规范相当完美。
+
+[](![](media/15098093825632.jpg)
+
+`git flow feature start $featureName永远都是从develop分支开始`
+
+## 代码分支保护
+
+![](media/15098156032796.jpg)
+
+![](media/15098155910385.jpg)
+
+
+![](media/15098104258711.jpg)
+
+
+
+
+
+![](media/15098155730858.jpg)
+
 # 官方文档
 [官网文档汇总](https://docs.gitlab.com/ee/README.html)
 
@@ -231,4 +259,8 @@ in .gitlab.yml always use spaces, not tabs.
 
 
 
+# 延伸
+[gitlab docker hub](https://hub.docker.com/u/gitlab/)
+[docker部署gitlab应用](http://www.jianshu.com/p/05e3bb375f64)
+[docker gitlab 如何git clone？](https://segmentfault.com/q/1010000007780951)
 
