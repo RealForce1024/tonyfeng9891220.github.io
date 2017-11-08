@@ -181,4 +181,6 @@ JAVA语言开发、跨平台、高性能、高可用、安全、服务化、模�
 [泥瓦匠博客](bysocket.com)
 
 
-
+https://github.com/singram/spring-cloud-microservices
+https://www.youtube.com/watch?v=A64aO6_d8rw
+https://github.com/vlotar/spring-boot-elk/blob/master/java-log-aggregation/src/main/docker/Dockerfile
