@@ -61,6 +61,8 @@
     [](https://t.goodrain.com/t/spring-cloud-vs-kubernetes/253)
     [Kubernetes和Spring Cloud哪个部署微服务更好？](https://yq.aliyun.com/articles/228964?spm=5176.100239.blogcont73491.30.mgnofx)
     [使用Rancher部署K8S时需要注意的软件版本问题](http://blog.csdn.net/CSDN_duomaomao/article/details/77676657) [配套视频](http://blog.csdn.net/csdn_duomaomao/article/details/76156334) [第二季](http://blog.csdn.net/csdn_duomaomao/article/details/78418128)
+    
+    [k8s gitlab ci/cd](https://mritd.me/)
 ## 服务编排 springcloud rancher
 [Build MicroService With Spring Cloud And Rancher](http://www.10tiao.com/html/356/201607/2247483797/1.html)
 [code for (Example Project Run Spring Cloud Application In Rancher)](https://github.com/yunlzheng/spring-cloud-with-rancher.git)
@@ -141,7 +143,11 @@ Kubernetes是介于中间的产品，没有Swarm那么简单友好，也没有Me
 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 ```
 [Docker 集群，你们用 Swarm 还是 Kubernetes？](https://www.v2ex.com/t/342101)
-
+## rancher k8s
+[原生加速中国区Kubernetes安装](https://www.cnrancher.com/kubernetes-installation/)
+[Docker拥抱k8s早有预兆，Docker现何去何从？](https://www.cnrancher.com/docker/)
+[民生保险搭建企业级集成交付微服务平台的实践](https://www.cnrancher.com/ranchernews/minsheng-insurance/)
+[Docker宣布拥抱k8s，k8s将一统天下？](https://www.cnrancher.com/ranchernews/docker-and-k8s/)
 ## 国外站点
 [Part 1: Creating microservice using Spring Cloud, Eureka and Zuul](https://piotrminkowski.wordpress.com/2017/02/05/part-1-creating-microservice-using-spring-cloud-eureka-and-zuul/)
 
@@ -179,6 +185,19 @@ JAVA语言开发、跨平台、高性能、高可用、安全、服务化、模�
 [翟永超博客](http://blog.didispace.com/)
 [周立博客](http://www.itmuch.com/)
 [泥瓦匠博客](bysocket.com)
+
+
+
+## springboot项目自动生成器
+[](https://github.com/Slahser/generator-bootgogen)
+
+![](media/15098985785840.jpg)
+
+![](media/15098986130846.jpg)
+![](media/15098986631704.jpg)
+
+
+
 
 
 

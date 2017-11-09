@@ -234,6 +234,8 @@ in .gitlab.yml always use spaces, not tabs.
 
 `git flow feature start $featureName永远都是从develop分支开始`
 
+[CI/CD Git Flow](https://mritd.me/2017/09/05/git-flow-note/)
+
 ## 代码分支保护
 
 ![](media/15098156032796.jpg)
@@ -263,4 +265,30 @@ in .gitlab.yml always use spaces, not tabs.
 [gitlab docker hub](https://hub.docker.com/u/gitlab/)
 [docker部署gitlab应用](http://www.jianshu.com/p/05e3bb375f64)
 [docker gitlab 如何git clone？](https://segmentfault.com/q/1010000007780951)
+
+[基于docker+gitlabCI搭建私有集成环境](http://blog.kazaff.me/2016/06/15/%E5%9F%BA%E4%BA%8Edocker+gitlabCI%E6%90%AD%E5%BB%BA%E7%A7%81%E6%9C%89%E6%8C%81%E7%BB%AD%E9%9B%86%E6%88%90%E7%8E%AF%E5%A2%83/)
+## gitlab container registry
+[gitlab container registry](http://www.infoq.com/cn/news/2016/05/gitlab-docker-registry)
+
+[GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/)
+1. First, ask your system administrator to enable GitLab Container Registry following the administration documentation.让管理员后台开启gitlab容器注册服务
+2. After that, you will be allowed to enable Container Registry for your project.
+然后你在项目中就可以使用该服务了..!so easy！
+
+## rancher CI/CD
+[如何使用GitLab和Rancher构建CI/CD流水线 – Part 2](https://www.cnrancher.com/run-gitlab-rancher-2/)
+
+## 延伸阅读 搭建 ci/cd
+
+[Gitlab 安装使用教程（待更新）](http://wentuotuo.com/2017/10/23/Tool/gitlab-install-and-config/)
+[金科代码管理中心使用手册](http://wentuotuo.com/2017/10/24/Tool/jk-gitlab-user-guide/)
+[gitlab搭建自己的ci/cd](https://blog.m31271n.com/2017/08/22/%E9%80%9A%E8%BF%87-GitLab-%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-CI-CD-Pipeline/)
+[ci/cd的理论基础](https://blog.m31271n.com/2017/08/21/CI-CD-%E7%9A%84%E7%90%86%E8%AE%BA%E4%B8%8E%E5%AE%9E%E8%B7%B5/)
+[通过 GitLab 构建自己的 CI / CD Pipeline](https://blog.m31271n.com/2017/08/22/%E9%80%9A%E8%BF%87-GitLab-%E6%9E%84%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84-CI-CD-Pipeline/#GitLab-GitLab-CI-GitLab-Container-Registry)
+
+
+[比较特殊的docker安装gitlab方式.....](http://www.zhishichong.com/article/109155)-->个人觉得多次一举。何不一次搞定？
+
+## 基于gitlab的ci/cd
+[基于gitlab与docker的cd](https://www.slahser.com/2016/09/08/%E5%9F%BA%E4%BA%8EGitlab%E4%B8%8EDocker%E7%9A%84CD/)
 

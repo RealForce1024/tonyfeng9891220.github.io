@@ -26,6 +26,8 @@ export PATH=$percol:$PATH
 # vim-go
 [Go Development with Vim-go](https://www.youtube.com/watch?v=7BqJ8dzygtU&t=58s)
 [一个很赞的vim-go视频作者的配置仓库](https://github.com/fatih/dotfiles)
+我现在就用的这版本
+![](media/15098983229466.jpg)
 
 [Vim 常用命令总结](http://pizn.github.io/2012/03/03/vim-commonly-used-command.html)
 

@@ -1174,7 +1174,22 @@ mac版本
 
 * 阿里云
 [阿里云Docker 镜像加速器](https://yq.aliyun.com/articles/29941)
+## docker registry
+- docker registry 方式
+[docker registry私服搭建](http://www.voidcn.com/article/p-nvbpjgad-beu.html)
+[搭建docker内网私服（docker-registry with nginx&ssl on centos）](http://blog.csdn.net/bugall/article/details/45604857)
+[搭建 Docker 私有仓库 Registry-v2](http://blog.csdn.net/pmlpml/article/details/53786455)
+[docker registry v2 ssl 环境搭建](http://blog.csdn.net/wanglei_storage/article/details/53126690)
+[docker私有仓库搭建 使用Portus管理docker registry 私有仓库](http://blog.csdn.net/l18710006370/article/details/76906702)
+[Pi cluster上配套registry](https://www.slahser.com/2016/09/29/pi-cluster%E4%B8%8A%E9%85%8D%E5%A5%97Registry/)
+- gitlab container registry
+[](https://docs.gitlab.com/ce/user/project/container_registry.html)
 
+- nexus docker私服
+[构建Docker镜像仓库的另一选择：Nexus3(基于rancher平台)](http://dockone.io/article/2168)
+[SONATYPE NEXUS 3搭建DOCKER私有仓库](http://www.debugrun.com/a/JhVtCWO.html)
+[使用 Nexus 搭建 Docker 仓库](https://mritd.me/2017/01/08/set-up-docker-registry-by-nexus/)
+[个人维护的 Docker 加速仓库](https://mritd.me/2017/03/21/private-maintenance-docker-mirror-registry/)
 ## 一些问题
 
 ### 建立docker用户组
