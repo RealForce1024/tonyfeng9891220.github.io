@@ -1,11 +1,12 @@
 # gitlab ce install
 [官网Omnibus package installation (recommended)](https://about.gitlab.com/installation/#ubuntu?version=ce)
+
 注意
-0. 服务器内存至少选择4G以上，根据实际使用，最好是8G以上。
+
+0. 服务器内存至少选择16G以上，根据实际使用，最好是16G以上。
 1. 邮箱服务器之后再单独配置，该步骤安装时跳过即可。
 2. 最后一步执行安装的时候，指定替换"git@gitlab.com"的服务器地址。或者之后配置也行。ip+port[port可以省略，默认80端口]
 也就是真正执行了3条命令。(docker方式更简单，但是有些网络的坑，docker方式更适合快速检验新版本的功能)
-
 
 ```sh
 sudo apt-get install -y curl openssh-server ca-certificates
@@ -23,7 +24,7 @@ aws t2.large 2vcpu 8G 50G存储  这些参数都可以动态扩容
 ![](media/15096121183789.jpg)
 
 
-
+5.5.42-37.1 : Series 5.5 : Percona Server
 ## 访问
 
 
@@ -54,11 +55,20 @@ Welcome to GitLab, Administrator!
 
 注意:即使有端口方式，也不需要再单独加。(而docker方式则通不过，需要单独设置)
 ```
+
+![](media/15104860630343.jpg)
+这种时候，也是醉了....
+
 http方式，注意 clone后面的地址方式为http:....
 ![](media/15096137748661.jpg)
 
 ssh方式，注意git clone 方式为git@...
 ![](media/15096137852602.jpg)
+
+
+
+将fqc账号的ssh 删除，然后将本机的公钥复制到root账户下，一样适用
+![](media/15104862063957.jpg)
 
 ## Git global setup
 
@@ -291,4 +301,22 @@ in .gitlab.yml always use spaces, not tabs.
 
 ## 基于gitlab的ci/cd
 [基于gitlab与docker的cd](https://www.slahser.com/2016/09/08/%E5%9F%BA%E4%BA%8EGitlab%E4%B8%8EDocker%E7%9A%84CD/)
+
+## gitlab sonar
+[gitlab sonar插件](https://gitlab.talanlabs.com/gabriel-allaigre/sonar-gitlab-plugin)
+
+![](media/15118366324509.jpg)
+
+[SonarQube 之 gitlab-plugin 配合 gitlab-ci 完成每次 commit 代码检测](http://blog.csdn.net/aixiaoyang168/article/details/78115646)
+
+## gitlab jenkins(繁琐冗余+各种权限不足) sonar
+
+
+## 注意.gitlab mvn verify
+[Maven 生命周期](http://www.jianshu.com/p/fd43b3d0fdb0)
+
+
+[gitlab centos的一些常用命令](https://yq.aliyun.com/articles/74395)
+
+
 

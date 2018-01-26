@@ -44,3 +44,20 @@ springboot application Run dashboard
 ![](media/15077779404656.jpg)
 
 
+
+
+cmd+shift+f12 最大化editor
+cmd+f2 stop
+cmd+1 project view
+cmd+2 spring dashboard
+cmd+3 自定义的 start app
+alt+l/h 左右移动
+esc
+shift+esc 
+alt+cmd+左右 比如属性版本切换
+cmd+shift+n 比如查找pom文件
+cmd+n 查找类
+alt+cmd+b
+cmd+f12
+
+

@@ -366,6 +366,7 @@ gradle clean build && java -jar build/libs/myapp-0.0.1-SNAPSHOT.jar -SPRING_PROF
 ```sh
 gradle clean build && java -jar -Dspring.profiles.active=prod build/libs/myapp-0.0.1-SNAPSHOT.jar                                                             
 ```
+注意: 一定要按照顺序来， 先指定profile，然后指定jar。相反则不会起效。
 ![](media/15059610545147.jpg)
 [springboot属性配置官方手册](https://docs.spring.io/spring-boot/docs/current/reference/html/howto-properties-and-configuration.html)
 
@@ -584,8 +585,6 @@ docker exec $CONTAINER_ID mongoimport --db test --collection event --type json -
 
 ## 其他资料
 [Crafting perfect Java Docker build flow](https://codefresh.io/blog/java_docker_pipeline/)
-
-
 
 ## gradle 构建时有时会卡死
 

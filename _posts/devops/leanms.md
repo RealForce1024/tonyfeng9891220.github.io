@@ -54,8 +54,9 @@
 
 注意: 其中内部的leanms_d1.box virtualbox镜像中含有docker-compose Dockerfile等文件
 
-## CI部分
-1、 执行初始化环境脚本  
+
+## 初始化环境
+**执行初始化环境脚本**  
 
 ```sh
 cd workshop01
@@ -67,11 +68,11 @@ cd workshop01
 ```sh
 ☁  workshop_day1  cat prepare.sh
 vagrant box add leanmsd1 leanms_d1.box
-vagrant up
+vagrant up 
 vagrant ssh
 ```
 
-2、 登录虚拟机,启动Gitlab,Jenkins服务   
+### 启动Gitlab,Jenkins服务
 
 ```sh
 vagrant ssh
@@ -83,12 +84,17 @@ sudo docker-compose up
 ```
 
 **访问地址及账户信息**:
+
+注意访问地址按照如下即可，做了网络映射 虚机的ip网络为: 192.168.33.1
+
+```sh
 Gitlab  
     http://192.168.33.10/  
     root/abcd1234  
 Jenkins   
     http://192.168.33.10:8080/  
     admin/abcd1234
+```
 
 **docker-compose文件内容**:
 
@@ -126,9 +132,10 @@ networks:
     driver: bridge
 ```
 
+## CI部分
+### 一、传统方式的痛点
+### 1、提交代码  
 
-
-3. 提交代码  
     a. 先删除掉Gitlab仓库中的`hello`工程。(后续脚本都是固定的`hello`命名的工程)  
     b. 新建`hello`工程，设置为public。  
     c. 按照空的`hello`工程提供的readme方案，将本地代码关联到Gitlab仓库。  
@@ -166,9 +173,11 @@ networks:
     git push -u origin --tags
     ```
     
-4. 手动运行web服务   
+### 2、手动构建并运行web服务
+
     a. 使用gradle编译代码    
         虚机中  
+        
     ```sh
     cd ~  
     git clone http://192.168.33.10/root/hello.git  
@@ -176,14 +185,17 @@ networks:
     gradle build    
     ```  
 
-    b.java -jar   
+
+    b. java -jar   
 
     ```sh
     SERVER_PORT=9090 java -jar build/libs/hello-0.0.1-SNAPSHOT.jar
     ```
+
    访问 192.168.33.10:9090
 
-5. 手动使用docker容器运行web服务       
+### 3、 手动使用Docker容器运行web服务       
+ 
     a. docker构建镜像  
     ```sh
     cd hello    
@@ -199,20 +211,30 @@ networks:
 
     c. 访问web服务  
     http://192.168.33.10:8888 
+    
+    d. 进入到容器
+    docker exec -it DockerInstance bin/sh
 
- 6. Jenkins自动化测试
+###  二、Jenkins自动化测试
+
 已经关联到了Gitlab，有过`hello`工程    
 直接点击构建。  
+
 构建的依据在于Jenkins的Configuration Pipline  script.
+
 注意点:
+    
     1. network需要指定名称，否则默认为父目录_app，例如`--network=ci_hello`，参看`/home/vagrant/hello/src/main/docker/jenkins/docker-compose.yml`文件
 
     2. git url: "http://gitlab/root/hello.git"不需要改成ip的形式，因为在`~/ci/docker-compose.yml`中`services:gitlab .... jenkins`已经配置。例如：反例证明，在docker-compose中将Gitlab改为gitlab2，然后在Jenkins中执行build将会失败，相应的在pipline中将其改为"http://gitlab2/root/hello.git"将会构建成功。 
+    
     3. 执行过程中 之前可能会有已经启动起来的相同定义的container会有冲突，需要关闭删除下
     ```sh
     sudo docker stop hello_app|| true && sudo docker rm -v hello_app|| true
     ```
+    
     4. pipline script基于grovvy脚本。灵活简洁不冗余。   
+    
     ```sh
     node {
         stage "Checkout"
@@ -262,7 +284,9 @@ networks:
 
     ```
 
-CD部分
+
+## CD部分
+
 ```sh
 cd ~/cd 
 sh clean.sh
@@ -545,10 +569,6 @@ sudo docker-compose up
 
 很多时候是不需要那么过度设计，都要上高大上的东西。
 前天吴老师在devops大会上听到阿里部署一个应用要一个万节点，什么概念，比如最差一台服务器的并发量为1000，也就说同时并发在千万级别，也就说用户量至少在上亿级别。很多时候，企业级应用都是部署在企业里，可能就1000个人，也就两个节点就够了。
-
-
-
-
 
 
 - tdd讲解

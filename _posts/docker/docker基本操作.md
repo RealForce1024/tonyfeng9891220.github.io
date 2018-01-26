@@ -665,6 +665,9 @@ c8d74c1b40fc        nginx               "nginx -g 'daemon ..."   53 seconds ago 
 ```sh
 $ docker exec -it webserver bash
 
+其他的方式
+$ sudo docker exec -it festive_davinci bin/sh
+
 root@c8d74c1b40fc:/# echo '<h1>Hello, Docker!</h1>' > /usr/share/nginx/html/index.html
 root@c8d74c1b40fc:/# exit
 exit
@@ -1266,4 +1269,8 @@ rm          从磁盘中删除容器
 
 ### docker问答系列
 [Docker问答录系列——Docker引擎相关问题(四)](http://chuansong.me/n/1459002051928)
+
+## docker 私服
+[VMware Harbor：基于 Docker Distribution 的企业级 Registry 服务](http://dockone.io/article/1877)
+
 
