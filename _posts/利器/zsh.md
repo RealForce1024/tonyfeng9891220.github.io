@@ -34,8 +34,6 @@ export PATH=$percol:$PATH
 [vim + tmux - OMG!Code](https://www.youtube.com/watch?v=5r6yzFEXajQ&t=1913s)
 
 
-
-
 # easy-mock
 [造数据神器](https://github.com/easy-mock/easy-mock)
 

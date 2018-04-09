@@ -1,7 +1,5 @@
+### 1. 申请 centos-7 虚机
 
- 
-###  1. 申请centos-7 虚机 
- 
 ```sh
 ssh -i "aws-test01.pem" centos@ec2-52-80-111-246.cn-north-1.compute.amazonaws.com.cn
 ```
@@ -9,15 +7,16 @@ ssh -i "aws-test01.pem" centos@ec2-52-80-111-246.cn-north-1.compute.amazonaws.co
 ### 建立数据库
 
 ```sh
-CREATE DATABASE IF NOT EXISTS gitea_db
+CREATE DATABASE IF NOT EXISTS gitea
   DEFAULT CHARSET utf8
   COLLATE utf8_general_ci;
 ```
-###  2. 安装golang环境 
- 
+
+### 2. 安装 golang 环境
+
 ```sh
-yum clean all
-yum update
+sudo yum clean all
+sudo yum update
 wget https://storage.googleapis.com/golang/go1.8.5.linux-amd64.tar.gz
 tar -xvf go1.8.5.linux-amd64.tar.gz
 sudo mv go /usr/local
@@ -28,15 +27,12 @@ go version
 go env
 ```
 
-
-网络原因可能导致不好下载golang，可以取巧翻墙再上传
+网络原因可能导致不好下载 golang，可以取巧翻墙再上传
 ![](media/15152260114293.jpg)
 
-###  3. 安装git
- 
- 
- ![](media/15152976566484.jpg)
+### 3. 安装 git
 
+![](media/15152976566484.jpg)
 
 ```sh
 sudo yum install -y git
@@ -88,7 +84,7 @@ $ grep 'temporary password' /var/log/mysqld.log
 登录 MySQL 并修改密码
 
 $ mysql -u root -p
-Enter password: 
+Enter password:
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
 注意：MySQL 5.7 默认安装了密码安全检查插件（validate_password），默认密码检查策略要求密码必须包含：大小写字母、数字和特殊符号，并且长度不能少于 8 位。
 
@@ -119,7 +115,7 @@ validate_password_policy=0
 禁用密码策略
 
 $ sudo vi /etc/my.cnf
-	
+
 [mysqld]
 # 禁用密码校验策略
 validate_password = off
@@ -167,19 +163,18 @@ $ sudo firewall-cmd --reload
 Using the MySQL Yum Repository
 MySQL 5.7 安装与配置（YUM）
 ```
+
 [centos7 install mysql5.7](http://qizhanming.com/blog/2017/05/10/centos-7-yum-install-mysql-57)
 
 [centos7 主从复制](http://qizhanming.com/blog/2017/06/20/how-to-config-mysql-57-master-slave-replication-on-centos-7)
 
-[CentOS7安装配置mysql5.7](http://blog.csdn.net/jssg_tzw/article/details/68944693)
-[CentOS7下安装MySQL5.7安装与配置（YUM）](http://www.centoscn.com/mysql/2016/0626/7537.html)
-[（笔记）CentOS 7 安装与卸载MySQL 5.7跳坑](https://www.jianshu.com/p/e54ff5283f18)
+[CentOS7 安装配置 mysql5.7](http://blog.csdn.net/jssg_tzw/article/details/68944693)
+[CentOS7 下安装 MySQL5.7 安装与配置（YUM）](http://www.centoscn.com/mysql/2016/0626/7537.html)
+[（笔记）CentOS 7 安装与卸载 MySQL 5.7 跳坑](https://www.jianshu.com/p/e54ff5283f18)
 [(笔记备份)CentOS 7 安装与卸载 MySQL 5.7](https://micorochio.github.io/2017/01/16/mark-CentOS-7-install-mysql-5-7/)
 
 ![](media/15152336546119.jpg)
 aopjLCkl/9uz
-
-
 
 create db
 
@@ -191,19 +186,19 @@ CREATE DATABASE IF NOT EXISTS gitea_db
 
 ![](media/15152344342366.jpg)
 
- 
 ### 5. 安装 gitea
 
 ```sh
 wget -O gitea https://dl.gitea.io/gitea/1.0.1/gitea-1.0.1-linux-amd64
 chmod +x gitea
 ```
+
 经测试有时还是本地下载后上传速度快...
 
 ![](media/15152266083433.jpg)
 
-
 设置开机启动
+
 ```
 sudo vim /etc/systemd/system/gitea.service
 sudo systemctl daemon-reload
@@ -212,7 +207,7 @@ sudo systemctl restart gitea
 ```
 
 ```
-[fengqichao@host-10-150-26-82 ~]$ sudo vim /etc/systemd/system/gitea.service        
+[fengqichao@host-10-150-26-82 ~]$ sudo vim /etc/systemd/system/gitea.service
 [Unit]
 Description=Gitea (Git with a cup of tea)
 After=syslog.target
@@ -240,71 +235,48 @@ Environment=USER=fengqichao HOME=/home/fengqichao/git
 
 [Install]
 WantedBy=multi-user.target
-                                      
 ```
-6. 运行
 
+6. 运行
 
 ```sh
 ./gitea web
 ```
-![](media/15152267354409.jpg)
 
+![](media/15152267354409.jpg)
 
 ![](media/15152293407472.jpg)
 
-
 ![](media/15152293629349.jpg)
-
 
 ![](media/15152293789836.jpg)
 
-
-
-
-
-
-
-
 https://gist.github.com/joffilyfe/1a99250cb74bb75e29cbe8d6ca8ceedb
-
 
 ![](media/15152352013193.jpg)
 
-
-
-
-
 ![](media/15152353771862.jpg)
 
-
-82服务器上指定了mysql也ok
+82 服务器上指定了 mysql 也 ok
 ![](media/15152359774366.jpg)
-
 
 ![](media/15152360563697.jpg)
 
 数据库库中果然有！
 ![](media/15152362873771.jpg)
 
-
 1. 面临数据库迁移的问题
-![](media/15152369444633.jpg)
+   ![](media/15152369444633.jpg)
 
+方案 1. 打通网络，直接导入方案 2. 将大家的代码都全部合并到 master，然后手动的上传到该地址仓库，然后建立自己的分支开发，注意修改 gitconfig 中的 ip 地址
 
-方案1. 打通网络，直接导入
-方案2. 将大家的代码都全部合并到master，然后手动的上传到该地址仓库，然后建立自己的分支开发，注意修改gitconfig 中的ip地址
-
-
-
-对比gitea 1. 简单且易维护 2.性能高 3.占用资源少(比较看重)
+对比 gitea 1. 简单且易维护 2.性能高 3.占用资源少(比较看重)
 http://10.150.26.83:3000/repo/migrate
 
 https://blog.wu-boy.com/drone-devops/
 https://www.udemy.com/devops-oneday/?couponCode=DRONE-DEVOPS
 一天學會 DevOps 自動化測試及部署
 ![](media/15152373607932.jpg)
-
 
 ![](media/15152377336638.jpg)
 
@@ -314,20 +286,18 @@ https://blog.wu-boy.com/2017/09/why-i-choose-drone-as-ci-cd-tool/
 
 https://rootsongjc.gitbooks.io/kubernetes-handbook/content/practice/jenkins-ci-cd.html
 
-
-解决yum因为多个python版本，使用了高版本而无法使用的问题
+解决 yum 因为多个 python 版本，使用了高版本而无法使用的问题
 http://blog.csdn.net/ei__nino/article/details/8495295
 
-登录之后,,,尼玛6000...
+登录之后,,,尼玛 6000...
 ![](media/15153054009037.jpg)
-
 
 ## 系统开机服务
 
 ### 开机服务
 
 ```sh
-[fengqichao@host-10-150-26-83 ~]$ sudo vim /etc/systemd/system/gitea.service     
+[fengqichao@host-10-150-26-83 ~]$ sudo vim /etc/systemd/system/gitea.service
 [Unit]
 Description=Gitea (Git with a cup of tea)
 After=syslog.target
@@ -358,15 +328,11 @@ Environment=USER=fengqichao HOME=/home/fengqichao
 WantedBy=multi-user.target
 ```
 
-
-
-### 特别蛋疼的bug解决
+### 特别蛋疼的 bug 解决
 
 ![](media/15152993861035.jpg)
 
-
 ![](media/15152985276892.jpg)
-
 
 ```sh
 sudo cp  /usr/local/git/bin/git  /usr/bin/
@@ -374,56 +340,43 @@ sudo cp  /usr/local/git/bin/git  /usr/bin/
 
 ![](media/15152990966318.jpg)
 
-
-
 http://www.zslin.com/web/article/detail/9
 
-
-
-
 ## 安装 supervisor
-最终解决了python多版本 ，yum因为python版本切换的问题，以及supervisor 手动安装的问题，最终还是重新使用pip安装上了supervisor
+
+最终解决了 python 多版本 ，yum 因为 python 版本切换的问题，以及 supervisor 手动安装的问题，最终还是重新使用 pip 安装上了 supervisor
 https://blog.fazero.me/2016/12/16/supervisor-usage/
 
 ![](media/15152445067787.jpg)
 
-## 
+##
+
 mkdir -p /home/fengqichao/git/gitea/log/supervisor
 sudo vim /etc/supervisor/supervisord.conf
 
+82 让人真的很蛋疼...需要运维来重置了...
 
-82让人真的很蛋疼...需要运维来重置了...
+83 服务器上的 supervisor ok 的
 
-83服务器上的supervisor ok的
-
-
-
-
-
-83上重新走了一遍
+83 上重新走了一遍
 ![](media/15152474093870.jpg)
 
-
 ![](media/15152474209042.jpg)
-
 
 ![](media/15152474370477.jpg)
 
 22:04 开始立即安装
 
-30s左右之后立即跳转了 哈哈~
+30s 左右之后立即跳转了 哈哈~
 ![](media/15152474959664.jpg)
-
-
 
 ![](media/15152497523192.jpg)
 
 ![](media/15152503113951.jpg)
 
 sudo systemctl daemon-reload
-sudo systemctl restart gitea.service 
+sudo systemctl restart gitea.service
 sudo systemctl status gitea.service
-
 
 ![](media/15152515514264.jpg)
 
@@ -431,12 +384,10 @@ sudo systemctl status gitea.service
 
 ![](media/15152527557213.jpg)
 
-
-
 ```sh
-[fengqichao@host-10-150-26-83 ~]$ sudo systemctl daemon-reload          
-[fengqichao@host-10-150-26-83 ~]$ sudo systemctl restart gitea.service 
-[fengqichao@host-10-150-26-83 ~]$ sudo systemctl enable gitea          
+[fengqichao@host-10-150-26-83 ~]$ sudo systemctl daemon-reload
+[fengqichao@host-10-150-26-83 ~]$ sudo systemctl restart gitea.service
+[fengqichao@host-10-150-26-83 ~]$ sudo systemctl enable gitea
 [fengqichao@host-10-150-26-83 ~]$ sudo systemctl status gitea.service -l
 ‚óè gitea.service - Gitea (Git with a cup of tea)
    Loaded: loaded (/etc/systemd/system/gitea.service; enabled; vendor preset: disabled)
@@ -446,62 +397,53 @@ sudo systemctl status gitea.service
 ```
 
 ![](media/15152929849967.jpg)
-使用啥的都是使用了建立的mysql，一切都ok。
-
+使用啥的都是使用了建立的 mysql，一切都 ok。
 
 ![](media/15152963028754.jpg)
 
 ![](media/15152963147288.jpg)
 
+---
 
+## ubuntu 上安装 mysql
 
-
-
-
----------------
-## ubuntu上安装mysql
 [Install MySQL on Ubuntu 14.04](https://linode.com/docs/databases/mysql/install-mysql-on-ubuntu-14-04/)
-[在Ubuntu中
-安装MySQL](http://blog.fens.me/linux-mysql-install/)
-
+[在 Ubuntu 中安装 MySQL](http://blog.fens.me/linux-mysql-install/)
 
 ```sh
 sudo apt-get install mysql-server
 ```
 
-git golang 和centos完全一样
+git golang 和 centos 完全一样
 
 秒执行
 
-
-
-systemd的使用t
+systemd 的使用 t
 https://linux.cn/article-3719-1.html
 
+## gitlab 迁移到 gitea 的方案
 
-## gitlab迁移到 gitea的方案
+方案 1. 打通网络方案 2. 将大家的代码都全部合并到 master，然后手动的上传到该地址仓库，然后建立自己的分支开发，注意修改 gitconfig 中的 ip 地址
 
-方案1. 打通网络
-方案2. 将大家的代码都全部合并到master，然后手动的上传到该地址仓库，然后建立自己的分支开发，注意修改gitconfig 中的ip地址
-
-
-
-对比gitea 1. 简单且易维护 2.性能高 3.占用资源少(比较看重)
+对比 gitea 1. 简单且易维护 2.性能高 3.占用资源少(比较看重)
 http://10.150.26.82:3000/repo/migrate
 
-
 ## readme
+
 官网
 gitea: https://docs.gitea.io
 drone: https://drone.io
-关键词: drone ci cd / drone持续集成
+关键词: drone ci cd / drone 持续集成
 
-**持续集成鼓励开发团队尽早测试并将其更改集中到共享代码库，以最大程度地减少集成冲突。 通过消除部署或发布方式上的障碍，持续交付从此基础上构建。 通过部署自动通过测试套件的每个构建，进一步扩展连续部署。
-虽然上述术语主要涉及策略和实践，但软件工具在允许组织实现这些目标方面发挥重要作用。 CI / CD软件可以帮助团队通过一系列的阶段自动推进新的变化，以减少反馈时间和消除过程中的摩擦。**
-[CI / CD工具比较：Jenkins，GitLab CI，Buildbot，Drone和大厅](https://www.howtoing.com/ci-cd-tools-comparison-jenkins-gitlab-ci-buildbot-drone-and-concourse)
+---
+
+持续集成鼓励开发团队尽早测试并将其更改集中到共享代码库，以最大程度地减少集成冲突。 通过消除部署或发布方式上的障碍，持续交付从此基础上构建。 通过部署自动通过测试套件的每个构建，进一步扩展连续部署。虽然上述术语主要涉及策略和实践，但软件工具在允许组织实现这些目标方面发挥重要作用。 CI / CD 软件可以帮助团队通过一系列的阶段自动推进新的变化，以减少反馈时间和消除过程中的摩擦。
+
+---
+
+[CI / CD 工具比较：Jenkins，GitLab CI，Buildbot，Drone 和大厅](https://www.howtoing.com/ci-cd-tools-comparison-jenkins-gitlab-ci-buildbot-drone-and-concourse)
 
 [安裝 Drone 0.5 自動測試平台並與 Github 連結](https://yami.io/drone/)
-
 
 ```
 若要達到上述這種效果就需事先寫好「單元測試」，而 Drone 扮演的角色就是自動執行單元測試，而且這個執行的環境是獨立的，不會真正干擾到你的主機。
@@ -509,42 +451,39 @@ drone: https://drone.io
 Drone 亦能在測試成功時自動幫你部署到正式的伺服器，或是執行任何額外的腳本。倘若你聽過 Travis CI，那麼也許你就會對這些事情感到不陌生。
 ```
 
-
 [Drone](https://yeasy.gitbooks.io/docker_practice/content/cases/ci/drone.html)
 
-[体验基于gogs+Drone搭建的CI/CD平台](https://www.jianshu.com/p/15506f46f75a)
+[体验基于 gogs+Drone 搭建的 CI/CD 平台](https://www.jianshu.com/p/15506f46f75a)
 
 [Docker + Drone CI/CD 实践](https://segmentfault.com/a/1190000012066735)
 
-[使用Rancher和DroneCI建立超高速Docker CI/CD流水线](https://segmentfault.com/a/1190000010761792)
+[使用 Rancher 和 DroneCI 建立超高速 Docker CI/CD 流水线](https://segmentfault.com/a/1190000010761792)
 
 [單元測試簡介以及在 Docker 上部署 Drone 並連結至 GitHub](https://blog.birkhoff.me/unit-test-intro-and-install-drone/)
 
-[k8s与CICD--将drone部署到kubernetes中，实现agent动态收缩](https://studygolang.com/articles/11968?fr=sidebar)
+[k8s 与 CICD--将 drone 部署到 kubernetes 中，实现 agent 动态收缩](https://studygolang.com/articles/11968?fr=sidebar)
 [flow.ci + Github + Slack 一步步搭建 Python 自动化持续集成](https://segmentfault.com/a/1190000005909578)
 https://github.com/rootsongjc/kubernetes-handbook/blob/master/practice/drone-ci-cd.md
 
 https://www.jianshu.com/p/15506f46f75a
 
-
-[基于docker的高可用方案](https://www.jianshu.com/p/62e5ac2ede2b?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
+[基于 docker 的高可用方案](https://www.jianshu.com/p/62e5ac2ede2b?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
 
 https://www.jianshu.com/p/ac8020d9c473
 
-[基于rancher的ci cd](https://segmentfault.com/a/1190000007808836)
+[基于 rancher 的 ci cd](https://segmentfault.com/a/1190000007808836)
 
 ![](media/15153063705145.jpg)
 
-
 **持续集成，交付和部署软件是旨在使您的流程可靠和可重复的复杂自动化系统。 从上面的描述可以看出，关于自动化测试和发布如何最大程度地实现，有很多不同的想法，重点放在方程的不同部分。 没有一个工具可以满足每个项目的需求，但是通过这么多高品质的开源解决方案，您很有可能找到一个符合团队需求的系统。**
 
+[如何在 Ubuntu 16.04 上设置 Drone 的连续集成管道](https://www.howtoing.com/how-to-set-up-continuous-integration-pipelines-with-drone-on-ubuntu-16-04)
 
-[如何在Ubuntu 16.04上设置Drone的连续集成管道](https://www.howtoing.com/how-to-set-up-continuous-integration-pipelines-with-drone-on-ubuntu-16-04)
+## drone 集成 github
 
+参考 [安裝 Drone 0.5 自動測試平台並與 Github 連結](https://yami.io/drone/)
 
-## 实践
-
-install docker  docker-compose 
+install docker docker-compose
 
 ```sh
 wget https://bootstrap.pypa.io/get-pip.py
@@ -553,15 +492,13 @@ sudo pip install -U docker-compose
 docker-compose version
 ```
 
-docker-compose补全命令
+docker-compose 补全命令
+
 ```sh
 curl -L https://raw.githubusercontent.com/docker/compose/1.8.0/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose
 ```
 
 ![](media/15153158678653.jpg)
-
-
-
 
 ```sh
 version: '2'
@@ -578,11 +515,10 @@ services:
     restart: always
     environment:
       - DRONE_OPEN=true
-      - DRONE_HOST=54.223.251.31
-      - DRONE_GITHUB=true
-      - DRONE_GITHUB_CLIENT=29960276873586de9d08
-      - DRONE_GITHUB_SECRET=75522ea3dfaf87f8f0b653d5474d72c38461b047
-      - DRONE_SECRET=Onto-Tear-Level-English-9
+      - DRONE_HOST=${DRONE_HOST}
+      - DRONE_GITEA=true
+      - DRONE_GITEA_URL=http://10.150.26.83:
+      - DRONE_SECRET=${DRONE_SECRET}
 
   drone-agent:
     image: drone/agent:0.8
@@ -595,11 +531,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - DRONE_SERVER=drone-server:9000
-      - DRONE_SECRET=Onto-Tear-Level-English-9
+      - DRONE_SECRET=${DRONE_SECRET}
 ```
 
-54.223.251.31
+![](media/15179933635803.jpg)
 
+54.223.251.31
 
 ![](media/15153183880410.jpg)
 
@@ -607,8 +544,6 @@ services:
 
 还是要做好加速器
 ![](media/15153187029560.jpg)
-
-
 
 ```sh
 [centos@ip-172-31-4-17 drone]$ ll
@@ -714,20 +649,18 @@ Last login: Sun Jan  7 09:49:20 2018 from 23.99.107.46
 [centos@ip-172-31-4-17 ~]$
 ```
 
-
 ![](media/15153189231681.jpg)
 
 ![](media/15153190411794.jpg)
 
-访问: http://54.223.251.31/ 
+访问: http://54.223.251.31/
 
 ![](media/15153192619894.jpg)
-
-
 
 ```sh
 https://github.com/login?client_id=29960276873586de9d08&return_to=%2Flogin%2Foauth%2Fauthorize%3Fclient_id%3D29960276873586de9d08%26redirect_uri%3Dhttp%253A%252F%252F54.223.251.31%252Fauthorize%26response_type%3Dcode%26scope%3Drepo%2Brepo%253Astatus%2Buser%253Aemail%2Bread%253Aorg%26state%3Ddrone
 ```
+
 ![](media/15153193482261.jpg)
 
 ![](media/15153195522267.jpg)
@@ -743,12 +676,9 @@ https://github.com/login?client_id=29960276873586de9d08&return_to=%2Flogin%2Foau
 
 ![](media/15153200088127.jpg)
 
-
 ![](media/15153201137402.jpg)
 
-
 ![](media/15153201419098.jpg)
-
 
 ![](media/15153202323279.jpg)
 
@@ -756,15 +686,10 @@ https://github.com/login?client_id=29960276873586de9d08&return_to=%2Flogin%2Foau
 
 ![](media/15153202937091.jpg)
 
-
 ![](media/15153203161355.jpg)
-
-
-
 
 真的很赞
 ![](media/15153217990574.jpg)
-
 
 ![](media/15153217722531.jpg)
 
@@ -775,30 +700,22 @@ https://github.com/login?client_id=29960276873586de9d08&return_to=%2Flogin%2Foau
 
 ![](media/15153219070867.jpg)
 
-
 ![](media/15153219829424.jpg)
 
 ![](media/15153219918243.jpg)
 
-
 ![](media/15153219994587.jpg)
 
-
-
-新增java项目，注意手动同步以下
+新增 java 项目，注意手动同步以下
 ![](media/15153222901737.jpg)
 
 ![](media/15153223137406.jpg)
 
 ![](media/15153223348764.jpg)
 
-
 ![](media/15153225333326.jpg)
 
-
 ![](media/15153225535983.jpg)
-
-
 
 java1.8
 
@@ -808,9 +725,7 @@ export JAVA_HOME=/usr/local/jdk1.8.0_152
 export PATH=$GOPATH/bin:$GOROOT/bin:$JAVA_HOME/bin:$PATH
 ```
 
-在服务器上安装gradle速度还是可以的，但是jdk还是手动上传吧
-
-
+在服务器上安装 gradle 速度还是可以的，但是 jdk 还是手动上传吧
 
 ```sh
 sudo mv apache-maven-3.5.2 /usr/local
@@ -820,14 +735,9 @@ export PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$PATH
 
 ![](media/15153799424014.jpg)
 
-
-
-
 # gradle to maven
+
 https://notes.wanghao.work/2017-08-21-Gradle%E3%80%81Maven%E9%A1%B9%E7%9B%AE%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2.html
-
-
-
 
 http://blog.csdn.net/lsgqjh/article/details/72597786
 
@@ -835,15 +745,13 @@ http://download.csdn.net/download/happyzwh/9950314
 
 http://blog.csdn.net/zstack_org/article/details/53665575
 
-
 镜像搞定，一切就绪了
 ![](media/15153813716056.jpg)
 
-
 ![](media/15153821440867.jpg)
 
-
 ## 成功
+
 ![](media/15153907383424.jpg)
 
 虽然喜悦，但是在跑另外一个的
@@ -855,52 +763,37 @@ http://blog.csdn.net/zstack_org/article/details/53665575
 这样是不错的
 ![](media/15153909664413.jpg)
 
+再最后验证下，是否重用本地依赖缓存
 
- 再最后验证下，是否重用本地依赖缓存
- 
- 
- ![](media/15153910692850.jpg)
+![](media/15153910692850.jpg)
 
- 
- 
- 
- 解决 maven cache的问题
- 
- [drone volume cache plugin](https://github.com/Drillster/drone-volume-cache)
- 
- [Cache directories between builds #143](https://github.com/drone/drone/issues/143)
- [Cache Docker images #43 Closed](https://github.com/drone/drone/issues/43)
- 
- [Add install section to drone.yml #691](https://github.com/drone/drone/issues/691)
- 
- ![](media/15153925648248.jpg)
+解决 maven cache 的问题
 
- 
- 
- [](https://github.com/Drillster/drone-volume-cache/blob/master/DOCS.md)
- [](https://github.com/Drillster/drone-volume-cache/blob/master/DOCS.md)
- 
- ![](media/15153938843982.jpg)
+[drone volume cache plugin](https://github.com/Drillster/drone-volume-cache)
 
- 
- 
- 
- https://gist.github.com/danielepolencic/2b43329495d018dc6bfe790a79b559d4
- [ ERROR: Insufficient privileges to use volumes](https://discourse.drone.io/t/solved-error-insufficient-privileges-to-use-volumes/260)
- http://readme.drone.io/admin/user-admins/
- ![](media/15153949283131.jpg)
+[Cache directories between builds #143](https://github.com/drone/drone/issues/143)
+[Cache Docker images #43 Closed](https://github.com/drone/drone/issues/43)
 
- 
- 
- 
- ![](media/15153952993368.jpg)
+[Add install section to drone.yml #691](https://github.com/drone/drone/issues/691)
 
- 
- ![](media/15153958127610.jpg)
+![](media/15153925648248.jpg)
 
- J解决缓存问题
+[](https://github.com/Drillster/drone-volume-cache/blob/master/DOCS.md)
+[](https://github.com/Drillster/drone-volume-cache/blob/master/DOCS.md)
+
+![](media/15153938843982.jpg)
+
+https://gist.github.com/danielepolencic/2b43329495d018dc6bfe790a79b559d4
+[ ERROR: Insufficient privileges to use volumes](https://discourse.drone.io/t/solved-error-insufficient-privileges-to-use-volumes/260)
+http://readme.drone.io/admin/user-admins/
+![](media/15153949283131.jpg)
+
+![](media/15153952993368.jpg)
+
+![](media/15153958127610.jpg)
+
+J 解决缓存问题
 [Implement proper Caching](https://github.com/drone/drone/issues/147)
-
 
 ```sh
 docker run --rm \
@@ -915,13 +808,200 @@ docker run --rm \
   drillster/drone-volume-cache
 ```
 
-
 酷炫的页面..
 https://notes.wanghao.work/2017-08-21-Gradle%E3%80%81Maven%E9%A1%B9%E7%9B%AE%E7%9B%B8%E4%BA%92%E8%BD%AC%E6%8D%A2.html
 
-
 线上坑
-$path=$mavenjkjk:path  这个错误的命令执行若让其生效后会很蛋疼...各种命令找不到
+$path=$mavenjkjk:path 这个错误的命令执行若让其生效后会很蛋疼...各种命令找不到
+
+## drone 集成 gitea
+
+[官方集成方式](http://docs.drone.io/install-for-gitea/)
+[搭建 CD 工具 drone](http://www.supperxin.com/Coding/Details/drone-gitea)
+
+```
+version: '2'
+
+services:
+  drone-server:
+    image: drone/drone:0.8
+
+    ports:
+      - 80:8000
+      - 9000
+    volumes:
+      - /var/lib/drone:/var/lib/drone/
+    restart: always
+    environment:
+      - DRONE_OPEN=true
+      - DRONE_HOST=http://10.150.26.84:9000
+      - DRONE_GITEA=true
+      - DRONE_GITEA_URL=http://10.150.26.83:3000
+      - DRONE_SECRET=Onto-Tear-Level-English-9
+      - DRONE_GITEA_PRIVATE_MODE=true
+      - DRONE_GITEA_SKIP_VERIFY=true
+
+  drone-agent:
+    image: drone/agent:0.8
+
+    command: agent
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=Onto-Tear-Level-English-9
+
+networks:
+  default:
+    external:
+      name: docker_gwbridge
+```
+
+docker stop container
+docker network ls
+docker network rm xxx
+
+防止网段冲突，在 docker-compose 中添加网络
+[docker - 由于 docker swarm 子网与 host 机器网络冲突导致的 container 通信问题的解决方案](http://www.cnblogs.com/atuotuo/p/7250695.html)
+[参考 docker-compose 的网络设置](http://blog.csdn.net/gezhonglei2007/article/details/51627969)
+
+```sh
+networks:
+  default:
+    external:
+      name: docker_gwbridge
+```
+
+`sudo docker-compose up -d`
+
+![](media/15179815425969.jpg)
+
+使用 gitea 的账号登录
+![](media/15179821000120.jpg)
+
+![-w400](media/15179820812146.jpg)
+
+赞！！！！！ 稍微比 github 的集成简单些
+![](media/15179821312274.jpg)
+
+这里比较困扰，每次打开都没有成功
+![](media/15179939720180.jpg)
+
+![](media/15179940197025.jpg)
+
+```sh
+export DRONE_HOST=10.150.26.84
+export DRONE_SECRET=abcd1234
+```
+
+```sh
+version: '2'
+
+services:
+  drone-server:
+    image: drone/drone:0.8
+
+    ports:
+      - 80:8000
+      - 9000:9000
+    volumes:
+      - /var/lib/drone:/var/lib/drone/
+    restart: always
+    environment:
+
+      - DRONE_OPEN=true
+      - DRONE_HOST=http://10.150.26.84:9000 # 注意这里在gitea中的链接不对的话，需要去掉9000端口
+      - DRONE_SECRET=drone-workshop
+      - DRONE_ADMIN=fengqichao
+
+      - DRONE_GITEA=true
+      - DRONE_GITEA_URL=http://10.150.26.83:3000
+      - DRONE_GITEA_GIT_USERNAME=fengqichao
+      - DRONE_GITEA_GIT_PASSWORD=tigertiger
+
+  drone-agent:
+    image: drone/agent:0.8
+
+    command: agent
+    restart: always
+    depends_on:
+      - drone-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DRONE_SERVER=drone-server:9000
+      - DRONE_SECRET=drone-workshop
+      - DRONE_MAX_PROCS=3
+
+networks:
+  default:
+    external:
+      name: docker_gwbridge
+```
+
+debug
+![](media/15180011348294.jpg)
+
+![](media/15180011778050.jpg)
+
+![](media/15180012077573.jpg)
+
+![](media/15180030267357.jpg)
+
+https://github.com/drone/docs/issues/263
+
+使用 aws 全新的 gitea 和 drone 也是该问题
+![](media/15180153662942.jpg)
+
+这个呢则是 gitea 挂了，启动起来就好了
+![](media/15180162159523.jpg)
+
+前台显示 500，后台日志则是 422
+![](media/15180171167534.jpg)
+
+![](media/15180163913502.jpg)
+
+![](media/15180180762578.jpg)
+
+最终看着 gitea 2016 不那么舒畅，难道好久没更新，赶紧去 github 官方下载最新的。然后就解决了》。。
+
+![](media/15180192517747.jpg)
+
+之前的版本还是 gogs.log 我也是醉了，不过这确实是历史问题 gogs-> gitea（gogs 前身是 gitea）
+![](media/15180198067357.jpg)
+
+ok!
+![](media/15180206753335.jpg)
+
+oka !!!hhhhhhaaahhahah
+![](media/15180242415531.jpg)
+
+![](media/15180242254683.jpg)
+
+![](media/15180242605069.jpg)
+
+![](media/15180570045543.jpg)
+
+
+注意直接从gitea直接可以点击到drone，只要集成了。但是链接呢，则需要在drone中配置注意下。
+![](media/15181556270518.jpg)
+
+我们看到fix merge的链接 多了个9000的端口
+![](media/15181556835412.jpg)
+
+![](media/15181557885976.jpg)
+访问的时候则是访问不到了，对于高标准的我不能忍啊..
+将DRONE_HOST的 http://54.223.162.185:9000 中的9000端口移除
+![](media/15181555643215.jpg)
+
+我们看到update readme的连接
+![](media/15181556990938.jpg)
+
+
+
 
 
 
