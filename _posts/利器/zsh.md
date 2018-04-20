@@ -31,7 +31,7 @@ export PATH=$percol:$PATH
 
 [Vim 常用命令总结](http://pizn.github.io/2012/03/03/vim-commonly-used-command.html)
 
-[vim + tmux - OMG!Code](https://www.youtube.com/watch?v=5r6yzFEXajQ&t=1913s)
+[vim + tmux - OMG!Code](https:/****/www.youtube.com/watch?v=5r6yzFEXajQ&t=1913s)
 
 
 # easy-mock
