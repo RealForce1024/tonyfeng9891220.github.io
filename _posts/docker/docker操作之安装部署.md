@@ -16,10 +16,29 @@ lrwxrwxrwx 1 root root 0 Apr 11 07:51 /sys/class/misc/device-mapper -> ../../dev
 ```
 
 ### 安装
+- 官网
+[docker 官网](https://docs.docker.com/install/linux/docker-ce/ubuntu/)  
+[docker rancher版本对照](https://rancher.com/docs/rancher/v1.6/zh/hosts/ )  
+https://rancher.com/docs/rancher/v1.6/en/hosts/#supported-docker-versions
+
+```
+$ sudo apt-get install docker-ce=5:18.09.5~3-0~ubuntu-bionic docker-ce-cli=5:18.09.5~3-0~ubuntu-bionic containerd.io
+```
+
+dao docker 镜像加速器
+```
+https://www.daocloud.io/mirror
+```
+
+- 阿里云方式
 1. `sudo apt-get install -y curl`
 
 2. 阿里云内网 `curl -sSL http://acs-public-mirror.oss-cn-hangzhou.aliyuncs.com/docker-engine/internet | sh -`
  
+ 这里可能已经更新了，所以可以参照阿里云官方文档操作
+ `https://www.alibabacloud.com/help/zh/doc-detail/60742.htm`
+
+
 3. `docker version`
 ```
 Client:

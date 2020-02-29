@@ -1,4 +1,4 @@
-##目录清单
+## 目录清单
 
 ```sh
 ☁  workshop_day1  tree
@@ -190,6 +190,8 @@ networks:
 
     ```sh
     SERVER_PORT=9090 java -jar build/libs/hello-0.0.1-SNAPSHOT.jar
+
+    java -jar build/libs/hello-0.0.1-SNAPSHOT.jar --server.port=9090
     ```
 
    访问 192.168.33.10:9090
@@ -207,6 +209,8 @@ networks:
     b. 运行docker容器
     ```sh
     sudo docker run -p 8888:8080 -t leanms/hello:0.1
+
+    sudo docker run -p 8888:8080 -it leanms/hello:0.1
     ```
 
     c. 访问web服务  
@@ -628,3 +632,95 @@ roll haking 黑客增长
 
 
 
+
+
+
+
+
+
+
+
+Gitflow Workflow是一个Git工作流程设计，首次出版并受到nvie的Vincent Driessen的欢迎。 Gitflow工作流定义了围绕项目版本设计的严格分支模型。 这为管理大型项目提供了一个强大的框架。
+
+Gitflow非常适合具有计划发布周期的项目。 此工作流程不会添加超出功能分支工作流程所需的任何新概念或命令。 相反，它为不同的分支分配非常具体的角色，并定义它们应该如何以及何时进行交互。 除功能分支外，它还使用单独的分支来准备，维护和记录版本。 当然，您还可以利用功能分支工作流的所有优势：拉取请求，隔离实验和更高效的协作。
+
+
+
+入门
+Gitflow实际上只是一个Git工作流的抽象概念。 这意味着它决定了要设置的分支类型以及如何将它们合并在一起。 我们将触及以下分支机构的目的。 git-flow工具集是一个具有安装过程的实际命令行工具。 git-flow的安装过程很简单。 git-flow的软件包可在多个操作系统上使用。 在OSX系统上，您可以执行brew install git-flow。 在Windows上，您需要下载并安装git-flow。 安装git-flow后，您可以通过执行git flow init在项目中使用它。 Git-flow是Git的包装器。 git flow init命令是默认git init命令的扩展，除了为您创建分支之外，不会更改存储库中的任何内容。
+
+how it works 
+
+图
+
+
+发展和掌握分支机构
+此工作流使用两个分支来记录项目的历史记录，而不是单个主分支。 主分支存储正式发布历史，而开发分支作为功能的集成分支。 使用版本号标记主分支中的所有提交也很方便。
+
+第一步是使用develop分支补充默认主服务器。 一种简单的方法是让一个开发人员在本地创建一个空的开发分支并将其推送到服务器：
+```
+git branch develop
+git push -u origin develop
+```
+
+该分支将包含项目的完整历史记录，而master将包含删节版本。 其他开发人员现在应该克隆中央存储库并为开发创建跟踪分支。
+
+使用git-flow扩展库时，在现有repo上执行git flow init将创建develop分支：
+
+
+```
+$ git flow init
+Initialized empty Git repository in ~/project/.git/
+No branches exist yet. Base branches must be created now.
+Branch name for production releases: [master]
+Branch name for "next release" development: [develop]
+
+How to name your supporting branch prefixes?
+Feature branches? [feature/]
+Release branches? [release/]
+Hotfix branches? [hotfix/]
+Support branches? [support/]
+Version tag prefix? []
+
+$ git branch
+* develop
+ master
+```
+
+
+功能分支
+每个新功能都应驻留在自己的分支中，可以将其推送到中央存储库以进行备份/协作。 但是，不是使用master分支，而是使用develop作为其父分支。 功能完成后，它将合并回开发。 功能不应该直接与master交互。
+
+图
+
+请注意，功能分支与开发分支相结合，无论如何都是功能分支工作流程。 但是，Gitflow工作流程并不止于此。
+
+功能分支通常是创建到最新的开发分支。
+
+
+创建功能分支
+没有git-flow扩展
+
+```
+git checkout develop
+git checkout -b feature_branch
+```
+
+当使用gitflow拓展
+```
+git flow feature start feature_branch
+```
+继续你的工作，像往常一样使用Git。
+
+
+
+完成功能分支
+完成该功能的开发工作后，下一步是将feature_branch合并到develop中。
+
+没有git-flow扩展：
+
+```
+git checkout develop
+git merge feature_branch
+
+```

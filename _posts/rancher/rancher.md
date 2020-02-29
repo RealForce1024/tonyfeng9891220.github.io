@@ -6,8 +6,11 @@
 
 
 ```sh
-~$ docker run -d --restart=unless-stopped -p 8080:8080 --name rancher-master rancher/server:v1.6.7
+~$ docker run -d --restart=unless-stopped -p 8080:8080 --name rancher-master rancher/server:v1.6.7 更新 v1.6.26
 ```
+
+sudo docker run -d --restart=unless-stopped -p 80:80 -p 443:443 rancher/rancher
+
 `The UI and API are available on the exposed port 8080.`
 
 ![-w450](media/15037281673139.jpg)
